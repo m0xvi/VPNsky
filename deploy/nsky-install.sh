@@ -270,7 +270,7 @@ bold "3/10. Система и Docker"
 # ─────────────────────────────────────────────────────────────────────────────
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq curl ca-certificates gnupg ufw jq openssl tar unzip >/dev/null
+apt-get install -y -qq curl ca-certificates gnupg ufw jq openssl tar unzip iproute2 >/dev/null
 ok "Базовые пакеты"
 
 # Caddy ставим ЗАРАНЕЕ: его каталог сертификатов монтируется в панель,
@@ -509,6 +509,13 @@ bold "7/10. HTTPS (Caddy)"
 cat > /etc/caddy/Caddyfile <<CADDY
 {
     email $EMAIL
+
+    # HTTP/3 (QUIC) занимает UDP 443, а он нужен Hysteria2. Проверено в
+    # исходниках Caddy: defaultProtocols = {"h1","h2","h3"} (server.go).
+    # Без этой строки Xray падает с 'listen udp 0.0.0.0:443: address already in use'.
+    servers {
+        protocols h1 h2
+    }
 }
 
 $DOMAIN {
@@ -523,6 +530,14 @@ $DOMAIN {
     encode gzip zstd
 }
 CADDY
+# Проверяем конфиг до перезапуска: ошибка в Caddyfile уронила бы HTTPS.
+if ! caddy validate --config /etc/caddy/Caddyfile >/dev/null 2>&1; then
+  warn "Caddyfile не прошёл проверку:"
+  caddy validate --config /etc/caddy/Caddyfile 2>&1 | tail -5 || true
+  die "Исправьте /etc/caddy/Caddyfile"
+fi
+ok "Caddyfile проверен"
+
 systemctl enable caddy >/dev/null 2>&1
 systemctl restart caddy
 sleep 6
@@ -882,13 +897,17 @@ ensure_host() {
 
   # Пустые sni/alpn передавать нельзя: alpn проверяется как z.enum(ALPN),
   # и пустая строка даёт "Validation failed". Добавляем только заполненные.
+  # if, а не "[[ ]] &&": при set -e ложное условие в конце блока обрывает скрипт.
   local jq_extra=()
-  [[ -n "$sni"  ]] && jq_extra+=(--arg s "$sni")
-  [[ -n "$alpn" ]] && jq_extra+=(--arg al "$alpn")
-
   local filter='.'
-  [[ -n "$sni"  ]] && filter="$filter + {sni:\$s}"
-  [[ -n "$alpn" ]] && filter="$filter + {alpn:\$al}"
+  if [[ -n "$sni" ]]; then
+    jq_extra+=(--arg s "$sni")
+    filter="$filter + {sni:\$s}"
+  fi
+  if [[ -n "$alpn" ]]; then
+    jq_extra+=(--arg al "$alpn")
+    filter="$filter + {alpn:\$al}"
+  fi
 
   local body
   body=$(jq -n --arg r "$remark" --arg pu "$PROFILE_UUID" --arg iu "$inb" \
@@ -957,6 +976,31 @@ NODE_SECRET="$(printf '%s' "$resp" | json_field '.response.secretKey')"
 state_set NODE_SECRET "$NODE_SECRET"
 ok "Секрет ноды получен"
 
+# Перед запуском ноды проверяем, что её порты свободны. Иначе Xray упадёт
+# с 'address already in use', а скрипт покажет это только через 2 минуты.
+udp443_holder() {
+  # ss есть в iproute2 (стоит по умолчанию), но на случай отсутствия — lsof.
+  if command -v ss >/dev/null 2>&1; then
+    ss -lunp 2>/dev/null | awk 'NR>1 && /:443 / {print $NF}' | head -1
+  elif command -v lsof >/dev/null 2>&1; then
+    lsof -i udp:443 -sUDP:LISTEN 2>/dev/null | awk 'NR>1 {print $1; exit}'
+  fi
+}
+UDP_HOLDER="$(udp443_holder || true)"
+if [[ -n "$UDP_HOLDER" ]]; then
+  warn "UDP 443 уже занят: $UDP_HOLDER"
+  if printf '%s' "$UDP_HOLDER" | grep -qi caddy; then
+    info "Это Caddy с HTTP/3 — перезапускаю его без h3 (см. Caddyfile)"
+    systemctl restart caddy
+    sleep 4
+  fi
+  UDP_HOLDER="$(udp443_holder || true)"
+  if [[ -n "$UDP_HOLDER" ]]; then
+    die "UDP 443 всё ещё занят: $UDP_HOLDER. Освободите порт, иначе Hysteria2 не запустится."
+  fi
+fi
+ok "UDP 443 свободен для Hysteria2"
+
 cat > "$DIR/node/.env" <<ENV
 NODE_PORT=${NODE_PORT}
 SECRET_KEY=${NODE_SECRET}
@@ -1010,8 +1054,14 @@ if [[ "$NODE_OK" == "1" ]]; then
   ok "Нода подключена к панели"
 else
   warn "Нода пока не подключилась. Диагностика:"
-  docker logs --tail 25 remnanode || true
-  warn "Частая причина — панель не видит ноду по 127.0.0.1:2222 или не тот SECRET_KEY."
+  NODE_ERR="$(docker logs --tail 200 remnanode 2>&1 | grep -E "address already in use|no such file|failed to parse certificate|permission denied|invalid|error" -i | tail -3 || true)"
+  if [[ -n "$NODE_ERR" ]]; then
+    warn "Причина из лога ноды:"
+    printf '%s\n' "$NODE_ERR" | sed 's/^/      /'
+  else
+    docker logs --tail 15 remnanode || true
+  fi
+  warn "Нода не подключилась. Проверьте: ss -lunp | grep 443  (порт для Hysteria2)"
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
