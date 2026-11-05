@@ -84,7 +84,15 @@ CLIENT_HDR='X-Remnawave-Client-Type: browser'
 
 API="http://127.0.0.1:3000/api"
 
-api() { curl -sS --max-time 40 "$@"; }
+# Панель проверяет каждый запрос (src/common/middlewares/proxy-check.middleware.ts):
+# если нет X-Forwarded-Proto: https, соединение просто обрывается — без ответа
+# и без кода. Поэтому все обращения к API идут с этими двумя заголовками.
+api() {
+  curl -sS --max-time 40 \
+    -H 'x-forwarded-for: 127.0.0.1' \
+    -H 'x-forwarded-proto: https' \
+    "$@"
+}
 
 state_get() { [[ -f "$STATE" ]] && sed -n "s/^$1=//p" "$STATE" | head -1 || true; }
 state_set() {
@@ -484,7 +492,7 @@ docker compose up -d
 printf '    жду готовности панели'
 READY=0
 for _ in $(seq 1 100); do
-  if curl -fsS --max-time 2 http://127.0.0.1:3001/health >/dev/null 2>&1; then READY=1; break; fi
+  if curl -fsS --max-time 2 -H 'x-forwarded-proto: https' http://127.0.0.1:3001/health >/dev/null 2>&1; then READY=1; break; fi
   printf '.'; sleep 3
 done
 printf '\n'
@@ -546,46 +554,93 @@ bold "8/10. Администратор и токен"
 # ─────────────────────────────────────────────────────────────────────────────
 json_field() { jq -r "$1 // empty" 2>/dev/null || true; }
 
-# Кандидаты паролей: текущий из state и дефолтные, чтобы не потерять доступ
-# к уже существующей панели.
+# Вход с известным паролем.
+# Важно: результат кладём в переменные оболочки, а не печатаем в stdout —
+# вызывать через $(...) нельзя, иначе LAST_CODE/LAST_MSG окажутся
+# в подоболочке и снаружи будут пустыми.
+LOGIN_TOKEN=""
+LAST_CODE=""
+LAST_MSG=""
 login_token() {
-  local pass="$1" body resp tok
+  local pass="$1" body out code resp
+  LOGIN_TOKEN=""
+  LAST_CODE=""
+  LAST_MSG=""
   body=$(jq -n --arg u "$ADMIN_USER" --arg p "$pass" '{username:$u,password:$p}')
-  resp=$(api -X POST "$API/auth/login" -H "$CLIENT_HDR" \
-    -H 'Content-Type: application/json' -d "$body" 2>/dev/null || echo '{}')
-  tok=$(printf '%s' "$resp" | json_field '.response.accessToken')
-  printf '%s' "$tok"
+  out=$(api -X POST "$API/auth/login" -H "$CLIENT_HDR" \
+    -H 'Content-Type: application/json' -d "$body" -w '\n%{http_code}' 2>/dev/null || printf '\n000')
+  code=$(printf '%s' "$out" | tail -1)
+  resp=$(printf '%s' "$out" | sed '$d')
+  LOGIN_TOKEN=$(printf '%s' "$resp" | json_field '.response.accessToken')
+  LAST_CODE="${code:-000}"
+  LAST_MSG="$(printf '%s' "$resp" | json_field '.message')"
+  if [[ -z "$LAST_MSG" ]]; then
+    LAST_MSG="$(printf '%s' "$resp" | tr -d '\n' | head -c 160)"
+  fi
+  LAST_MSG="${LAST_MSG:-пустой ответ}"
 }
 
-JWT="$(login_token "$ADMIN_PASS")"
+info "Проверяю доступ: какие способы входа разрешены…"
+ST_RESP=$(api "$API/auth/get-status" -H "$CLIENT_HDR" 2>/dev/null || echo '{}')
+LOGIN_ALLOWED=$(printf '%s' "$ST_RESP" | jq -r '.response.isLoginAllowed // "нет ответа"' 2>/dev/null || echo "нет ответа")
+REG_ALLOWED=$(printf '%s' "$ST_RESP" | jq -r '.response.isRegisterAllowed // "нет ответа"' 2>/dev/null || echo "нет ответа")
+info "вход разрешён: $LOGIN_ALLOWED, регистрация разрешена: $REG_ALLOWED"
+
+login_token "$ADMIN_PASS"
+JWT="$LOGIN_TOKEN"
 if [[ -n "$JWT" ]]; then
   ok "Вход выполнен (пароль из $STATE)"
 else
-  # Панель чистая — регистрируем первого администратора.
+  info "Вход с паролем из прошлой установки не прошёл (HTTP ${LAST_CODE:-?}): ${LAST_MSG:-без ответа}"
+
+  # Панель чистая — создаём первого администратора.
   body=$(jq -n --arg u "$ADMIN_USER" --arg p "$ADMIN_PASS" '{username:$u,password:$p}')
-  resp=$(api -X POST "$API/auth/register" -H "$CLIENT_HDR" \
-    -H 'Content-Type: application/json' -d "$body" 2>/dev/null || echo '{}')
-  JWT=$(printf '%s' "$resp" | json_field '.response.accessToken')
+  out=$(api -X POST "$API/auth/register" -H "$CLIENT_HDR" \
+    -H 'Content-Type: application/json' -d "$body" -w '\n%{http_code}' 2>/dev/null || printf '\n000')
+  REG_CODE=$(printf '%s' "$out" | tail -1)
+  REG_RESP=$(printf '%s' "$out" | sed '$d')
+  JWT=$(printf '%s' "$REG_RESP" | json_field '.response.accessToken')
 
   if [[ -n "$JWT" ]]; then
     ok "Администратор создан: $ADMIN_USER"
   else
-    info "Регистрация недоступна: $(printf '%s' "$resp" | json_field '.message')"
-    info "Похоже, в панели уже есть другой администратор."
-    info "Введите его пароль (можно пропустить — тогда шаги 9-10 будут пропущены)."
-    read -rsp '    Пароль существующего админа: ' INPUT_PASS || true
-    echo
-    if [[ -n "${INPUT_PASS:-}" ]]; then
-      JWT="$(login_token "$INPUT_PASS")"
-      if [[ -n "$JWT" ]]; then
-        ADMIN_PASS="$INPUT_PASS"
-        state_set ADMIN_PASS "$ADMIN_PASS"
-        ok "Вход выполнен"
+    info "Регистрация не прошла (HTTP ${REG_CODE}): $(printf '%s' "$REG_RESP" | json_field '.message')"
+
+    if [[ "$REG_CODE" == "000" ]]; then
+      warn "Панель не отвечает на локальный запрос — смотрите: docker logs --tail 30 remnawave"
+    elif [[ "$LOGIN_ALLOWED" == "true" ]]; then
+      info "В панели уже есть администратор с другим паролем."
+      info "Введите его пароль. Пустой ввод — шаги 9-10 будут пропущены."
+      read -rsp '    Пароль существующего админа: ' INPUT_PASS || true
+      echo
+      if [[ -n "${INPUT_PASS:-}" ]]; then
+        login_token "$INPUT_PASS"
+        JWT="$LOGIN_TOKEN"
+        if [[ -n "$JWT" ]]; then
+          ADMIN_PASS="$INPUT_PASS"
+          state_set ADMIN_PASS "$ADMIN_PASS"
+          ok "Вход выполнен"
+        else
+          warn "Пароль не подошёл (HTTP ${LAST_CODE:-?}): ${LAST_MSG:-без ответа}"
+        fi
       fi
     fi
   fi
 fi
-[[ -n "$JWT" ]] || die "Нет доступа к панели. Сбросьте админа: cd $DIR/panel && docker compose exec -T remnawave /opt/app/node_modules/.bin/prisma db seed   (затем запустите скрипт снова)"
+
+if [[ -z "$JWT" ]]; then
+  echo
+  bad "Нет доступа к панели — дальше идти нельзя."
+  echo
+  echo "  Что можно сделать:"
+  echo "    1) Узнать пароль админа нельзя, но можно создать панель заново:"
+  echo "         bash $0 $DOMAIN $EMAIL --wipe"
+  echo "       Это удалит базу панели (пользователей пока нет) и задаст новый пароль."
+  echo "    2) Если в панели есть нужные данные — не запускайте --wipe,"
+  echo "       а войдите паролем вручную на https://$DOMAIN и запустите скрипт снова."
+  echo
+  die "Установка остановлена на шаге 8"
+fi
 
 # Долгоживущий токен для последующих запусков и для админки.
 API_TOKEN="$(state_get API_TOKEN)"
