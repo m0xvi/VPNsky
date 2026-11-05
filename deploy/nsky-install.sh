@@ -42,6 +42,7 @@ DIR="/opt/nsky"
 STATE="$DIR/install-state.env"
 LOG="$DIR/install.log"
 PROJECT="nsky"
+PROJECT_NODE="nsky-node"
 NSKY_VERSION="2026-11-05.4"
 
 # Порты. 443/tcp занят Caddy (панель), поэтому туннели разведены:
@@ -331,9 +332,9 @@ OLD_CONTAINERS=(remnawave remnawave-db remnawave-redis remnanode)
 # Контейнеры убираем по именам и без условий: docker не даст создать новые
 # поверх существующих, а проверить, к какому проекту они относились, нельзя.
 # Это безопасно — данные лежат в томах, а не в контейнерах.
-for p in "$PROJECT" remnawave panel; do
-  docker compose -p "$p" -f "$DIR/panel/docker-compose.yml" down --remove-orphans >/dev/null 2>&1 || true
-  docker compose -p "$p" -f "$DIR/node/docker-compose.yml"   down --remove-orphans >/dev/null 2>&1 || true
+for p in "$PROJECT" "$PROJECT_NODE" remnawave panel; do
+  docker compose -p "$p" -f "$DIR/panel/docker-compose.yml" down >/dev/null 2>&1 || true
+  docker compose -p "$p" -f "$DIR/node/docker-compose.yml"   down >/dev/null 2>&1 || true
 done
 for c in "${OLD_CONTAINERS[@]}"; do
   docker rm -f "$c" >/dev/null 2>&1 || true
@@ -959,7 +960,7 @@ ok "Секрет ноды получен"
 cat > "$DIR/node/.env" <<ENV
 NODE_PORT=${NODE_PORT}
 SECRET_KEY=${NODE_SECRET}
-COMPOSE_PROJECT_NAME=${PROJECT}
+COMPOSE_PROJECT_NAME=${PROJECT_NODE}
 ENV
 chmod 600 "$DIR/node/.env"
 
@@ -983,14 +984,23 @@ COMPOSE
 
 cd "$DIR/node"
 docker compose pull -q 2>/dev/null || docker compose pull
-docker compose up -d --force-recreate --remove-orphans
+docker compose up -d --force-recreate
 ok "Нода запущена"
+
+# Нода и панель — разные compose-проекты, поэтому запуск ноды не может
+# задеть панель. Но проверить стоит: без панели дальше идти незачем.
+if ! curl -fsS --max-time 5 http://127.0.0.1:3001/health >/dev/null 2>&1; then
+  warn "Панель не отвечает после запуска ноды — поднимаю её обратно"
+  ( cd "$DIR/panel" && docker compose up -d ) >/dev/null 2>&1 || true
+  sleep 10
+fi
 
 # 9.8 Ждём подключения ноды к панели
 printf '    жду подключения ноды'
 NODE_OK=0
 for _ in $(seq 1 40); do
-  resp=$(api "${auth_hdr[@]}" "$API/nodes")
+  # api() при обрыве вернёт пустоту — jq не должен ронять скрипт.
+  resp=$(api "${auth_hdr[@]}" "$API/nodes" 2>/dev/null || true)
   st=$(printf '%s' "$resp" | jq -r '.response[0].isConnected // false' 2>/dev/null || echo false)
   if [[ "$st" == "true" ]]; then NODE_OK=1; break; fi
   printf '.'; sleep 3
