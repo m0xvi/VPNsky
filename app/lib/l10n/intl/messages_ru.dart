@@ -546,8 +546,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "congestionControllerDesc": MessageLookupByLibrary.simpleMessage(
       "Управление перегрузкой TCP действует только со стеком mips.",
     ),
-    "connected": MessageLookupByLibrary.simpleMessage("Подключено"),
-    "connecting": MessageLookupByLibrary.simpleMessage("Подключение…"),
+    "connected": MessageLookupByLibrary.simpleMessage("Защита включена"),
+    "connecting": MessageLookupByLibrary.simpleMessage("Подключаемся…"),
     "connection": MessageLookupByLibrary.simpleMessage("Соединение"),
     "connectionStats": MessageLookupByLibrary.simpleMessage(
       "Статистика подключений",
@@ -785,7 +785,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "disclaimerWarrantyTitle": MessageLookupByLibrary.simpleMessage(
       "Отсутствие гарантий",
     ),
-    "disconnected": MessageLookupByLibrary.simpleMessage("Отключено"),
+    "disconnected": MessageLookupByLibrary.simpleMessage("Защита выключена"),
     "discoverNewVersion": MessageLookupByLibrary.simpleMessage(
       "Доступна новая версия",
     ),
