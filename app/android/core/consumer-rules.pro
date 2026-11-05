@@ -1,2 +1,2 @@
 -keep class go.** { *; }
--keep class ru.vpnsky.client.core.mobile.** { *; }
+-keep class ru.nsky.client.core.mobile.** { *; }

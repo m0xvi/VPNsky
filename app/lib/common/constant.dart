@@ -10,7 +10,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:flutter/widgets.dart';
 
 // Имя, которое видит сотрудник (окно, заголовки, установщик).
-const appName = 'VPNsky';
+const appName = 'NSky';
 
 // ВНИМАНИЕ: всё ниже с префиксом FlClash — НЕ брендинг, а технические имена.
 // Они продублированы в services/helper (Rust), в Go-ядре и в nativном коде
@@ -20,7 +20,7 @@ const appHelperService = 'FlClashHelperService';
 const coreManifestName = 'manifest.json';
 const browserUa =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
-const packageName = 'ru.vpnsky.client';
+const packageName = 'ru.nsky.client';
 final unixSocketPath = '/tmp/FlClashSocket_${Random().nextInt(10000)}.sock';
 final windowsPipeName = '\\\\.\\pipe\\FlClashCore_${_randomPipeId()}';
 const helperPort = 47890;

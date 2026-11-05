@@ -1,4 +1,4 @@
-package ru.vpnsky.client.service.models
+package ru.nsky.client.service.models
 
 import java.util.Locale
 import org.junit.After

@@ -109,30 +109,20 @@ final List<HotKeyAction> defaultHotKeyActions = system.isWindows
         _defaultHotKeyAction(HotAction.delayTest, PhysicalKeyboardKey.keyD),
       ];
 
+// NSky: сотрудник видит на главном экране минимум — статус, скорость и кнопку.
+// Всё остальное (режим, профили, группы, диагностика) убрано: задача человека —
+// нажать «Подключить» и забыть. Настройки живут в панели и в админ-режиме.
 const List<DashboardWidget> defaultDashboardWidgets = [
+  DashboardWidget.vpnButton,
   DashboardWidget.currentOutbound,
   DashboardWidget.networkSpeed,
-  DashboardWidget.outboundMode,
-  DashboardWidget.vpnButton,
-  DashboardWidget.networkTakeover,
-  DashboardWidget.intranetIp,
-  DashboardWidget.serviceStatus,
-  DashboardWidget.profiles,
-  DashboardWidget.proxyGroups,
-  DashboardWidget.connectionStats,
 ];
 
 /// A phone starts without the VPN switch and the diagnostic cards, which stay
 /// addable. The field default keeps the shared list because it must be const.
-final List<DashboardWidget> platformDefaultDashboardWidgets = system.isAndroid
-    ? const [
-        DashboardWidget.currentOutbound,
-        DashboardWidget.networkSpeed,
-        DashboardWidget.outboundMode,
-        DashboardWidget.profiles,
-        DashboardWidget.proxyGroups,
-      ]
-    : defaultDashboardWidgets;
+// Одинаковый минимальный набор на всех платформах.
+final List<DashboardWidget> platformDefaultDashboardWidgets =
+    defaultDashboardWidgets;
 
 const _legacyDefaultDashboardWidgets = {
   'networkSpeed',

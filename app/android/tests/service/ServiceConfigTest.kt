@@ -1,9 +1,9 @@
-package ru.vpnsky.client.service
+package ru.nsky.client.service
 
-import ru.vpnsky.client.common.AccessControlMode
-import ru.vpnsky.client.service.models.AccessControlProps
-import ru.vpnsky.client.service.models.NotificationParams
-import ru.vpnsky.client.service.models.VpnOptions
+import ru.nsky.client.common.AccessControlMode
+import ru.nsky.client.service.models.AccessControlProps
+import ru.nsky.client.service.models.NotificationParams
+import ru.nsky.client.service.models.VpnOptions
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotSame

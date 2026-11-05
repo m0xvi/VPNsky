@@ -1,4 +1,4 @@
-package ru.vpnsky.client.packages
+package ru.nsky.client.packages
 
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertEquals

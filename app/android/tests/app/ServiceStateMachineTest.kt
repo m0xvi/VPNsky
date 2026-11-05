@@ -1,10 +1,10 @@
-package ru.vpnsky.client
+package ru.nsky.client
 
-import ru.vpnsky.client.common.AccessControlMode
-import ru.vpnsky.client.models.SharedState
-import ru.vpnsky.client.service.models.AccessControlProps
-import ru.vpnsky.client.service.models.NotificationParams
-import ru.vpnsky.client.service.models.VpnOptions
+import ru.nsky.client.common.AccessControlMode
+import ru.nsky.client.models.SharedState
+import ru.nsky.client.service.models.AccessControlProps
+import ru.nsky.client.service.models.NotificationParams
+import ru.nsky.client.service.models.VpnOptions
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import kotlinx.coroutines.CoroutineScope
@@ -104,7 +104,7 @@ private class FakeHost(override val scope: CoroutineScope) : ServiceStateHost {
     var lastStartOptions: VpnOptions? = null
 
     override var runtime: ServiceRuntime? = null
-    override val homeDirPath = "/data/user/0/ru.vpnsky.client/files"
+    override val homeDirPath = "/data/user/0/ru.nsky.client/files"
     override val sdkInt = 34
 
     val toasts = mutableListOf<String>()

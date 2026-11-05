@@ -1,6 +1,6 @@
-package ru.vpnsky.client.service.models
+package ru.nsky.client.service.models
 
-import ru.vpnsky.client.common.AccessControlMode
+import ru.nsky.client.common.AccessControlMode
 import com.google.gson.JsonParser
 import java.net.Inet4Address
 import java.net.Inet6Address

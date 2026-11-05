@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.vpnsky.client.service"
+    namespace = "ru.nsky.client.service"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {

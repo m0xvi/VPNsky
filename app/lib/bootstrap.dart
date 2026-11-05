@@ -231,6 +231,15 @@ class Bootstrap {
   /// Android's exit only finishes the activity, so Dart keeps running after
   /// [SystemAction.handleExit] returns and must not go on to start the app.
   Future<bool> _handlerDisclaimer() async {
+    // NSky: экран «соглашений» отключён. Это внутренний корпоративный клиент,
+    // сотрудника не нужно заставлять читать юридические тексты перед подключением.
+    // Условие оставлено как константа, чтобы при необходимости вернуть экран
+    // можно было одной правкой.
+    const showDisclaimer = false;
+    if (!showDisclaimer) {
+      return true;
+    }
+
     final acceptedVersion = _container.read(
       appSettingProvider.select((state) => state.acceptedDisclaimerVersion),
     );

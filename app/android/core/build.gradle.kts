@@ -11,7 +11,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.vpnsky.client.core"
+    namespace = "ru.nsky.client.core"
     compileSdk = libs.versions.compileSdk.get().toInt()
     ndkVersion = libs.versions.ndkVersion.get()
 
@@ -150,7 +150,7 @@ abstract class GomobileBind : DefaultTask() {
                 "bind",
                 "-target=${targets.get().joinToString(",")}",
                 "-androidapi=${androidApi.get()}",
-                "-javapkg=ru.vpnsky.client.core",
+                "-javapkg=ru.nsky.client.core",
                 "-tags=${tags.get()}",
                 "-ldflags=${ldflags.get()} -X=runtime.godebugDefault=${godebug.toString().trim()}",
                 "-o",

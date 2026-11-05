@@ -23,7 +23,7 @@ val hasReleaseSigning = releaseStoreFile.exists() &&
     releaseKeyPassword != null
 
 android {
-    namespace = "ru.vpnsky.client"
+    namespace = "ru.nsky.client"
     compileSdk = libs.versions.compileSdk.get().toInt()
     ndkVersion = libs.versions.ndkVersion.get()
 
@@ -33,7 +33,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "ru.vpnsky.client"
+        applicationId = "ru.nsky.client"
         minSdk = flutter.minSdkVersion
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = flutter.versionCode

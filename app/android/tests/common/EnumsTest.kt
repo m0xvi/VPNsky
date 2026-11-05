@@ -1,4 +1,4 @@
-package ru.vpnsky.client.common
+package ru.nsky.client.common
 
 import com.google.gson.Gson
 import org.junit.Assert.assertEquals

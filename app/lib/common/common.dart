@@ -51,4 +51,4 @@ export 'task.dart';
 export 'task_pool.dart';
 export 'webdav.dart';
 export 'yaml.dart';
-export 'vpnsky_texts.dart';
+export 'nsky_mode.dart';

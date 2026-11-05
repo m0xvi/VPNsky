@@ -125,12 +125,24 @@ jobs:
           fi
 
       # flutter build apk напрямую НЕ собирает Go-ядро: нужен setup.dart.
+      # Gradle иногда получает 504 от серверов зависимостей — это сетевой сбой,
+      # а не ошибка кода. Три попытки с паузой снимают такие падения.
       - name: Build APK
         env:
           ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
         run: |
           set -o pipefail
-          dart setup.dart android --env stable -v 2>&1 | tee /tmp/build-android.log || { echo "СБОРКА УПАЛА (код $?)" >> /tmp/build-android.log; exit 1; }
+          for attempt in 1 2 3; do
+            echo "=== попытка $attempt из 3 ==="
+            if dart setup.dart android --env stable -v 2>&1 | tee -a /tmp/build-android.log; then
+              echo "сборка удалась с попытки $attempt"
+              exit 0
+            fi
+            echo "попытка $attempt не удалась"
+            sleep 30
+          done
+          echo "все попытки исчерпаны"
+          exit 1 || { echo "СБОРКА УПАЛА (код $?)" >> /tmp/build-android.log; exit 1; }
 
       - name: Upload APK
         if: success()

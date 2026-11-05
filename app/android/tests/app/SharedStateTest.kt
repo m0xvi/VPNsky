@@ -1,6 +1,6 @@
-package ru.vpnsky.client.models
+package ru.nsky.client.models
 
-import ru.vpnsky.client.common.AccessControlMode
+import ru.nsky.client.common.AccessControlMode
 import com.google.gson.Gson
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull

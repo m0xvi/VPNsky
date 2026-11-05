@@ -4,8 +4,8 @@ import 'package:win32_registry/win32_registry.dart';
 
 import 'print.dart';
 
-// vpnsky — наш протокол: ссылка вида vpnsky://install-config?url=<подписка>
-const protocolSchemes = ['clash', 'clashmeta', 'flclash', 'vpnsky'];
+// nsky — наш протокол: ссылка вида nsky://install-config?url=<подписка>
+const protocolSchemes = ['nsky'];
 
 class ProtocolRegistrationPlan {
   final String scheme;
@@ -41,7 +41,7 @@ class LinuxProtocolRegistrationPlan {
     required this.applicationsDir,
   });
 
-  String get desktopId => 'vpnsky-url-handler.desktop';
+  String get desktopId => 'nsky-url-handler.desktop';
 
   String get desktopPath => '$applicationsDir/$desktopId';
 
