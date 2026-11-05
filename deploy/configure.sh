@@ -70,13 +70,26 @@ if [[ -z "$TOKEN" ]]; then
 fi
 
 if [[ -z "$TOKEN" ]]; then
-  bad "Войти не удалось."
+  warn "Вход не прошёл — пробую зарегистрировать администратора"
+  R=$(req_code -X POST "$API/auth/register" -H 'Content-Type: application/json' -d "$BODY")
+  CODE=$(echo "$R" | tail -1); REGRESP=$(echo "$R" | sed '$d')
+  echo "  регистрация → HTTP $CODE"
+  TOKEN=$(echo "$REGRESP" | jq -r '.response.accessToken // empty' 2>/dev/null || true)
+  if [[ -n "$TOKEN" ]]; then
+    ok "Администратор создан: ${ADMIN_USER}"
+  fi
+fi
+
+if [[ -z "$TOKEN" ]]; then
+  bad "Ни вход, ни регистрация не прошли."
   echo "  тело: $BODYRESP"
   echo
-  echo "  Скорее всего пароль в $STATE не тот, с которым создан админ."
-  echo "  Сброс (удалит администратора, не пользователей):"
-  echo "    docker exec remnawave-db psql -U remnawave -d remnawave -c 'DELETE FROM admin;'"
-  echo "    bash configure.sh $DOMAIN"
+  echo "  Значит, администратор уже есть, но пароль в $STATE другой."
+  echo "  Варианты:"
+  echo "   1) Вспомнить пароль, которым входили на https://$DOMAIN"
+  echo "   2) Сбросить администратора (пользователи не пострадают):"
+  echo "      docker exec remnawave-db psql -U remnawave -d remnawave -c 'DELETE FROM admin;'"
+  echo "      bash configure.sh $DOMAIN"
   exit 2
 fi
 ok "Токен получен"
