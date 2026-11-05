@@ -1,0 +1,36 @@
+# Секреты и локальные данные — никогда в репозиторий
+*.env
+.env*
+secrets/
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.mobileprovision
+*.provisionprofile
+
+# Сборочные артефакты
+build/
+dist/
+out/
+*.exe
+*.msi
+*.apk
+*.aab
+*.ipa
+*.dll
+*.so
+*.dylib
+*.xcframework
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Временное
+*.log
+*.tmp
+/scratch/
