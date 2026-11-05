@@ -1,6 +1,9 @@
 # Секреты и локальные данные — никогда в репозиторий
 *.env
-.env*
+.env
+.env.local
+.env.*.local
+!.env.example
 secrets/
 *.pem
 *.p12
