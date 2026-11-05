@@ -39,3 +39,9 @@ xray run -test -c deploy/xray/profile-reality-xhttp-hysteria2.json
 - `postgres:18.4`, `valkey/valkey:9-alpine`
 
 Обновление — осознанное действие: сменить тег, перечитать changelog, снять бэкап.
+
+## Важно про профиль Xray
+
+В `xray/profile-reality-xhttp-hysteria2.json` первым ключом идёт блок `_comment`
+(пояснения). **Перед вставкой в панель его нужно удалить** — Xray не любит лишние ключи
+в корне конфигурации. JSON-валидность файла при этом сохранена.

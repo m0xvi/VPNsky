@@ -1,21 +1,16 @@
-# Профиль Xray для ноды: VLESS+REALITY (TCP/443), VLESS+XHTTP (TCP/8443), Hysteria2 (UDP/443)
-#
-# Заменяемые плейсхолдеры (ищутся как __UPPER_CASE__):
-#   __REALITY_PRIVATE_KEY__  — приватный ключ REALITY (генерируется панелью:
-#                              Settings → Tools → x25519 generate, или `xray x25519`)
-#   __REALITY_SHORT_ID__     — shortId, hex, 1..16 символов
-#   __REALITY_SNI__          — домен-маска (например, www.microsoft.com или ваш домен)
-#   __XHTTP_PATH__           — произвольный путь, например /a1b2c3
-#   __TLS_CERT__/__TLS_KEY__ — пути к сертификату для Hysteria2 (если TLS терминации на ноде нет,
-#                              Hysteria2 в Xray можно повесить на REALITY-совместимый транспорт;
-#                              см. примечание внизу)
-#
-# ВАЖНО: это шаблон профиля Remnawave. Панель сама подставляет список пользователей
-# в инбаунды VLESS и Hysteria2 — вручную клиентов сюда НЕ добавлять.
-#
-# Пользователи (clients/users) намеренно пустые: их наполняет панель.
-
 {
+  "_comment": [
+    "Профиль Xray для ноды Remnawave: VLESS+REALITY (TCP/443), VLESS+XHTTP (TCP/8443), Hysteria2 (UDP/443).",
+    "ПЕРЕД ИСПОЛЬЗОВАНИЕМ удалите весь блок _comment и замените плейсхолдеры:",
+    "__REALITY_PRIVATE_KEY__ — приватный ключ REALITY (панель: Settings -> Tools -> x25519 generate)",
+    "__REALITY_SHORT_ID__ — shortId, hex, 1..16 символов",
+    "__REALITY_SNI__ — домен-маска, например www.microsoft.com (для target и serverNames)",
+    "__XHTTP_PATH__ — произвольный путь, например /a1b2c3",
+    "__TLS_CERT__ / __TLS_KEY__ — сертификат и ключ для Hysteria2 (TLS)",
+    "clients[] и users[] пустые намеренно — пользователей подставляет Remnawave.",
+    "На TCP/443 в Xray помещается один протокол, поэтому XHTTP вынесен на 8443.",
+    "Проверка: xray run -test -c <этот файл> (после удаления _comment)"
+  ],
   "log": {
     "loglevel": "warning"
   },
