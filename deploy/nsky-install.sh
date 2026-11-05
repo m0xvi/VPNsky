@@ -581,7 +581,7 @@ login_token() {
 }
 
 info "Проверяю доступ: какие способы входа разрешены…"
-ST_RESP=$(api "$API/auth/get-status" -H "$CLIENT_HDR" 2>/dev/null || echo '{}')
+ST_RESP=$(api "$API/auth/status" -H "$CLIENT_HDR" 2>/dev/null || echo '{}')
 LOGIN_ALLOWED=$(printf '%s' "$ST_RESP" | jq -r '.response.isLoginAllowed // "нет ответа"' 2>/dev/null || echo "нет ответа")
 REG_ALLOWED=$(printf '%s' "$ST_RESP" | jq -r '.response.isRegisterAllowed // "нет ответа"' 2>/dev/null || echo "нет ответа")
 info "вход разрешён: $LOGIN_ALLOWED, регистрация разрешена: $REG_ALLOWED"
@@ -872,36 +872,47 @@ state_set SQUAD_UUID "$SQUAD_UUID"
 
 # 9.5 Хосты — то, что реально попадает в подписку.
 #     Без них клиент получает "No hosts found".
+HOSTS_FAILED=0
 ensure_host() {
   local remark="$1" inb="$2" port="$3" sni="$4" alpn="$5" resp uuid
   resp=$(api "${auth_hdr[@]}" "$API/hosts")
   uuid=$(printf '%s' "$resp" | jq -r --arg r "$remark" \
     '[.response[]? | select(.remark==$r)][0].uuid // empty' 2>/dev/null || true)
 
+  # Пустые sni/alpn передавать нельзя: alpn проверяется как z.enum(ALPN),
+  # и пустая строка даёт "Validation failed". Добавляем только заполненные.
+  local jq_extra=()
+  [[ -n "$sni"  ]] && jq_extra+=(--arg s "$sni")
+  [[ -n "$alpn" ]] && jq_extra+=(--arg al "$alpn")
+
+  local filter='.'
+  [[ -n "$sni"  ]] && filter="$filter + {sni:\$s}"
+  [[ -n "$alpn" ]] && filter="$filter + {alpn:\$al}"
+
   local body
-  if [[ -n "$sni" ]]; then
-    body=$(jq -n --arg r "$remark" --arg pu "$PROFILE_UUID" --arg iu "$inb" \
-      --arg a "$SERVER_IP" --argjson p "$port" --arg s "$sni" --arg al "$alpn" \
-      '{inbound:{configProfileUuid:$pu,configProfileInboundUuid:$iu},
-        remark:$r, address:$a, port:$p, sni:$s, alpn:$al, isDisabled:false}')
-  else
-    body=$(jq -n --arg r "$remark" --arg pu "$PROFILE_UUID" --arg iu "$inb" \
-      --arg a "$SERVER_IP" --argjson p "$port" \
-      '{inbound:{configProfileUuid:$pu,configProfileInboundUuid:$iu},
-        remark:$r, address:$a, port:$p, isDisabled:false}')
-  fi
+  body=$(jq -n --arg r "$remark" --arg pu "$PROFILE_UUID" --arg iu "$inb" \
+    --arg a "$SERVER_IP" --argjson p "$port" "${jq_extra[@]}" \
+    "{inbound:{configProfileUuid:\$pu,configProfileInboundUuid:\$iu},
+      remark:\$r, address:\$a, port:\$p, isDisabled:false} | $filter")
 
   if [[ -n "$uuid" ]]; then
     body=$(printf '%s' "$body" | jq --arg u "$uuid" '. + {uuid:$u}')
-    api -X PATCH "$API/hosts" "${auth_hdr[@]}" -H 'Content-Type: application/json' \
-      -d "$body" >/dev/null && ok "Хост обновлён: $remark"
-  else
-    resp=$(api -X POST "$API/hosts" "${auth_hdr[@]}" -H 'Content-Type: application/json' -d "$body")
+    resp=$(api -X PATCH "$API/hosts" "${auth_hdr[@]}" -H 'Content-Type: application/json' -d "$body")
     if [[ -n "$(printf '%s' "$resp" | json_field '.response.uuid')" ]]; then
-      ok "Хост создан: $remark"
-    else
-      warn "Хост '$remark' не создан: $(printf '%s' "$resp" | json_field '.message')"
+      ok "Хост обновлён: $remark"
+      return 0
     fi
+    # Старый хост мог остаться с несовместимыми полями — пересоздаём его.
+    warn "Хост '$remark' не обновился ($(printf '%s' "$resp" | json_field '.message')). Пересоздаю."
+    api -X DELETE "$API/hosts/$uuid" "${auth_hdr[@]}" >/dev/null 2>&1 || true
+  fi
+
+  resp=$(api -X POST "$API/hosts" "${auth_hdr[@]}" -H 'Content-Type: application/json' -d "$body")
+  if [[ -n "$(printf '%s' "$resp" | json_field '.response.uuid')" ]]; then
+    ok "Хост создан: $remark"
+  else
+    warn "Хост '$remark' не создан: $(printf '%s' "$resp" | json_field '.message')"
+    HOSTS_FAILED=1
   fi
 }
 
@@ -909,6 +920,10 @@ ensure_host "NSky REALITY"   "$INB_REALITY" "$REALITY_PORT" "$REALITY_SNI" ""
 ensure_host "NSky XHTTP"     "$INB_XHTTP"   "$XHTTP_PORT"   "$REALITY_SNI" ""
 if [[ -n "$TLS_CERT" && -n "$INB_HY2" ]]; then
   ensure_host "NSky Hysteria2" "$INB_HY2" "$HY2_PORT" "$DOMAIN" ""
+fi
+if [[ "$HOSTS_FAILED" == "1" ]]; then
+  warn "Часть хостов не создалась — подписка будет неполной."
+  warn "Проверьте вручную: панель → Hosts. Подробности в $LOG"
 fi
 info "Hysteria2 работает по UDP."
 
@@ -948,7 +963,10 @@ COMPOSE_PROJECT_NAME=${PROJECT}
 ENV
 chmod 600 "$DIR/node/.env"
 
-cat > "$DIR/node/docker-compose.yml" <<'COMPOSE'
+# Сертификат монтируем и в ноду тоже: Xray читает ФАЙЛ из конфига (панель
+# лишь вставляет путь), поэтому внутри контейнера ноды путь должен существовать.
+# Без этого Xray падает с 'failed to parse certificate ... no such file'.
+cat > "$DIR/node/docker-compose.yml" <<COMPOSE
 services:
   remnanode:
     image: remnawave/node:3.4.4
@@ -959,11 +977,13 @@ services:
     env_file: .env
     cap_add: [NET_ADMIN]
     ulimits: { nofile: { soft: 1048576, hard: 1048576 } }
+    volumes:
+      - /var/lib/caddy/.local/share/caddy:/caddy-data:ro
 COMPOSE
 
 cd "$DIR/node"
 docker compose pull -q 2>/dev/null || docker compose pull
-docker compose up -d --force-recreate
+docker compose up -d --force-recreate --remove-orphans
 ok "Нода запущена"
 
 # 9.8 Ждём подключения ноды к панели
