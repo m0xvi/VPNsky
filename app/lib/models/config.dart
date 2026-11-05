@@ -112,10 +112,15 @@ final List<HotKeyAction> defaultHotKeyActions = system.isWindows
 // NSky: сотрудник видит на главном экране минимум — статус, скорость и кнопку.
 // Всё остальное (режим, профили, группы, диагностика) убрано: задача человека —
 // нажать «Подключить» и забыть. Настройки живут в панели и в админ-режиме.
+/// NSky: главный экран — одна кнопка и статус.
+/// Кнопка подключения стоит первой: сотрудник открывает приложение и сразу
+/// видит, что нажать. Карточка текущего сервера ниже — она показывает, куда
+/// подключены и сколько прошло трафика. Остальные карточки (скорость, режим,
+/// сквады, диагностика) остаются доступными, но не попадают в набор по
+/// умолчанию: их можно добавить в режиме администратора.
 const List<DashboardWidget> defaultDashboardWidgets = [
   DashboardWidget.vpnButton,
   DashboardWidget.currentOutbound,
-  DashboardWidget.networkSpeed,
 ];
 
 /// A phone starts without the VPN switch and the diagnostic cards, which stay

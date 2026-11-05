@@ -451,7 +451,11 @@ enum DashboardWidget {
   currentOutbound,
   networkSpeed,
   outboundMode,
-  vpnButton(platforms: [SupportPlatform.Android]),
+  // NSky: кнопка подключения нужна на ВСЕХ платформах. Раньше стояло
+  // platforms: [SupportPlatform.Android], из-за чего на Windows и Apple
+  // главный экран оставался без кнопки «Подключить» — подключиться было
+  // нечем, только через админские разделы.
+  vpnButton,
   networkTakeover(platforms: desktopPlatforms),
   serviceStatus,
   profiles,
