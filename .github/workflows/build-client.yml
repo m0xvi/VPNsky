@@ -148,7 +148,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: vpnsky-android
+          name: nsky-android
           path: |
             app/dist/*.apk
             app/build/app/outputs/flutter-apk/*.apk
@@ -223,7 +223,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: vpnsky-windows
+          name: nsky-windows
           path: app/dist/*
           if-no-files-found: warn
           overwrite: true
@@ -269,7 +269,7 @@ jobs:
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
-          name: vpnsky-build-${{ github.run_number }}
+          name: nsky-build-${{ github.run_number }}
           path: ./dist
           overwrite: true
 
@@ -299,13 +299,13 @@ jobs:
       - name: Создать релиз
         uses: softprops/action-gh-release@v2
         with:
-          name: VPNsky ${{ github.ref_name }}
+          name: NSky ${{ github.ref_name }}
           body: |
-            Сборка клиента VPNsky (${{ github.ref_name }}).
+            Сборка клиента NSky (${{ github.ref_name }}).
 
             **Что внутри**
-            - `vpnsky-android` — APK для Android
-            - `vpnsky-windows` — установщик и portable-версия для Windows
+            - `nsky-android` — APK для Android
+            - `nsky-windows` — установщик и portable-версия для Windows
             - `SHA256SUMS.txt` — контрольные суммы
 
             **Установка Windows:** распаковать архив, запустить установщик.

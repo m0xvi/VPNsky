@@ -39,7 +39,7 @@ runs:
 
         git init -q .
         git config user.name "ci-log-bot"
-        git config user.email "ci-log@vpnsky.invalid"
+        git config user.email "ci-log@nsky.invalid"
         git checkout -q -b "ci-logs-$PLATFORM"
         git add "$PLATFORM.log"
         git commit -q -m "log: $PLATFORM build failure (run $GITHUB_RUN_NUMBER)" \
