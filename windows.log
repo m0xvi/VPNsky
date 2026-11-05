@@ -1,0 +1,579 @@
+dStatus:
+[        ]   Deleting file "flutter_wrapper_plugin.dir\Release\flutter_.F009A527.tlog\unsuccessfulbuild".
+[        ]   Touching "flutter_wrapper_plugin.dir\Release\flutter_.F009A527.tlog\flutter_wrapper_plugin.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_wrapper_plugin.vcxproj" (default targets).
+[   +4 ms] PrepareForBuild:
+[        ]   Creating directory "app_links_plugin.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\app_links\Release\".
+[        ]   Creating directory "app_links_plugin.dir\Release\app_links_plugin.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "app_links_plugin.dir\Release\app_links_plugin.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "app_links_plugin.dir\Release\app_links_plugin.tlog\unsuccessfulbuild".
+[  +27 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/ephemeral/.plugin_symlinks/app_links/windows/CMakeLists.txt
+[  +32 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /nologo /W4 /WX /diagnostics:column /O2 /Ob2 /D _WINDLL /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D FLUTTER_PLUGIN_IMPL /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /D app_links_plugin_EXPORTS /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"app_links_plugin.dir\Release\\" /Fd"app_links_plugin.dir\Release\vc143.pdb" /external:W4 /Gd /TP /wd4100 /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\app_links\windows\app_links_plugin_c_api.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\app_links\windows\app_links_plugin.cpp
+[  +34 ms]   app_links_plugin_c_api.cpp
+[+1942 ms]   app_links_plugin.cpp
+[+1675 ms]   Generating Code...
+[+1228 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\app_links\Release\app_links_plugin.dll" /INCREMENTAL:NO /NOLOGO ..\..\flutter\Release\flutter_wrapper_plugin.lib D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\flutter_windows.dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/app_links/Release/app_links_plugin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/app_links/Release/app_links_plugin.lib" /MACHINE:X64  /machine:x64 /DLL app_links_plugin.dir\Release\app_links_plugin_c_api.obj
+[        ]   app_links_plugin.dir\Release\app_links_plugin.obj
+[ +345 ms]      Creating library D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/app_links/Release/app_links_plugin.lib and object D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/app_links/Release/app_links_plugin.exp
+[  +73 ms]   app_links_plugin.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\app_links\Release\app_links_plugin.dll
+[   +8 ms] FinalizeBuildStatus:
+[        ]   Deleting file "app_links_plugin.dir\Release\app_links_plugin.tlog\unsuccessfulbuild".
+[        ]   Touching "app_links_plugin.dir\Release\app_links_plugin.tlog\app_links_plugin.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\app_links\app_links_plugin.vcxproj" (default targets).
+[  +26 ms] Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (4) is building "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\connectivity_plus\connectivity_plus_plugin.vcxproj" (8) on node 1 (default targets).
+[        ] PrepareForBuild:
+[        ]   Creating directory "connectivity_plus_plugin.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\connectivity_plus\Release\".
+[        ]   Creating directory "connectivity_plus_plugin.dir\Release\connecti.67BE905B.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "connectivity_plus_plugin.dir\Release\connecti.67BE905B.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "connectivity_plus_plugin.dir\Release\connecti.67BE905B.tlog\unsuccessfulbuild".
+[  +27 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/ephemeral/.plugin_symlinks/connectivity_plus/windows/CMakeLists.txt
+[  +30 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /nologo /W4 /WX /diagnostics:column /O2 /Ob2 /D _WINDLL /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D FLUTTER_PLUGIN_IMPL /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /D connectivity_plus_plugin_EXPORTS /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"connectivity_plus_plugin.dir\Release\\" /Fd"connectivity_plus_plugin.dir\Release\vc143.pdb" /external:W4 /Gd /TP /wd4100 /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\connectivity_plus\windows\connectivity_plus_plugin.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\connectivity_plus\windows\network_manager.cpp
+[  +33 ms]   connectivity_plus_plugin.cpp
+[+1550 ms]   network_manager.cpp
+[ +932 ms]   Generating Code...
+[+1182 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\connectivity_plus\Release\connectivity_plus_plugin.dll" /INCREMENTAL:NO /NOLOGO ..\..\flutter\Release\flutter_wrapper_plugin.lib iphlpapi.lib D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\flutter_windows.dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/connectivity_plus/Release/connectivity_plus_plugin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/connectivity_plus/Release/connectivity_plus_plugin.lib" /MACHINE:X64  /machine:x64 /DLL connectivity_plus_plugin.dir\Release\connectivity_plus_plugin.obj
+[        ]   connectivity_plus_plugin.dir\Release\network_manager.obj
+[  +74 ms]      Creating library D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/connectivity_plus/Release/connectivity_plus_plugin.lib and object D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/connectivity_plus/Release/connectivity_plus_plugin.exp
+[  +71 ms]   connectivity_plus_plugin.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\connectivity_plus\Release\connectivity_plus_plugin.dll
+[   +7 ms] FinalizeBuildStatus:
+[        ]   Deleting file "connectivity_plus_plugin.dir\Release\connecti.67BE905B.tlog\unsuccessfulbuild".
+[        ]   Touching "connectivity_plus_plugin.dir\Release\connecti.67BE905B.tlog\connectivity_plus_plugin.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\connectivity_plus\connectivity_plus_plugin.vcxproj" (default targets).
+[  +23 ms] Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (4) is building "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\dynamic_color\dynamic_color_plugin.vcxproj" (9) on node 1 (default targets).
+[        ] PrepareForBuild:
+[        ]   Creating directory "dynamic_color_plugin.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\dynamic_color\Release\".
+[        ]   Creating directory "dynamic_color_plugin.dir\Release\dynamic_.FF77053B.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "dynamic_color_plugin.dir\Release\dynamic_.FF77053B.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "dynamic_color_plugin.dir\Release\dynamic_.FF77053B.tlog\unsuccessfulbuild".
+[  +32 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/ephemeral/.plugin_symlinks/dynamic_color/windows/CMakeLists.txt
+[  +30 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /nologo /W4 /WX /diagnostics:column /O2 /Ob2 /D _WINDLL /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D FLUTTER_PLUGIN_IMPL /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /D dynamic_color_plugin_EXPORTS /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"dynamic_color_plugin.dir\Release\\" /Fd"dynamic_color_plugin.dir\Release\vc143.pdb" /external:W4 /Gd /TP /wd4100 /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\dynamic_color\windows\dynamic_color_plugin_c_api.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\dynamic_color\windows\dynamic_color_plugin.cpp
+[  +33 ms]   dynamic_color_plugin_c_api.cpp
+[+1008 ms]   dynamic_color_plugin.cpp
+[+1342 ms]   Generating Code...
+[ +362 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\dynamic_color\Release\dynamic_color_plugin.dll" /INCREMENTAL:NO /NOLOGO ..\..\flutter\Release\flutter_wrapper_plugin.lib dwmapi.lib D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\flutter_windows.dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/dynamic_color/Release/dynamic_color_plugin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/dynamic_color/Release/dynamic_color_plugin.lib" /MACHINE:X64  /machine:x64 /DLL dynamic_color_plugin.dir\Release\dynamic_color_plugin_c_api.obj
+[        ]   dynamic_color_plugin.dir\Release\dynamic_color_plugin.obj
+[  +60 ms]      Creating library D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/dynamic_color/Release/dynamic_color_plugin.lib and object D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/dynamic_color/Release/dynamic_color_plugin.exp
+[  +56 ms]   dynamic_color_plugin.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\dynamic_color\Release\dynamic_color_plugin.dll
+[   +9 ms] FinalizeBuildStatus:
+[        ]   Deleting file "dynamic_color_plugin.dir\Release\dynamic_.FF77053B.tlog\unsuccessfulbuild".
+[        ]   Touching "dynamic_color_plugin.dir\Release\dynamic_.FF77053B.tlog\dynamic_color_plugin.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\dynamic_color\dynamic_color_plugin.vcxproj" (default targets).
+[  +23 ms] Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (4) is building "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\file_selector_windows\file_selector_windows_plugin.vcxproj" (10) on node 1 (default targets).
+[        ] PrepareForBuild:
+[        ]   Creating directory "file_selector_windows_plugin.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\file_selector_windows\Release\".
+[        ]   Creating directory "file_selector_windows_plugin.dir\Release\file_sel.96A7939C.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "file_selector_windows_plugin.dir\Release\file_sel.96A7939C.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "file_selector_windows_plugin.dir\Release\file_sel.96A7939C.tlog\unsuccessfulbuild".
+[  +26 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/ephemeral/.plugin_symlinks/file_selector_windows/windows/CMakeLists.txt
+[  +46 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /nologo /W4 /WX /diagnostics:column /O2 /Ob2 /D _WINDLL /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D FLUTTER_PLUGIN_IMPL /D _HAS_EXCEPTIONS=1 /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /D file_selector_windows_plugin_EXPORTS /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"file_selector_windows_plugin.dir\Release\\" /Fd"file_selector_windows_plugin.dir\Release\vc143.pdb" /external:W4 /Gd /TP /wd4100 /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\file_selector_windows\windows\file_selector_windows.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\file_selector_windows\windows\file_dialog_controller.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\file_selector_windows\windows\file_selector_plugin.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\file_selector_windows\windows\messages.g.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\file_selector_windows\windows\string_utils.cpp
+[  +33 ms]   file_selector_windows.cpp
+[+1717 ms]   file_dialog_controller.cpp
+[ +692 ms]   file_selector_plugin.cpp
+[+1641 ms]   messages.g.cpp
+[+1290 ms]   string_utils.cpp
+[ +730 ms]   Generating Code...
+[+2269 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\file_selector_windows\Release\file_selector_windows_plugin.dll" /INCREMENTAL:NO /NOLOGO ..\..\flutter\Release\flutter_wrapper_plugin.lib D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\flutter_windows.dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/file_selector_windows/Release/file_selector_windows_plugin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/file_selector_windows/Release/file_selector_windows_plugin.lib" /MACHINE:X64  /machine:x64 /DLL file_selector_windows_plugin.dir\Release\file_selector_windows.obj
+[        ]   file_selector_windows_plugin.dir\Release\file_dialog_controller.obj
+[        ]   file_selector_windows_plugin.dir\Release\file_selector_plugin.obj
+[        ]   file_selector_windows_plugin.dir\Release\messages.g.obj
+[        ]   file_selector_windows_plugin.dir\Release\string_utils.obj
+[ +169 ms]      Creating library D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/file_selector_windows/Release/file_selector_windows_plugin.lib and object D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/file_selector_windows/Release/file_selector_windows_plugin.exp
+[  +65 ms]   file_selector_windows_plugin.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\file_selector_windows\Release\file_selector_windows_plugin.dll
+[  +10 ms] FinalizeBuildStatus:
+[        ]   Deleting file "file_selector_windows_plugin.dir\Release\file_sel.96A7939C.tlog\unsuccessfulbuild".
+[        ]   Touching "file_selector_windows_plugin.dir\Release\file_sel.96A7939C.tlog\file_selector_windows_plugin.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\file_selector_windows\file_selector_windows_plugin.vcxproj" (default targets).
+[  +21 ms] Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (4) is building "D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_wrapper_app.vcxproj" (11) on node 1 (default targets).
+[        ] PrepareForBuild:
+[        ]   Creating directory "flutter_wrapper_app.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "flutter_wrapper_app.dir\Release\flutter_.67F4B718.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "flutter_wrapper_app.dir\Release\flutter_.67F4B718.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "flutter_wrapper_app.dir\Release\flutter_.67F4B718.tlog\unsuccessfulbuild".
+[  +27 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/CMakeLists.txt
+[  +35 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /nologo /W4 /WX /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"flutter_wrapper_app.dir\Release\\" /Fd"D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\Release\flutter_wrapper_app.pdb" /external:W4 /Gd /TP /wd4100 /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\core_implementations.cc D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\standard_codec.cc D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\flutter_engine.cc D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\flutter_view_controller.cc
+[  +33 ms]   core_implementations.cc
+[+1011 ms]   standard_codec.cc
+[+1114 ms]   flutter_engine.cc
+[+1048 ms]   flutter_view_controller.cc
+[+1012 ms]   Generating Code...
+[+1671 ms] Lib:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\Lib.exe /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\Release\flutter_wrapper_app.lib" /NOLOGO /MACHINE:X64  /machine:x64 flutter_wrapper_app.dir\Release\core_implementations.obj
+[        ]   flutter_wrapper_app.dir\Release\standard_codec.obj
+[        ]   flutter_wrapper_app.dir\Release\flutter_engine.obj
+[        ]   flutter_wrapper_app.dir\Release\flutter_view_controller.obj
+[  +46 ms]   flutter_wrapper_app.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\Release\flutter_wrapper_app.lib
+[   +8 ms] FinalizeBuildStatus:
+[        ]   Deleting file "flutter_wrapper_app.dir\Release\flutter_.67F4B718.tlog\unsuccessfulbuild".
+[        ]   Touching "flutter_wrapper_app.dir\Release\flutter_.67F4B718.tlog\flutter_wrapper_app.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_wrapper_app.vcxproj" (default targets).
+[  +34 ms] Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (4) is building "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\proxy\proxy_plugin.vcxproj" (12) on node 1 (default targets).
+[        ] PrepareForBuild:
+[        ]   Creating directory "proxy_plugin.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\proxy\Release\".
+[        ]   Creating directory "proxy_plugin.dir\Release\proxy_plugin.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "proxy_plugin.dir\Release\proxy_plugin.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "proxy_plugin.dir\Release\proxy_plugin.tlog\unsuccessfulbuild".
+[  +27 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/ephemeral/.plugin_symlinks/proxy/windows/CMakeLists.txt
+[  +31 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /nologo /W4 /WX /diagnostics:column /O2 /Ob2 /D _WINDLL /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D FLUTTER_PLUGIN_IMPL /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /D proxy_plugin_EXPORTS /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"proxy_plugin.dir\Release\\" /Fd"proxy_plugin.dir\Release\vc143.pdb" /external:W4 /Gd /TP /wd4100 /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\proxy\windows\proxy_plugin_c_api.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\proxy\windows\proxy_plugin.cpp
+[  +34 ms]   proxy_plugin_c_api.cpp
+[ +996 ms]   proxy_plugin.cpp
+[+1665 ms]   Generating Code...
+[ +806 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\proxy\Release\proxy_plugin.dll" /INCREMENTAL:NO /NOLOGO ..\..\flutter\Release\flutter_wrapper_plugin.lib wininet.lib rasapi32.lib iphlpapi.lib D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\flutter_windows.dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/proxy/Release/proxy_plugin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/proxy/Release/proxy_plugin.lib" /MACHINE:X64  /machine:x64 /DLL proxy_plugin.dir\Release\proxy_plugin_c_api.obj
+[        ]   proxy_plugin.dir\Release\proxy_plugin.obj
+[  +66 ms]      Creating library D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/proxy/Release/proxy_plugin.lib and object D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/proxy/Release/proxy_plugin.exp
+[  +63 ms]   proxy_plugin.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\proxy\Release\proxy_plugin.dll
+[   +8 ms] FinalizeBuildStatus:
+[        ]   Deleting file "proxy_plugin.dir\Release\proxy_plugin.tlog\unsuccessfulbuild".
+[        ]   Touching "proxy_plugin.dir\Release\proxy_plugin.tlog\proxy_plugin.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\proxy\proxy_plugin.vcxproj" (default targets).
+[  +29 ms] Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (4) is building "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\screen_retriever_windows\screen_retriever_windows_plugin.vcxproj" (13) on node 1 (default targets).
+[        ] PrepareForBuild:
+[        ]   Creating directory "screen_retriever_windows_plugin.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\screen_retriever_windows\Release\".
+[        ]   Creating directory "screen_retriever_windows_plugin.dir\Release\screen_r.48A491B5.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "screen_retriever_windows_plugin.dir\Release\screen_r.48A491B5.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "screen_retriever_windows_plugin.dir\Release\screen_r.48A491B5.tlog\unsuccessfulbuild".
+[  +27 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/ephemeral/.plugin_symlinks/screen_retriever_windows/windows/CMakeLists.txt
+[  +29 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /nologo /W4 /WX /diagnostics:column /O2 /Ob2 /D _WINDLL /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D FLUTTER_PLUGIN_IMPL /D _SILENCE_CXX17_CODECVT_HEADER_DEPRECATION_WARNING /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /D screen_retriever_windows_plugin_EXPORTS /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"screen_retriever_windows_plugin.dir\Release\\" /Fd"screen_retriever_windows_plugin.dir\Release\vc143.pdb" /external:W4 /Gd /TP /wd4100 /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\screen_retriever_windows_plugin_c_api.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\screen_retriever_windows_plugin.cpp
+[  +33 ms]   screen_retriever_windows_plugin_c_api.cpp
+[ +998 ms]   screen_retriever_windows_plugin.cpp
+[+1726 ms]   Generating Code...
+[+1394 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\screen_retriever_windows\Release\screen_retriever_windows_plugin.dll" /INCREMENTAL:NO /NOLOGO ..\..\flutter\Release\flutter_wrapper_plugin.lib D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\flutter_windows.dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/screen_retriever_windows/Release/screen_retriever_windows_plugin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/screen_retriever_windows/Release/screen_retriever_windows_plugin.lib" /MACHINE:X64  /machine:x64 /DLL screen_retriever_windows_plugin.dir\Release\screen_retriever_windows_plugin_c_api.obj
+[        ]   screen_retriever_windows_plugin.dir\Release\screen_retriever_windows_plugin.obj
+[  +46 ms]      Creating library D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/screen_retriever_windows/Release/screen_retriever_windows_plugin.lib and object D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/screen_retriever_windows/Release/screen_retriever_windows_plugin.exp
+[  +71 ms]   screen_retriever_windows_plugin.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\screen_retriever_windows\Release\screen_retriever_windows_plugin.dll
+[   +7 ms] FinalizeBuildStatus:
+[        ]   Deleting file "screen_retriever_windows_plugin.dir\Release\screen_r.48A491B5.tlog\unsuccessfulbuild".
+[        ]   Touching "screen_retriever_windows_plugin.dir\Release\screen_r.48A491B5.tlog\screen_retriever_windows_plugin.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\screen_retriever_windows\screen_retriever_windows_plugin.vcxproj" (default targets).
+[  +24 ms] Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (4) is building "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\tray\tray_plugin.vcxproj" (14) on node 1 (default targets).
+[        ] PrepareForBuild:
+[        ]   Creating directory "tray_plugin.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\tray\Release\".
+[        ]   Creating directory "tray_plugin.dir\Release\tray_plugin.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "tray_plugin.dir\Release\tray_plugin.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "tray_plugin.dir\Release\tray_plugin.tlog\unsuccessfulbuild".
+[  +31 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/ephemeral/.plugin_symlinks/tray/windows/CMakeLists.txt
+[  +31 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /nologo /W4 /WX /diagnostics:column /O2 /Ob2 /D _WINDLL /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D FLUTTER_PLUGIN_IMPL /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /D tray_plugin_EXPORTS /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"tray_plugin.dir\Release\\" /Fd"tray_plugin.dir\Release\vc143.pdb" /external:W4 /Gd /TP /wd4100 /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\tray\windows\tray_plugin_c_api.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\tray\windows\tray_plugin.cpp
+[  +34 ms]   tray_plugin_c_api.cpp
+[+1202 ms]   tray_plugin.cpp
+[+1545 ms]   Generating Code...
+[+1126 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\tray\Release\tray_plugin.dll" /INCREMENTAL:NO /NOLOGO ..\..\flutter\Release\flutter_wrapper_plugin.lib D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\flutter_windows.dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/tray/Release/tray_plugin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/tray/Release/tray_plugin.lib" /MACHINE:X64  /machine:x64 /DLL tray_plugin.dir\Release\tray_plugin_c_api.obj
+[        ]   tray_plugin.dir\Release\tray_plugin.obj
+[  +50 ms]      Creating library D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/tray/Release/tray_plugin.lib and object D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/tray/Release/tray_plugin.exp
+[  +58 ms]   tray_plugin.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\tray\Release\tray_plugin.dll
+[   +9 ms] FinalizeBuildStatus:
+[        ]   Deleting file "tray_plugin.dir\Release\tray_plugin.tlog\unsuccessfulbuild".
+[        ]   Touching "tray_plugin.dir\Release\tray_plugin.tlog\tray_plugin.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\tray\tray_plugin.vcxproj" (default targets).
+[  +22 ms] Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (4) is building "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\url_launcher_windows\url_launcher_windows_plugin.vcxproj" (15) on node 1 (default targets).
+[        ] PrepareForBuild:
+[        ]   Creating directory "url_launcher_windows_plugin.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\url_launcher_windows\Release\".
+[        ]   Creating directory "url_launcher_windows_plugin.dir\Release\url_laun.E9EB40C0.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "url_launcher_windows_plugin.dir\Release\url_laun.E9EB40C0.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "url_launcher_windows_plugin.dir\Release\url_laun.E9EB40C0.tlog\unsuccessfulbuild".
+[  +26 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/ephemeral/.plugin_symlinks/url_launcher_windows/windows/CMakeLists.txt
+[  +34 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /nologo /W4 /WX /diagnostics:column /O2 /Ob2 /D _WINDLL /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D FLUTTER_PLUGIN_IMPL /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /D url_launcher_windows_plugin_EXPORTS /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"url_launcher_windows_plugin.dir\Release\\" /Fd"url_launcher_windows_plugin.dir\Release\vc143.pdb" /external:W4 /Gd /TP /wd4100 /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\url_launcher_windows\windows\url_launcher_windows.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\url_launcher_windows\windows\messages.g.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\url_launcher_windows\windows\system_apis.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\url_launcher_windows\windows\url_launcher_plugin.cpp
+[  +33 ms]   url_launcher_windows.cpp
+[+1293 ms]   messages.g.cpp
+[+1181 ms]   system_apis.cpp
+[ +358 ms]   url_launcher_plugin.cpp
+[+1377 ms]   Generating Code...
+[+1458 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\url_launcher_windows\Release\url_launcher_windows_plugin.dll" /INCREMENTAL:NO /NOLOGO ..\..\flutter\Release\flutter_wrapper_plugin.lib shlwapi.lib D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\flutter_windows.dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/url_launcher_windows/Release/url_launcher_windows_plugin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/url_launcher_windows/Release/url_launcher_windows_plugin.lib" /MACHINE:X64  /machine:x64 /DLL url_launcher_windows_plugin.dir\Release\url_launcher_windows.obj
+[        ]   url_launcher_windows_plugin.dir\Release\messages.g.obj
+[        ]   url_launcher_windows_plugin.dir\Release\system_apis.obj
+[        ]   url_launcher_windows_plugin.dir\Release\url_launcher_plugin.obj
+[  +62 ms]      Creating library D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/url_launcher_windows/Release/url_launcher_windows_plugin.lib and object D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/url_launcher_windows/Release/url_launcher_windows_plugin.exp
+[  +68 ms]   url_launcher_windows_plugin.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\url_launcher_windows\Release\url_launcher_windows_plugin.dll
+[   +8 ms] FinalizeBuildStatus:
+[        ]   Deleting file "url_launcher_windows_plugin.dir\Release\url_laun.E9EB40C0.tlog\unsuccessfulbuild".
+[        ]   Touching "url_launcher_windows_plugin.dir\Release\url_laun.E9EB40C0.tlog\url_launcher_windows_plugin.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\url_launcher_windows\url_launcher_windows_plugin.vcxproj" (default targets).
+[  +25 ms] Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (4) is building "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\wifi_ssid\wifi_ssid_plugin.vcxproj" (16) on node 1 (default targets).
+[        ] PrepareForBuild:
+[        ]   Creating directory "wifi_ssid_plugin.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\wifi_ssid\Release\".
+[        ]   Creating directory "wifi_ssid_plugin.dir\Release\wifi_ssid_plugin.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "wifi_ssid_plugin.dir\Release\wifi_ssid_plugin.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "wifi_ssid_plugin.dir\Release\wifi_ssid_plugin.tlog\unsuccessfulbuild".
+[  +28 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/ephemeral/.plugin_symlinks/wifi_ssid/windows/CMakeLists.txt
+[  +31 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /nologo /W4 /WX /diagnostics:column /O2 /Ob2 /D _WINDLL /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D FLUTTER_PLUGIN_IMPL /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /D wifi_ssid_plugin_EXPORTS /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++20 /Fo"wifi_ssid_plugin.dir\Release\\" /Fd"wifi_ssid_plugin.dir\Release\vc143.pdb" /external:W4 /Gd /TP /wd4100 /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\wifi_ssid\windows\wifi_ssid_plugin_c_api.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\wifi_ssid\windows\wifi_ssid_plugin.cpp
+[  +41 ms]   wifi_ssid_plugin_c_api.cpp
+[+1833 ms]   wifi_ssid_plugin.cpp
+[+5329 ms]   Generating Code...
+[ +790 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\wifi_ssid\Release\wifi_ssid_plugin.dll" /INCREMENTAL:NO /NOLOGO ..\..\flutter\Release\flutter_wrapper_plugin.lib WindowsApp.lib D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\flutter_windows.dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/wifi_ssid/Release/wifi_ssid_plugin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/wifi_ssid/Release/wifi_ssid_plugin.lib" /MACHINE:X64  /machine:x64 /DLL wifi_ssid_plugin.dir\Release\wifi_ssid_plugin_c_api.obj
+[        ]   wifi_ssid_plugin.dir\Release\wifi_ssid_plugin.obj
+[  +99 ms]      Creating library D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/wifi_ssid/Release/wifi_ssid_plugin.lib and object D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/wifi_ssid/Release/wifi_ssid_plugin.exp
+[  +89 ms]   wifi_ssid_plugin.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\wifi_ssid\Release\wifi_ssid_plugin.dll
+[   +7 ms] FinalizeBuildStatus:
+[        ]   Deleting file "wifi_ssid_plugin.dir\Release\wifi_ssid_plugin.tlog\unsuccessfulbuild".
+[        ]   Touching "wifi_ssid_plugin.dir\Release\wifi_ssid_plugin.tlog\wifi_ssid_plugin.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\wifi_ssid\wifi_ssid_plugin.vcxproj" (default targets).
+[  +26 ms] Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (4) is building "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\window\window_plugin.vcxproj" (17) on node 1 (default targets).
+[        ] PrepareForBuild:
+[        ]   Creating directory "window_plugin.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\window\Release\".
+[        ]   Creating directory "window_plugin.dir\Release\window_plugin.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "window_plugin.dir\Release\window_plugin.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "window_plugin.dir\Release\window_plugin.tlog\unsuccessfulbuild".
+[  +26 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/ephemeral/.plugin_symlinks/window/windows/CMakeLists.txt
+[  +32 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /nologo /W4 /WX /diagnostics:column /O2 /Ob2 /D _WINDLL /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D FLUTTER_PLUGIN_IMPL /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /D window_plugin_EXPORTS /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"window_plugin.dir\Release\\" /Fd"window_plugin.dir\Release\vc143.pdb" /external:W4 /Gd /TP /wd4100 /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\window\windows\window_plugin_c_api.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\window\windows\running_instance.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\window\windows\window_controller.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\window\windows\window_plugin.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\window\windows\window_style.cpp
+[  +33 ms]   window_plugin_c_api.cpp
+[+1272 ms]   running_instance.cpp
+[ +802 ms]   window_controller.cpp
+[ +761 ms]   window_plugin.cpp
+[+1701 ms]   window_style.cpp
+[ +658 ms]   Generating Code...
+[+1797 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\window\Release\window_plugin.dll" /INCREMENTAL:NO /NOLOGO ..\..\flutter\Release\flutter_wrapper_plugin.lib dwmapi.lib D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\flutter_windows.dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/window/Release/window_plugin.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/window/Release/window_plugin.lib" /MACHINE:X64  /machine:x64 /DLL window_plugin.dir\Release\window_plugin_c_api.obj
+[        ]   window_plugin.dir\Release\running_instance.obj
+[        ]   window_plugin.dir\Release\window_controller.obj
+[        ]   window_plugin.dir\Release\window_plugin.obj
+[        ]   window_plugin.dir\Release\window_style.obj
+[  +48 ms]      Creating library D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/window/Release/window_plugin.lib and object D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/window/Release/window_plugin.exp
+[  +62 ms]   window_plugin.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\window\Release\window_plugin.dll
+[   +8 ms] FinalizeBuildStatus:
+[        ]   Deleting file "window_plugin.dir\Release\window_plugin.tlog\unsuccessfulbuild".
+[        ]   Touching "window_plugin.dir\Release\window_plugin.tlog\window_plugin.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\window\window_plugin.vcxproj" (default targets).
+[  +18 ms] PrepareForBuild:
+[        ]   Creating directory "FlClash.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\Release\".
+[        ]   Creating directory "FlClash.dir\Release\FlClash.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "FlClash.dir\Release\FlClash.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "FlClash.dir\Release\FlClash.tlog\unsuccessfulbuild".
+[  +27 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/runner/CMakeLists.txt
+[  +46 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\app_links\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\connectivity_plus\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\dynamic_color\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\file_selector_windows\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\proxy\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\tray\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\url_launcher_windows\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\wifi_ssid\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\window\windows\include /nologo /W4 /WX /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D "FLUTTER_VERSION=\"0.9.3+2026110401\"" /D FLUTTER_VERSION_MAJOR=0 /D FLUTTER_VERSION_MINOR=9 /D FLUTTER_VERSION_PATCH=3 /D FLUTTER_VERSION_BUILD=2026110401 /D NOMINMAX /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /EHsc /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /std:c++17 /Fo"FlClash.dir\Release\\" /Fd"FlClash.dir\Release\vc143.pdb" /external:W4 /Gd /TP /wd4100 /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\runner\flutter_window.cpp D:\a\VPNsky\VPNsky\app\windows\runner\main.cpp D:\a\VPNsky\VPNsky\app\windows\runner\utils.cpp D:\a\VPNsky\VPNsky\app\windows\runner\win32_window.cpp D:\a\VPNsky\VPNsky\app\windows\flutter\generated_plugin_registrant.cc
+[  +34 ms]   flutter_window.cpp
+[ +885 ms]   main.cpp
+[ +871 ms]   utils.cpp
+[ +857 ms]   win32_window.cpp
+[ +743 ms]   generated_plugin_registrant.cc
+[ +630 ms]   Generating Code...
+[ +426 ms] ResourceCompile:
+[        ]   C:\Program Files (x86)\Windows Kits\10\bin\10.0.26100.0\x64\rc.exe /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _HAS_EXCEPTIONS=0 /D "FLUTTER_VERSION=\\\"0.9.3+2026110401\\\"" /D FLUTTER_VERSION_MAJOR=0 /D FLUTTER_VERSION_MINOR=9 /D FLUTTER_VERSION_PATCH=3 /D FLUTTER_VERSION_BUILD=2026110401 /D NOMINMAX /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\\\"Release\\\"" /l"0x0409" /ID:\a\VPNsky\VPNsky\app\windows /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\cpp_client_wrapper\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\app_links\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\connectivity_plus\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\dynamic_color\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\file_selector_windows\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\proxy\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\screen_retriever_windows\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\tray\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\url_launcher_windows\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\wifi_ssid\windows\include /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\window\windows\include /nologo /fo"FlClash.dir\Release\Runner.res" D:\a\VPNsky\VPNsky\app\windows\runner\Runner.rc 
+[  +97 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\Release\FlClash.exe" /INCREMENTAL:NO /NOLOGO ..\flutter\Release\flutter_wrapper_app.lib dwmapi.lib ..\plugins\app_links\Release\app_links_plugin.lib ..\plugins\connectivity_plus\Release\connectivity_plus_plugin.lib ..\plugins\dynamic_color\Release\dynamic_color_plugin.lib ..\plugins\file_selector_windows\Release\file_selector_windows_plugin.lib ..\plugins\proxy\Release\proxy_plugin.lib ..\plugins\screen_retriever_windows\Release\screen_retriever_windows_plugin.lib ..\plugins\tray\Release\tray_plugin.lib ..\plugins\url_launcher_windows\Release\url_launcher_windows_plugin.lib ..\plugins\wifi_ssid\Release\wifi_ssid_plugin.lib ..\plugins\window\Release\window_plugin.lib D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\flutter_windows.dll.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:D:\a\VPNsky\VPNsky\app\windows\runner\runner.exe.manifest /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/runner/Release/FlClash.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/runner/Release/FlClash.lib" /MACHINE:X64  /machine:x64 FlClash.dir\Release\Runner.res
+[        ]   FlClash.dir\Release\flutter_window.obj
+[        ]   FlClash.dir\Release\main.obj
+[        ]   FlClash.dir\Release\utils.obj
+[        ]   FlClash.dir\Release\win32_window.obj
+[        ]   FlClash.dir\Release\generated_plugin_registrant.obj
+[ +389 ms]   FlClash.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\Release\FlClash.exe
+[  +11 ms] FinalizeBuildStatus:
+[        ]   Deleting file "FlClash.dir\Release\FlClash.tlog\unsuccessfulbuild".
+[        ]   Touching "FlClash.dir\Release\FlClash.tlog\FlClash.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (default targets).
+[  +22 ms] Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\ALL_BUILD.vcxproj" (3) is building "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\jni\shared\jni.vcxproj" (18) on node 1 (default targets).
+[        ] PrepareForBuild:
+[        ]   Creating directory "jni.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\jni\shared\Release\".
+[        ]   Creating directory "jni.dir\Release\jni.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "jni.dir\Release\jni.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "jni.dir\Release\jni.tlog\unsuccessfulbuild".
+[  +32 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/ephemeral/.plugin_symlinks/jni/src/CMakeLists.txt
+[  +32 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\jni\src\..\third_party /nologo /W3 /WX- /diagnostics:column /O2 /Ob2 /D _WINDLL /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D DART_SHARED_LIB /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /D jni_EXPORTS /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"jni.dir\Release\\" /Fd"jni.dir\Release\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\jni\src\dartjni.c D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\jni\src\third_party\global_jni_env.c D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\jni\src\include\dart_api_dl.c
+[  +33 ms]   dartjni.c
+[ +203 ms]   global_jni_env.c
+[ +208 ms]   dart_api_dl.c
+[  +23 ms]   Generating Code...
+[ +238 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\jni\shared\Release\dartjni.dll" /INCREMENTAL:NO /NOLOGO "C:\hostedtoolcache\windows\Java_Temurin-Hotspot_jdk\8.0.504-1\x64\lib\jvm.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/jni/shared/Release/dartjni.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/jni/shared/Release/dartjni.lib" /MACHINE:X64  /machine:x64 /DLL jni.dir\Release\dartjni.obj
+[        ]   jni.dir\Release\global_jni_env.obj
+[        ]   jni.dir\Release\dart_api_dl.obj
+[  +58 ms]      Creating library D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/jni/shared/Release/dartjni.lib and object D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/jni/shared/Release/dartjni.exp
+[  +56 ms]   jni.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\jni\shared\Release\dartjni.dll
+[   +9 ms] FinalizeBuildStatus:
+[        ]   Deleting file "jni.dir\Release\jni.tlog\unsuccessfulbuild".
+[        ]   Touching "jni.dir\Release\jni.tlog\jni.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\jni\shared\jni.vcxproj" (default targets).
+[   +5 ms] PrepareForBuild:
+[        ]   Creating directory "x64\Release\ALL_BUILD\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "x64\Release\ALL_BUILD\ALL_BUILD.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "x64\Release\ALL_BUILD\ALL_BUILD.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "x64\Release\ALL_BUILD\ALL_BUILD.tlog\unsuccessfulbuild".
+[  +28 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/CMakeLists.txt
+[  +37 ms] FinalizeBuildStatus:
+[        ]   Deleting file "x64\Release\ALL_BUILD\ALL_BUILD.tlog\unsuccessfulbuild".
+[        ]   Touching "x64\Release\ALL_BUILD\ALL_BUILD.tlog\ALL_BUILD.lastbuildstate".
+[   +1 ms] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\ALL_BUILD.vcxproj" (default targets).
+[   +4 ms] PrepareForBuild:
+[        ]   Creating directory "x64\Release\INSTALL\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "x64\Release\INSTALL\INSTALL.tlog\".
+[   +5 ms] InitializeBuildStatus:
+[        ]   Creating "x64\Release\INSTALL\INSTALL.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "x64\Release\INSTALL\INSTALL.tlog\unsuccessfulbuild".
+[  +27 ms] CustomBuild:
+[        ]   1>
+[  +12 ms] PostBuildEvent:
+[        ]   setlocal
+[        ]   "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -DBUILD_TYPE=Release -P cmake_install.cmake
+[        ]   if %errorlevel% neq 0 goto :cmEnd
+[        ]   :cmEnd
+[        ]   endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+[        ]   :cmErrorLevel
+[        ]   exit /b %1
+[        ]   :cmDone
+[        ]   if %errorlevel% neq 0 goto :VCEnd
+[        ]   :VCEnd
+[  +40 ms]   -- Install configuration: "Release"
+[   +4 ms]   -- Installing: D:/a/VPNsky/VPNsky/app/build/windows/x64/runner/Release/data/icudtl.dat
+[   +1 ms]   -- Installing: D:/a/VPNsky/VPNsky/app/build/windows/x64/runner/Release/flutter_windows.dll
+[  +37 ms]   CMake Error at cmake_install.cmake:232 (file):
+[        ]     file INSTALL cannot find
+[        ]     "D:/a/VPNsky/VPNsky/app/windows/EnableLoopback.exe": File exists.
+[  +24 ms] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: The command "setlocal [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[   +1 ms] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -DBUILD_TYPE=Release -P cmake_install.cmake [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :cmEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmErrorLevel [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: exit /b %1 [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmDone [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :VCEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :VCEnd" exited with code 1. [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj" (default targets) -- FAILED.
+[   +8 ms] Build FAILED.
+[   +2 ms] "D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj" (default target) (1) ->
+[        ] (PostBuildEvent target) -> 
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: The command "setlocal [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -DBUILD_TYPE=Release -P cmake_install.cmake [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :cmEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmErrorLevel [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: exit /b %1 [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmDone [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :VCEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :VCEnd" exited with code 1. [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ]     0 Warning(s)
+[        ]     1 Error(s)
+[        ] Time Elapsed 00:06:43.77
+[  +28 ms] Building Windows application... (completed in 424.6s)
+[        ] "flutter windows" took 426,532ms.
+[   +2 ms] Build process failed.
+[        ] 
+           #0      throwToolExit (package:flutter_tools/src/base/common.dart:34:3)
+           #1      _runBuild (package:flutter_tools/src/windows/build_windows.dart:262:5)
+           <asynchronous suspension>
+           #2      buildWindows (package:flutter_tools/src/windows/build_windows.dart:118:5)
+           <asynchronous suspension>
+           #3      BuildWindowsCommand.runCommand (package:flutter_tools/src/commands/build_windows.dart:73:5)
+           <asynchronous suspension>
+           #4      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1663:27)
+           <asynchronous suspension>
+           #5      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #6      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+           <asynchronous suspension>
+           #7      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+           <asynchronous suspension>
+           #8      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #9      FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+           <asynchronous suspension>
+           #10     FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+           <asynchronous suspension>
+           #11     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+           <asynchronous suspension>
+           #12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #13     main (package:flutter_tools/executable.dart:103:3)
+           <asynchronous suspension>
+
+
+[        ] Running 1 shutdown hook
+[        ] Shutdown hooks complete
+[        ] exiting with code 1
+BuildError: [  +24 ms] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: The command "setlocal [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[   +1 ms] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -DBUILD_TYPE=Release -P cmake_install.cmake [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :cmEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmErrorLevel [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: exit /b %1 [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmDone [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :VCEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :VCEnd" exited with code 1. [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: The command "setlocal [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -DBUILD_TYPE=Release -P cmake_install.cmake [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :cmEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmErrorLevel [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: exit /b %1 [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmDone [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :VCEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :VCEnd" exited with code 1. [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[   +2 ms] Build process failed.
+[        ] 
+           #0      throwToolExit (package:flutter_tools/src/base/common.dart:34:3)
+           #1      _runBuild (package:flutter_tools/src/windows/build_windows.dart:262:5)
+           <asynchronous suspension>
+           #2      buildWindows (package:flutter_tools/src/windows/build_windows.dart:118:5)
+           <asynchronous suspension>
+           #3      BuildWindowsCommand.runCommand (package:flutter_tools/src/commands/build_windows.dart:73:5)
+           <asynchronous suspension>
+           #4      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1663:27)
+           <asynchronous suspension>
+           #5      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #6      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+           <asynchronous suspension>
+           #7      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+           <asynchronous suspension>
+           #8      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #9      FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+           <asynchronous suspension>
+           #10     FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+           <asynchronous suspension>
+           #11     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+           <asynchronous suspension>
+           #12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #13     main (package:flutter_tools/executable.dart:103:3)
+           <asynchronous suspension>
+
+
+
+#0      AppBuilder.build (package:flutter_app_builder/src/builders/app_builder.dart:72:7)
+<asynchronous suspension>
+#1      UnifiedDistributor.package (package:unified_distributor/src/unified_distributor.dart:176:27)
+<asynchronous suspension>
+#2      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#3      main (file:///C:/Users/runneradmin/AppData/Local/Pub/Cache/git/flutter_distributor-47e263a8001aec32884b62c68dbb6a78d90e821b/packages/flutter_distributor/bin/main.dart:13:5)
+<asynchronous suspension>
+
+BuildError: [  +24 ms] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: The command "setlocal [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[   +1 ms] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -DBUILD_TYPE=Release -P cmake_install.cmake [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :cmEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmErrorLevel [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: exit /b %1 [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmDone [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :VCEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :VCEnd" exited with code 1. [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: The command "setlocal [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -DBUILD_TYPE=Release -P cmake_install.cmake [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :cmEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmErrorLevel [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: exit /b %1 [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :cmDone [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: if %errorlevel% neq 0 goto :VCEnd [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[        ] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(166,5): error MSB3073: :VCEnd" exited with code 1. [D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj]
+[   +2 ms] Build process failed.
+[        ] 
+           #0      throwToolExit (package:flutter_tools/src/base/common.dart:34:3)
+           #1      _runBuild (package:flutter_tools/src/windows/build_windows.dart:262:5)
+           <asynchronous suspension>
+           #2      buildWindows (package:flutter_tools/src/windows/build_windows.dart:118:5)
+           <asynchronous suspension>
+           #3      BuildWindowsCommand.runCommand (package:flutter_tools/src/commands/build_windows.dart:73:5)
+           <asynchronous suspension>
+           #4      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1663:27)
+           <asynchronous suspension>
+           #5      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #6      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+           <asynchronous suspension>
+           #7      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+           <asynchronous suspension>
+           #8      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #9      FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+           <asynchronous suspension>
+           #10     FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+           <asynchronous suspension>
+           #11     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+           <asynchronous suspension>
+           #12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #13     main (package:flutter_tools/executable.dart:103:3)
+           <asynchronous suspension>
+
+
+
+#0      AppBuilder.build (package:flutter_app_builder/src/builders/app_builder.dart:72:7)
+<asynchronous suspension>
+#1      UnifiedDistributor.package (package:unified_distributor/src/unified_distributor.dart:176:27)
+<asynchronous suspension>
+#2      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#3      main (file:///C:/Users/runneradmin/AppData/Local/Pub/Cache/git/flutter_distributor-47e263a8001aec32884b62c68dbb6a78d90e821b/packages/flutter_distributor/bin/main.dart:13:5)
+<asynchronous suspension>
+
