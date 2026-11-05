@@ -238,7 +238,8 @@ jobs:
         run: |
           ls -la ./dist
           cd ./dist
-          find . -type f ! -name 'SHA256SUMS.txt' -exec sha256sum {} \; > SHA256SUMS.txt
+          find . -type f ! -name 'SHA256SUMS.txt' -print0 \
+            | xargs -0 -r sha256sum > SHA256SUMS.txt
           cat SHA256SUMS.txt
 
       - name: Upload combined build
