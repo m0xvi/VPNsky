@@ -313,22 +313,48 @@ ufw --force enable >/dev/null
 ok "Открыты: $SSH_PORT(ssh), 80, 443/tcp (панель), $REALITY_PORT/tcp (REALITY), $XHTTP_PORT/tcp (XHTTP), $HY2_PORT/udp (Hysteria2), $NODE_PORT/tcp (нода)"
 
 # ─────────────────────────────────────────────────────────────────────────────
-bold "5/10. Снос прежней установки (только с --wipe)"
+bold "5/10. Подготовка к установке"
 # ─────────────────────────────────────────────────────────────────────────────
-if [[ "$MODE" == "wipe" ]]; then
-  info "Удаляю контейнеры, тома и конфиги прошлой установки…"
-  for p in "$PROJECT" remnawave panel; do
-    docker compose -p "$p" -f "$DIR/panel/docker-compose.yml" down -v >/dev/null 2>&1 || true
-    docker compose -p "$p" -f "$DIR/node/docker-compose.yml"   down   >/dev/null 2>&1 || true
+# Старые контейнеры имеют те же имена (remnawave, remnawave-db, ...), и docker
+# откажется создавать новые поверх них. Поэтому контейнеры убираем ВСЕГДА —
+# это безопасно, данные лежат в томах и при обычном запуске сохраняются.
+OLD_CONTAINERS=(remnawave remnawave-db remnawave-redis remnanode)
+FOUND=0
+for c in "${OLD_CONTAINERS[@]}"; do
+  if docker ps -a --format '{{.Names}}' | awk -v n="$c" '$0==n {found=1} END {exit !found}'; then
+    FOUND=1
+  fi
+done
+
+if [[ "$FOUND" == "1" ]]; then
+  info "Найдена прошлая установка — останавливаю её контейнеры…"
+  for p in "$PROJECT" remnawave panel nsky; do
+    docker compose -p "$p" -f "$DIR/panel/docker-compose.yml" down >/dev/null 2>&1 || true
+    docker compose -p "$p" -f "$DIR/node/docker-compose.yml"   down >/dev/null 2>&1 || true
   done
+  for c in "${OLD_CONTAINERS[@]}"; do
+    docker rm -f "$c" >/dev/null 2>&1 || true
+  done
+  ok "Старые контейнеры остановлены"
+else
+  info "Прошлых контейнеров нет"
+fi
+
+if [[ "$MODE" == "wipe" ]]; then
+  info "Режим --wipe: удаляю данные прошлой установки (база панели, ключи)…"
   for v in remnawave-db-data valkey-socket "${PROJECT}_db-data" "${PROJECT}_valkey-socket" \
-           panel_db-data panel_valkey-socket nsky_db-data nsky_valkey-socket; do
+           panel_db-data panel_valkey-socket nsky_db-data nsky_valkey-socket db-data; do
     docker volume rm -f "$v" >/dev/null 2>&1 || true
   done
   rm -rf "$DIR/panel" "$DIR/node"
-  ok "Прошлая установка удалена (логи и бэкапы сохранены в $DIR)"
+  # Пароли прошлой установки больше не действуют — начинаем с чистого листа.
+  if [[ -f "$STATE" ]]; then
+    cp "$STATE" "$DIR/backups/install-state.before-wipe-$(date +%Y%m%d-%H%M%S).env" 2>/dev/null || true
+    rm -f "$STATE"
+  fi
+  ok "Данные удалены. Логи и бэкапы сохранены в $DIR"
 else
-  info "Не запрошено (--wipe) — ставлю поверх, данные сохраняются"
+  info "Данные прошлой установки сохраняются (для полного сноса добавьте --wipe)"
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
