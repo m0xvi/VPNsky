@@ -1,0 +1,32 @@
+# Remnawave Node — сервер, через который ходит трафик сотрудников.
+# Расположение: за рубежом (Финляндия / Германия / Нидерланды) — под выход в интернет.
+#
+# Берётся из официального репозитория: https://github.com/remnawave/node
+# SECRET_KEY выдаёт панель при создании ноды (Nodes → Create node).
+#
+# Запуск:
+#   1. подставить SECRET_KEY ниже (или положить в .env рядом)
+#   2. docker compose up -d
+#   3. в панели нода должна загореться зелёным
+
+services:
+  remnanode:
+    image: remnawave/node:3.4.4
+    container_name: remnanode
+    hostname: remnanode
+    # host network нужен, чтобы Xray мог слушать порты 443/tcp и 443/udp напрямую
+    network_mode: host
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    ulimits:
+      nofile:
+        soft: 1048576
+        hard: 1048576
+    environment:
+      # Порт, по которому панель управляет нодой (не путать с портами для клиентов)
+      - NODE_PORT=2222
+      - SECRET_KEY=${SECRET_KEY:?SECRET_KEY is required — create node in panel first}
+    volumes:
+      # сертификаты для Hysteria2 (TLS), можно выпустить на самой ноде
+      - ./certs:/etc/remnanode/certs:ro
