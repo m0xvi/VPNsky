@@ -54,7 +54,9 @@ bold "1/6. Вход администратора"
 # ─────────────────────────────────────────────────────────────────────────────
 BODY=$(jq -n --arg u "$ADMIN_USER" --arg p "$ADMIN_PASS" '{username:$u,password:$p}')
 
-R=$(req_code -X POST "$API/auth/login" -H 'Content-Type: application/json' -d "$BODY")
+R=$(curl -sS --max-time 30 --resolve "${DOMAIN}:443:127.0.0.1" \
+  -H 'X-Remnawave-Client-Type: browser' -w '\n%{http_code}' \
+  -X POST "$API/auth/login" -H 'Content-Type: application/json' -d "$BODY")
 CODE=$(echo "$R" | tail -1); BODYRESP=$(echo "$R" | sed '$d')
 echo "  вход → HTTP $CODE"
 TOKEN=$(echo "$BODYRESP" | jq -r '.response.accessToken // empty' 2>/dev/null || true)
@@ -71,7 +73,9 @@ fi
 
 if [[ -z "$TOKEN" ]]; then
   warn "Вход не прошёл — пробую зарегистрировать администратора"
-  R=$(req_code -X POST "$API/auth/register" -H 'Content-Type: application/json' -d "$BODY")
+  R=$(curl -sS --max-time 30 --resolve "${DOMAIN}:443:127.0.0.1" \
+  -H 'X-Remnawave-Client-Type: browser' -w '\n%{http_code}' \
+  -X POST "$API/auth/register" -H 'Content-Type: application/json' -d "$BODY")
   CODE=$(echo "$R" | tail -1); REGRESP=$(echo "$R" | sed '$d')
   echo "  регистрация → HTTP $CODE"
   TOKEN=$(echo "$REGRESP" | jq -r '.response.accessToken // empty' 2>/dev/null || true)
@@ -94,12 +98,18 @@ if [[ -z "$TOKEN" ]]; then
 fi
 ok "Токен получен"
 
+# Панель с JWT принимает только запросы с этим заголовком:
+# без него — 403 'For API requests you must create own API-token'.
+# С api-token (ROLE.API) заголовок не нужен, с JWT (ROLE.ADMIN) — обязателен.
 AUTH="Authorization: Bearer $TOKEN"
+CLIENT_HDR="X-Remnawave-Client-Type: browser"
+req()      { curl -sS --max-time 30 --resolve "${DOMAIN}:443:127.0.0.1" -H "$CLIENT_HDR" "$@"; }
+req_code() { curl -sS --max-time 30 --resolve "${DOMAIN}:443:127.0.0.1" -H "$CLIENT_HDR" -w '\n%{http_code}' "$@"; }
 
 # ─────────────────────────────────────────────────────────────────────────────
 bold "2/6. Ключи REALITY"
 # ─────────────────────────────────────────────────────────────────────────────
-REALITY_OUT="$(docker run --rm --entrypoint /usr/local/bin/xray remnawave/node:3 x25519 2>&1 || true)"
+REALITY_OUT="$(docker run --rm --entrypoint /usr/local/bin/xray remnawave/node:3.4.4 x25519 2>&1 || true)"
 echo "  вывод x25519: $(echo "$REALITY_OUT" | tr '\n' ' ' | head -c 300)"
 
 REALITY_PRIV="$(echo "$REALITY_OUT" | grep -iE "private" | sed 's/.*[Pp]rivate[^:]*:[[:space:]]*//' | tr -d ' \r' | head -1 || true)"
@@ -277,7 +287,7 @@ mkdir -p "$DIR/node/certs"
 cat > "$DIR/node/docker-compose.yml" <<EOF
 services:
   remnanode:
-    image: remnawave/node:3
+    image: remnawave/node:3.4.4
     container_name: remnanode
     hostname: remnanode
     network_mode: host
