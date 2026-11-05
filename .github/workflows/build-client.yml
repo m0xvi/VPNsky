@@ -29,6 +29,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 env:
   FLUTTER_VERSION: '3.47.6'
   GO_VERSION: '1.27.1'
@@ -98,13 +101,24 @@ jobs:
             echo "SIGNED=false" >> "$GITHUB_ENV"
           fi
 
-      - name: Build release APK
-        if: env.SIGNED == 'true'
-        run: dart setup.dart android -v
+      # Важно: `flutter build apk` напрямую НЕ собирает Go-ядро (libclash).
+      # Его собирает только setup.dart через хук плагина setup, поэтому
+      # единственный правильный путь — всегда dart setup.dart android.
+      # Если секретов подписи нет, gradle сам подпишет debug-ключом и добавит
+      # суффикс .dev (см. android/app/build.gradle.kts: логика hasReleaseSigning).
+      - name: Build APK
+        run: |
+          set -o pipefail
+          dart setup.dart android --env stable -v 2>&1 | tee /tmp/build-android.log
 
-      - name: Build debug APK
-        if: env.SIGNED != 'true'
-        run: flutter build apk --debug
+      # Логи GitHub Actions лежат в хранилище, недоступном из среды разработки.
+      # Поэтому при падении кладём хвост лога в ветку ci-logs — оттуда его видно.
+      - name: Publish failure log
+        if: failure()
+        continue-on-error: true
+        run: |
+          tail -c 60000 /tmp/build-android.log > app-android.log 2>/dev/null || true
+          bash .github/ci-log-push.sh android app-android.log
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -147,7 +161,16 @@ jobs:
         run: flutter pub get
 
       - name: Build Windows
-        run: dart setup.dart windows -v
+        shell: bash
+        run: |
+          set -o pipefail
+          dart setup.dart windows --env stable -v 2>&1 | tee build-windows.log
+
+      - name: Publish failure log
+        if: failure()
+        continue-on-error: true
+        shell: bash
+        run: bash .github/ci-log-push.sh windows build-windows.log
 
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4

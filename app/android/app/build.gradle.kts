@@ -13,7 +13,21 @@ val localProperties = Properties().apply {
     }
 }
 
+// VPNsky: поддерживаем и .jks, и .p12. Java 9+ по умолчанию использует PKCS12,
+// поэтому файл с расширением .jks может содержать PKCS12 — тогда без явного
+// storeType Gradle падает на "Invalid keystore format". Тип определяем по факту.
 val releaseStoreFile = file("keystore.jks")
+val releaseStoreType: String by lazy {
+    if (!releaseStoreFile.exists()) return@lazy "JKS"
+    try {
+        java.io.FileInputStream(releaseStoreFile).use { stream ->
+            java.security.KeyStore.getInstance("PKCS12").load(stream, null)
+        }
+        "PKCS12"
+    } catch (_: Throwable) {
+        "JKS"
+    }
+}
 val releaseStorePassword = localProperties.getProperty("storePassword")
 val releaseKeyAlias = localProperties.getProperty("keyAlias")
 val releaseKeyPassword = localProperties.getProperty("keyPassword")
@@ -44,6 +58,7 @@ android {
         if (hasReleaseSigning) {
             create("release") {
                 storeFile = releaseStoreFile
+                storeType = releaseStoreType
                 storePassword = releaseStorePassword
                 keyAlias = releaseKeyAlias
                 keyPassword = releaseKeyPassword

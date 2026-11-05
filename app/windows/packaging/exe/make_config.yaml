@@ -1,5 +1,5 @@
 script_template: inno_setup.iss
-app_id: {5B2C7E1A-9D44-4F83-A611-7C0E93D5B2F7}
+app_id: 5B2C7E1A-9D44-4F83-A611-7C0E93D5B2F7
 app_name: VPNsky
 publisher: VPNsky
 publisher_url: https://github.com/m0xvi/VPNsky
