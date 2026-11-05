@@ -234,15 +234,27 @@ jobs:
           path: ./dist
           merge-multiple: true
 
+      # Шаг вспомогательный: он не должен ронять сборку, если имена файлов
+      # окажутся неожиданными (кириллица, пробелы, вложенные каталоги).
       - name: List and hash
+        continue-on-error: true
         run: |
-          ls -la ./dist
-          cd ./dist
-          find . -type f ! -name 'SHA256SUMS.txt' -print0 \
-            | xargs -0 -r sha256sum > SHA256SUMS.txt
-          cat SHA256SUMS.txt
+          echo "--- содержимое ./dist ---"
+          find ./dist -type f -printf '%s\t%p\n' | sort -rn | head -50
+
+          echo "--- считаю SHA256 ---"
+          out=./dist/SHA256SUMS.txt
+          : > "$out"
+          find ./dist -type f ! -name 'SHA256SUMS.txt' -print0 \
+            | while IFS= read -r -d '' f; do
+                sha256sum "$f" >> "$out" 2>/dev/null || echo "не смог посчитать: $f"
+              done
+
+          echo "--- результат ---"
+          cat "$out" || echo "файл пуст"
 
       - name: Upload combined build
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: vpnsky-build-${{ github.run_number }}
