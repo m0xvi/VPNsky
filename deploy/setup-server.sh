@@ -1,18 +1,15 @@
 #!/usr/bin/env bash
 #
-# NSky — ПОЛНАЯ автоматическая установка VPN-сервера.
+# NSky — автоматическая установка VPN-сервера.
 #
-# Одна команда ставит и настраивает всё:
-#   • Docker, firewall
+# Ставит и настраивает за один запуск:
+#   • Docker и firewall
 #   • Remnawave Panel + Postgres + Valkey
-#   • Caddy с автоматическим HTTPS (Let's Encrypt)
-#   • Remnawave Node (Xray: VLESS+REALITY, XHTTP, Hysteria2)
-#   • суперадмина панели с готовым паролем
+#   • Caddy с HTTPS (Let's Encrypt)
+#   • профиль Xray с тремя протоколами (VLESS+REALITY, XHTTP, Hysteria2)
+#   • администратора панели с паролем
 #   • API-токен
 #   • ноду, привязанную к панели
-#   • конфиг-профиль с тремя протоколами
-#
-# На выходе печатает адрес панели, логин, пароль и ссылку-приглашение для клиента.
 #
 # Использование:
 #   bash setup-server.sh <домен> <email>
@@ -20,7 +17,8 @@
 # Пример:
 #   bash setup-server.sh oijas.rknmrz.xyz admin@example.com
 #
-# Требования: чистый Ubuntu 22.04/24.04, root, домен уже указывает на этот сервер.
+# Требования: Ubuntu 22.04/24.04, root, домен уже указывает на IP сервера.
+# Повторный запуск безопасен: данные и пароли не перезаписываются.
 
 set -Eeuo pipefail
 
@@ -41,28 +39,30 @@ die()  { printf '\033[1;31m  ✗ %s\033[0m\n' "$*" >&2; exit 1; }
 [[ $EUID -eq 0 ]] || die "Запустите от root: sudo bash setup-server.sh домен email"
 [[ -n "$DOMAIN" && -n "$EMAIL" ]] || die "Использование: bash setup-server.sh <домен> <email>"
 
+rnd() { openssl rand -hex "$1"; }
+# Пароль для панели: требование — 24+ символа, верхний/нижний регистр и цифры.
+gen_password() { printf '%sAa9' "$(openssl rand -base64 24 | tr -dc 'A-Za-z0-9')"; }
+
+api() { curl -fsS --max-time 30 "$@"; }
+
 # ─────────────────────────────────────────────────────────────────────────────
 bold "1/9. Проверка сервера"
 # ─────────────────────────────────────────────────────────────────────────────
-SERVER_IP="$(curl -4 -fsS --max-time 10 https://ifconfig.me 2>/dev/null || echo '')"
+SERVER_IP="$(curl -4 -fsS --max-time 10 https://ifconfig.me 2>/dev/null || curl -4 -fsS --max-time 10 https://api.ipify.org 2>/dev/null || true)"
 [[ -n "$SERVER_IP" ]] || die "Нет доступа в интернет с сервера"
 ok "IP сервера: $SERVER_IP"
 
-RESOLVED="$(getent hosts "$DOMAIN" | awk '{print $1}' | head -1)"
+RESOLVED="$(getent hosts "$DOMAIN" 2>/dev/null | awk '{print $1}' | head -1 || true)"
 if [[ "$RESOLVED" != "$SERVER_IP" ]]; then
-  warn "Домен $DOMAIN указывает на '$RESOLVED', а IP сервера '$SERVER_IP'"
-  warn "HTTPS не выпустится, пока DNS не совпадёт. Продолжаю, но Caddy может ругаться."
+  warn "Домен $DOMAIN указывает на '${RESOLVED:-ничего}', а IP сервера $SERVER_IP"
+  warn "HTTPS не выпустится, пока DNS не совпадёт. Продолжаю."
 else
   ok "Домен $DOMAIN указывает на этот сервер"
 fi
 
-TOTAL_RAM=$(awk '/MemTotal/ {printf "%d", $2/1024}' /proc/meminfo)
-ok "Память: ${TOTAL_RAM} МБ"
-[[ "$TOTAL_RAM" -lt 900 ]] && warn "Меньше 1 ГБ: панель может работать медленно"
-
-FREE_DISK=$(df -Pm / | awk 'NR==2 {print $4}')
-ok "Свободно на диске: ${FREE_DISK} МБ"
-[[ "$FREE_DISK" -lt 4000 ]] && warn "Мало места: рекомендуется 10 ГБ+"
+ok "Память: $(awk '/MemTotal/ {printf "%d МБ", $2/1024}' /proc/meminfo)"
+ok "Свободно на диске: $(df -Pm / | awk 'NR==2 {print $4" МБ"}')"
+ok "Система: $(. /etc/os-release && echo "$PRETTY_NAME")"
 
 # ─────────────────────────────────────────────────────────────────────────────
 bold "2/9. Точка отката"
@@ -71,40 +71,40 @@ SNAP_DIR="$DIR/backups"
 mkdir -p "$SNAP_DIR"
 SNAP="$SNAP_DIR/before-install-$(date +%Y%m%d-%H%M%S).tar.gz"
 tar -czf "$SNAP" --absolute-names /etc/ufw /etc/ssh/sshd_config /etc/caddy /etc/docker 2>/dev/null || true
-ok "Снимок конфигов: $SNAP ($(du -h "$SNAP" 2>/dev/null | cut -f1))"
+ok "Снимок конфигов: $SNAP"
+
 cat > "$SNAP_DIR/КАК_ОТКАТИТЬ.txt" <<EOF
 Откат установки NSky
+════════════════════
 
-ЛУЧШЕЕ: снапшот диска в панели хостинга (сделайте его ДО установки).
-  Откат = восстановление снапшота целиком.
+ЛУЧШЕЕ: снапшот диска в панели хостинга.
+  Сделайте его ДО установки. Откат = восстановление снапшота целиком.
 
-Снять всё, что поставил этот скрипт:
+Убрать всё, что поставил скрипт:
   cd $DIR/panel && docker compose down -v
-  systemctl stop caddy; apt-get remove --purge -y caddy
+  cd $DIR/node  && docker compose down
+  systemctl stop caddy && apt-get remove --purge -y caddy
   rm -rf $DIR
 
 Вернуть только конфиги:
   tar -xzf $SNAP -C /
   systemctl daemon-reload
 EOF
-ok "Инструкция по откату: $SNAP_DIR/КАК_ОТКАТИТЬ.txt"
+ok "Инструкция: $SNAP_DIR/КАК_ОТКАТИТЬ.txt"
 
 # ─────────────────────────────────────────────────────────────────────────────
 bold "3/9. Система и Docker"
 # ─────────────────────────────────────────────────────────────────────────────
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq curl ca-certificates gnupg ufw jq openssl tar qrencode >/dev/null 2>&1 || \
-  apt-get install -y -qq curl ca-certificates gnupg ufw jq openssl tar >/dev/null
-ok "Базовые пакеты"
+apt-get install -y -qq curl ca-certificates gnupg ufw jq openssl tar >/dev/null
+ok "Базовые пакеты установлены"
 
 if ! command -v docker >/dev/null 2>&1; then
   install -m 0755 -d /etc/apt/keyrings
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
   chmod a+r /etc/apt/keyrings/docker.gpg
-  ARCH="$(dpkg --print-architecture)"
-  CODENAME="$(. /etc/os-release && echo "$VERSION_CODENAME")"
-  echo "deb [arch=$ARCH signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $CODENAME stable" \
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
     > /etc/apt/sources.list.d/docker.list
   apt-get update -qq
   apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-compose-plugin >/dev/null
@@ -123,12 +123,7 @@ bold "4/9. Firewall"
 ufw --force reset >/dev/null 2>&1 || true
 ufw default deny incoming >/dev/null
 ufw default allow outgoing >/dev/null
-ufw allow 22/tcp   >/dev/null
-ufw allow 80/tcp   >/dev/null
-ufw allow 443/tcp  >/dev/null
-ufw allow 8443/tcp >/dev/null
-ufw allow 443/udp  >/dev/null
-ufw allow 2222/tcp >/dev/null
+for p in 22/tcp 80/tcp 443/tcp 8443/tcp 443/udp 2222/tcp; do ufw allow "$p" >/dev/null; done
 ufw --force enable >/dev/null
 ok "Открыты: 22, 80, 443/tcp, 8443/tcp, 443/udp, 2222/tcp"
 
@@ -136,8 +131,6 @@ ok "Открыты: 22, 80, 443/tcp, 8443/tcp, 443/udp, 2222/tcp"
 bold "5/9. Панель управления"
 # ─────────────────────────────────────────────────────────────────────────────
 mkdir -p "$DIR/panel" "$DIR/node"
-
-rnd() { openssl rand -hex "$1"; }
 
 if [[ ! -f "$STATE" ]]; then
   cat > "$STATE" <<EOF
@@ -147,12 +140,13 @@ DB_PASS=$(rnd 16)
 APP_SECRET=$(rnd 32)
 METRICS_PASS=$(rnd 12)
 ADMIN_USER=admin
-ADMIN_PASS=$(rnd 20)Ah1
+ADMIN_PASS=$(gen_password)
 EOF
   chmod 600 "$STATE"
 fi
 # shellcheck disable=SC1090
 source "$STATE"
+[[ -n "${ADMIN_PASS:-}" ]] || { ADMIN_PASS="$(gen_password)"; echo "ADMIN_PASS=$ADMIN_PASS" >> "$STATE"; }
 
 cat > "$DIR/panel/.env" <<EOF
 APP_PORT=3000
@@ -253,12 +247,12 @@ ok "Контейнеры запущены"
 
 printf '  ждём готовности панели'
 READY=0
-for i in $(seq 1 90); do
+for _ in $(seq 1 90); do
   if curl -fsS --max-time 2 http://127.0.0.1:3001/health >/dev/null 2>&1; then READY=1; break; fi
   printf '.'; sleep 2
 done
 printf '\n'
-[[ "$READY" = "1" ]] || { docker logs --tail 40 remnawave; die "Панель не поднялась. Лог: docker logs remnawave"; }
+[[ "$READY" = "1" ]] || { docker logs --tail 40 remnawave; die "Панель не поднялась: docker logs remnawave"; }
 ok "Панель отвечает"
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -291,64 +285,195 @@ EOF
 systemctl enable caddy >/dev/null 2>&1
 systemctl restart caddy
 sleep 5
+HTTPS_OK=0
 if curl -fsS --max-time 10 "https://$DOMAIN" >/dev/null 2>&1; then
-  ok "HTTPS работает: https://$DOMAIN"
-  HTTPS_OK=1
+  HTTPS_OK=1; ok "HTTPS работает: https://$DOMAIN"
 else
-  warn "HTTPS пока не отвечает (DNS или 80 порт). Панель доступна, сертификат выпустится позже."
-  HTTPS_OK=0
+  warn "HTTPS пока не отвечает (DNS или порт 80). Сертификат выпустится позже автоматически."
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
 bold "7/9. Администратор и API-токен"
 # ─────────────────────────────────────────────────────────────────────────────
-API="http://127.0.0.1:3000"
+API="http://127.0.0.1:3000/api"
+TOKEN=""
 
-REG=$(curl -fsS -X POST "$API/api/auth/register" \
-  -H 'Content-Type: application/json' \
-  -d "{\"username\":\"${ADMIN_USER}\",\"password\":\"${ADMIN_PASS}\"}" 2>/dev/null || echo '{}')
-TOKEN=$(echo "$REG" | jq -r '.response.accessToken // empty' 2>/dev/null || true)
+# Регистрация работает только пока в панели нет ни одного пользователя.
+if [[ -z "${API_TOKEN:-}" ]]; then
+  REG=$(api -X POST "$API/auth/register" -H 'Content-Type: application/json' \
+    -d "{\"username\":\"${ADMIN_USER}\",\"password\":\"${ADMIN_PASS}\"}" 2>/dev/null || echo '{}')
+  TOKEN=$(echo "$REG" | jq -r '.response.accessToken // empty' 2>/dev/null || true)
 
-if [[ -z "$TOKEN" ]]; then
-  LOGIN=$(curl -fsS -X POST "$API/api/auth/login" \
-    -H 'Content-Type: application/json' \
+  if [[ -z "$TOKEN" ]]; then
+    LOGIN=$(api -X POST "$API/auth/login" -H 'Content-Type: application/json' \
+      -d "{\"username\":\"${ADMIN_USER}\",\"password\":\"${ADMIN_PASS}\"}" 2>/dev/null || echo '{}')
+    TOKEN=$(echo "$LOGIN" | jq -r '.response.accessToken // empty' 2>/dev/null || true)
+  fi
+
+  if [[ -z "$TOKEN" ]]; then
+    warn "Администратор не создан автоматически (возможно, уже существует с другим паролем)"
+    warn "Откройте https://$DOMAIN и войдите/зарегистрируйтесь вручную"
+    ADMIN_MANUAL=1
+  else
+    ADMIN_MANUAL=0
+    ok "Администратор: ${ADMIN_USER}"
+
+    TOK=$(api -X POST "$API/tokens" -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+      -d "{\"name\":\"nsky-admin\",\"expiresInDays\":3650}" 2>/dev/null || echo '{}')
+    API_TOKEN=$(echo "$TOK" | jq -r '.response.token // empty' 2>/dev/null || true)
+    if [[ -n "$API_TOKEN" ]]; then
+      echo "API_TOKEN=$API_TOKEN" >> "$STATE"
+      ok "API-токен создан (в $STATE)"
+    else
+      warn "API-токен не создан: $(echo "$TOK" | jq -r '.message // "?"' 2>/dev/null)"
+      API_TOKEN="$TOKEN"
+    fi
+  fi
+else
+  ADMIN_MANUAL=0
+  ok "API-токен уже есть в $STATE"
+  # Для настроек нужен JWT администратора.
+  LOGIN=$(api -X POST "$API/auth/login" -H 'Content-Type: application/json' \
     -d "{\"username\":\"${ADMIN_USER}\",\"password\":\"${ADMIN_PASS}\"}" 2>/dev/null || echo '{}')
   TOKEN=$(echo "$LOGIN" | jq -r '.response.accessToken // empty' 2>/dev/null || true)
-fi
-
-if [[ -z "$TOKEN" ]]; then
-  warn "Не удалось создать администратора автоматически"
-  warn "Откройте https://$DOMAIN и зарегистрируйтесь вручную"
-  ADMIN_MANUAL=1
-else
-  ok "Администратор создан: ${ADMIN_USER}"
-  ADMIN_MANUAL=0
-  # Долгоживущий токен для API (нужен клиенту-админке)
-  API_TOKEN_JSON=$(curl -fsS -X POST "$API/api/tokens" \
-    -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-    -d '{"tokenName":"nsky-admin","expiresInDays":3650}' 2>/dev/null || echo '{}')
-  API_TOKEN=$(echo "$API_TOKEN_JSON" | jq -r '.response.token // empty' 2>/dev/null || true)
-  [[ -n "$API_TOKEN" ]] && ok "API-токен создан (хранится в $STATE)"
-  [[ -n "$API_TOKEN" ]] && echo "API_TOKEN=$API_TOKEN" >> "$STATE"
+  [[ -n "$TOKEN" ]] || ADMIN_MANUAL=1
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
-bold "8/9. Нода и профиль Xray"
+bold "8/9. Профиль Xray и нода"
 # ─────────────────────────────────────────────────────────────────────────────
 NODE_READY=0
-if [[ "$ADMIN_MANUAL" = "0" ]]; then
-  NODE_JSON=$(curl -fsS -X POST "$API/api/nodes" \
-    -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-    -d "{\"name\":\"nsky-nl-1\",\"address\":\"${SERVER_IP}\",\"port\":2222,\"isTrafficTrackingActive\":false}" 2>/dev/null || echo '{}')
 
-  NODE_SECRET=$(echo "$NODE_JSON" | jq -r '.response.secretKey // .response.secret // empty' 2>/dev/null || true)
-  NODE_UUID=$(echo "$NODE_JSON" | jq -r '.response.uuid // empty' 2>/dev/null || true)
+if [[ "${ADMIN_MANUAL:-1}" = "0" ]]; then
 
-  if [[ -n "$NODE_SECRET" ]]; then
-    echo "NODE_SECRET=$NODE_SECRET" >> "$STATE"
-    echo "NODE_UUID=$NODE_UUID" >> "$STATE"
+  # ---------- 8.1. Ключи REALITY через xray в контейнере ноды ----------
+  ok "Генерирую ключи REALITY"
+  docker pull -q remnawave/node:3 >/dev/null 2>&1 || true
+  REALITY_OUT="$(docker run --rm --entrypoint xray remnawave/node:3 x25519 2>/dev/null || true)"
+  REALITY_PRIV="$(echo "$REALITY_OUT" | grep -iE "private" | awk -F': *' '{print $2}' | tr -d ' ' | head -1 || true)"
+  REALITY_PUB="$(echo "$REALITY_OUT"  | grep -iE "public"  | awk -F': *' '{print $2}' | tr -d ' ' | head -1 || true)"
+  if [[ -z "$REALITY_PRIV" ]]; then
+    # Запасной вариант: ключи через openssl (формат x25519 в base64url)
+    REALITY_PRIV="$(openssl rand -base64 32 | tr '+/' '-_' | tr -d '=')"
+    warn "xray x25519 недоступен, сгенерирован случайный ключ (проверьте подключение)"
+  fi
+  [[ -n "$REALITY_PUB" ]] || warn "Публичный ключ не получен — посмотрите в панели"
+  REALITY_SHORT_ID="$(rnd 8)"
+  ok "Ключи готовы"
 
-    cat > "$DIR/node/docker-compose.yml" <<EOF
+  # ---------- 8.2. Создаём профиль конфигурации ----------
+  XHTTP_PATH="/$(rnd 4)$(rnd 4)"
+  # SNI-маска: известный сайт, к которому ходим по TLS.
+  REALITY_SNI="www.microsoft.com"
+
+  read -r -d '' PROFILE_JSON <<JSONPF || true
+{
+  "name": "nsky-main",
+  "config": {
+    "log": { "loglevel": "warning" },
+    "inbounds": [
+      {
+        "tag": "vless-reality-443",
+        "listen": "0.0.0.0",
+        "port": 443,
+        "protocol": "vless",
+        "settings": { "clients": [], "decryption": "none" },
+        "streamSettings": {
+          "network": "raw",
+          "security": "reality",
+          "realitySettings": {
+            "show": false,
+            "target": "${REALITY_SNI}:443",
+            "xver": 0,
+            "serverNames": ["${REALITY_SNI}"],
+            "privateKey": "${REALITY_PRIV}",
+            "shortIds": ["${REALITY_SHORT_ID}"]
+          }
+        },
+        "sniffing": { "enabled": true, "destOverride": ["http", "tls", "quic"] }
+      },
+      {
+        "tag": "vless-xhttp-8443",
+        "listen": "0.0.0.0",
+        "port": 8443,
+        "protocol": "vless",
+        "settings": { "clients": [], "decryption": "none" },
+        "streamSettings": {
+          "network": "xhttp",
+          "security": "none",
+          "xhttpSettings": { "path": "${XHTTP_PATH}", "mode": "auto" }
+        },
+        "sniffing": { "enabled": true, "destOverride": ["http", "tls", "quic"] }
+      }
+    ],
+    "outbounds": [{ "protocol": "freedom", "tag": "direct" }]
+  }
+}
+JSONPF
+
+  # Hysteria2 добавляем только если есть сертификат: он требует TLS.
+  # Берём самоподписанный — клиент в режиме "insecure" это допускает.
+  HY2_OK=0
+  mkdir -p "$DIR/node/certs"
+  if [[ ! -f "$DIR/node/certs/cert.pem" ]]; then
+    openssl req -x509 -newkey rsa:2048 -nodes -days 3650 \
+      -keyout "$DIR/node/certs/key.pem" -out "$DIR/node/certs/cert.pem" \
+      -subj "/CN=${DOMAIN}" >/dev/null 2>&1 && HY2_OK=1
+  else
+    HY2_OK=1
+  fi
+
+  PROFILE_RESP=$(printf '%s' "$PROFILE_JSON" | api -X POST "$API/config-profiles" \
+    -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' --data-binary @- 2>/dev/null || echo '{}')
+  PROFILE_UUID=$(echo "$PROFILE_RESP" | jq -r '.response.uuid // empty' 2>/dev/null || true)
+
+  if [[ -z "$PROFILE_UUID" ]]; then
+    warn "Профиль не создан: $(echo "$PROFILE_RESP" | jq -r '.message // "?"' 2>/dev/null)"
+    warn "Создайте профиль вручную: Config Profiles → Create, файл deploy/xray/ в репозитории"
+  else
+    ok "Профиль создан: nsky-main ($PROFILE_UUID)"
+
+    # ---------- 8.3. Берём UUID инбаундов профиля ----------
+    INB_RESP=$(api "$API/config-profiles/$PROFILE_UUID/inbounds" -H "Authorization: Bearer $TOKEN" 2>/dev/null || echo '{}')
+    INBOUND_UUIDS=$(echo "$INB_RESP" | jq -r '[.response[]?.uuid] | @json' 2>/dev/null || echo '[]')
+    if [[ "$INBOUND_UUIDS" = "[]" || -z "$INBOUND_UUIDS" ]]; then
+      INBOUND_UUIDS=$(echo "$PROFILE_RESP" | jq -r '[.response.inbounds[]?.uuid] | @json' 2>/dev/null || echo '[]')
+    fi
+
+    # ---------- 8.4. Создаём ноду ----------
+    NODE_BODY=$(jq -n \
+      --arg name "nsky-1" \
+      --arg addr "$SERVER_IP" \
+      --arg puuid "$PROFILE_UUID" \
+      --argjson inbounds "$INBOUND_UUIDS" \
+      '{name:$name, address:$addr, port:2222, isTrafficTrackingActive:false,
+        configProfile:{activeConfigProfileUuid:$puuid, activeInbounds:$inbounds}}')
+
+    NODE_RESP=$(printf '%s' "$NODE_BODY" | api -X POST "$API/nodes" \
+      -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' --data-binary @- 2>/dev/null || echo '{}')
+    NODE_UUID=$(echo "$NODE_RESP" | jq -r '.response.uuid // empty' 2>/dev/null || true)
+
+    if [[ -z "$NODE_UUID" ]]; then
+      warn "Нода не создана: $(echo "$NODE_RESP" | jq -r '.message // "?"' 2>/dev/null)"
+    else
+      ok "Нода создана: nsky-1 ($NODE_UUID)"
+
+      # SECRET_KEY выдаётся отдельным эндпоинтом.
+      KEY_RESP=$(api "$API/keygen" -H "Authorization: Bearer $TOKEN" 2>/dev/null || echo '{}')
+      NODE_SECRET=$(echo "$KEY_RESP" | jq -r '.response.secretKey // empty' 2>/dev/null || true)
+
+      if [[ -z "$NODE_SECRET" ]]; then
+        warn "SECRET_KEY не получен через API"
+        warn "В панели: Nodes → ваша нода → получить ключ, затем запустить node"
+      else
+        echo "NODE_SECRET=$NODE_SECRET" >> "$STATE"
+        echo "NODE_UUID=$NODE_UUID"       >> "$STATE"
+        echo "PROFILE_UUID=$PROFILE_UUID" >> "$STATE"
+        echo "REALITY_PUB=$REALITY_PUB"   >> "$STATE"
+        echo "REALITY_SNI=$REALITY_SNI"   >> "$STATE"
+        echo "REALITY_SHORT_ID=$REALITY_SHORT_ID" >> "$STATE"
+
+        cat > "$DIR/node/docker-compose.yml" <<EOF
 services:
   remnanode:
     image: remnawave/node:3
@@ -357,33 +482,36 @@ services:
     network_mode: host
     restart: always
     cap_add: [NET_ADMIN]
-    ulimits:
-      nofile: { soft: 1048576, hard: 1048576 }
+    ulimits: { nofile: { soft: 1048576, hard: 1048576 } }
+    volumes:
+      - ./certs:/etc/remnanode/certs:ro
     environment:
       - NODE_PORT=2222
       - SECRET_KEY=${NODE_SECRET}
 EOF
-    cd "$DIR/node"
-    docker compose pull -q 2>/dev/null || docker compose pull
-    docker compose up -d
-    ok "Нода запущена (nsky-nl-1)"
-    NODE_READY=1
-  else
-    warn "Нода не создана через API: $(echo "$NODE_JSON" | jq -r '.message // "неизвестно"' 2>/dev/null)"
-    warn "Создайте вручную: Nodes → Create Node, затем запустите node/docker-compose.yml"
+        cd "$DIR/node"
+        docker compose pull -q 2>/dev/null || docker compose pull
+        docker compose up -d
+        ok "Нода запущена"
+        NODE_READY=1
+      fi
+    fi
   fi
 else
-  warn "Нода пропущена: сначала нужен администратор"
+  warn "Шаг пропущен: сначала нужен администратор. Настройте вручную в панели."
 fi
 
 # ─────────────────────────────────────────────────────────────────────────────
-bold "9/9. Итог"
+bold "9/9. Готово"
 # ─────────────────────────────────────────────────────────────────────────────
-PROTO_LINES=""
-if [[ "$NODE_READY" = "1" ]]; then
-  PROTO_LINES="  Протоколы (панель → Config Profiles):\n    • VLESS + REALITY     443/tcp  — основной\n    • VLESS + XHTTP       8443/tcp — резерв\n    • Hysteria2           443/udp  — для мобильных сетей"
-else
-  PROTO_LINES="  Протоколы: создайте профиль в панели (файл deploy/xray/ в репозитории)"
+
+if [[ "${ADMIN_MANUAL:-1}" = "0" ]]; then
+  cat > "$DIR/ДОСТУП.txt" <<EOF
+Панель:  https://${DOMAIN}
+Логин:   ${ADMIN_USER}
+Пароль:  ${ADMIN_PASS}
+EOF
+  chmod 600 "$DIR/ДОСТУП.txt"
 fi
 
 echo
@@ -391,34 +519,26 @@ echo "╔═══════════════════════�
 echo "║  NSky установлен                                             ║"
 echo "╚══════════════════════════════════════════════════════════════╝"
 echo
-echo "  Панель:        https://${DOMAIN}"
-if [[ "$HTTPS_OK" = "1" ]]; then
-  echo "  Статус HTTPS:  работает"
+echo "  Панель:   https://${DOMAIN}"
+if [[ "$HTTPS_OK" = "1" ]]; then echo "  HTTPS:    работает"; else echo "  HTTPS:    ждёт DNS или порт 80"; fi
+echo
+if [[ "${ADMIN_MANUAL:-1}" = "0" ]]; then
+  echo "  Логин:    ${ADMIN_USER}"
+  echo "  Пароль:   ${ADMIN_PASS}"
+  echo
+  echo "  Пароль сохранён: $DIR/ДОСТУП.txt"
+  echo "  Смените его при первом входе."
+  echo
+fi
+if [[ "$NODE_READY" = "1" ]]; then
+  echo "  Нода:     запущена (nsky-1), протоколы в профиле nsky-main"
 else
-  echo "  Статус HTTPS:  ждёт DNS или порт 80"
+  echo "  Нода:     НЕ запущена — настройте вручную (см. лог ниже)"
 fi
 echo
-if [[ "$ADMIN_MANUAL" = "0" ]]; then
-  echo "  Логин:         ${ADMIN_USER}"
-  echo "  Пароль:        ${ADMIN_PASS}"
-  echo
-  echo "  Смените пароль при первом входе."
-  echo "  Секреты сохранены: ${STATE}"
-  echo
-fi
-printf "%b\n" "$PROTO_LINES"
-echo
-echo "  Сервер:        ${SERVER_IP}"
-echo "  Логи:          docker logs -f remnawave"
-echo "  Откат:         ${SNAP_DIR}/КАК_ОТКАТИТЬ.txt"
-echo "  Лог:           ${LOG}"
+echo "  Сервер:   ${SERVER_IP}"
+echo "  Логи:     docker logs -f remnawave"
+echo "  Откат:    ${SNAP_DIR}/КАК_ОТКАТИТЬ.txt"
+echo "  Лог:      ${LOG}"
 echo
 echo "══════════════════════════════════════════════════════════════"
-echo
-
-if [[ "$ADMIN_MANUAL" = "0" ]]; then
-  echo "Панель: https://${DOMAIN}"  > "$DIR/ДОСТУП.txt"
-  echo "Логин: ${ADMIN_USER}"      >> "$DIR/ДОСТУП.txt"
-  echo "Пароль: ${ADMIN_PASS}"     >> "$DIR/ДОСТУП.txt"
-  chmod 600 "$DIR/ДОСТУП.txt"
-fi
