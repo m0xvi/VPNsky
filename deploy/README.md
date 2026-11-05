@@ -1,47 +1,79 @@
-# deploy/ — заготовки развёртывания
+# deploy/ — установка сервера
 
-Всё здесь — **шаблоны с плейсхолдерами**, а не готовая установка. Перед запуском:
+## Главное: один скрипт
 
-1. `deploy/panel/.env.example` → скопировать в `.env`, заполнить секреты (`openssl rand -hex 32`).
-2. `deploy/xray/profile-reality-xhttp-hysteria2.json` → заменить `__UPPER_CASE__` плейсхолдеры,
-   вставить в панель как Config profile.
-3. `deploy/node/docker-compose.yml` → подставить `SECRET_KEY`, выданный панелью.
+```
+bash deploy/nsky-install.sh <домен> <email>
+```
+
+Ставит всё за один запуск: Docker, панель Remnawave (Postgres + Valkey),
+Caddy с HTTPS, профиль Xray с тремя протоколами, хосты, сквад, ноду,
+тестового пользователя и печатает ссылку подписки.
+
+Остальные файлы в этой папке для установки **не нужны** — это шаблоны
+и история. Подробная инструкция: [../docs/СЕРВЕР_УСТАНОВКА.md](../docs/СЕРВЕР_УСТАНОВКА.md).
+
+### Режимы
+
+| Команда | Что делает |
+|---|---|
+| `bash nsky-install.sh <домен> <email>` | установка; повторный запуск безопасен |
+| `... --wipe` | снести всё и поставить заново |
+| `... --check` | только диагностика |
+
+### Порты
+
+| Протокол | Порт |
+|---|---|
+| VLESS + REALITY | 8443/tcp |
+| VLESS + XHTTP | 2053/tcp |
+| Hysteria2 | 443/udp |
+| Панель (Caddy) | 443, 80/tcp |
+| Нода | 2222/tcp |
+
+443/tcp отдан Caddy: она держит HTTPS панели. Поэтому REALITY вынесен на 8443,
+а Hysteria2 работает по UDP и с Caddy не конфликтует.
 
 ## Структура
 
 ```
 deploy/
-├── panel/
-│   ├── docker-compose.yml   # Remnawave Panel + Postgres + Valkey + Subscription page
-│   └── .env.example         # шаблон секретов (реальный .env НЕ коммитить)
-├── node/
-│   ├── docker-compose.yml   # Remnawave Node (Xray-core)
-│   └── ufw-setup.sh         # firewall: только нужные порты
-└── xray/
-    └── profile-reality-xhttp-hysteria2.json   # три инбаунда
+├── nsky-install.sh          # ЕДИНСТВЕННЫЙ нужный файл
+├── panel/docker-compose.yml # справочно: compose панели
+├── node/                    # справочно: compose и firewall ноды
+├── xray/                    # справочно: пример профиля с плейсхолдерами
+└── legacy/                  # старые скрипты, не использовать
 ```
 
-## Проверка профиля Xray перед заливкой
-
-```bash
-# локально, если есть xray:
-xray run -test -c deploy/xray/profile-reality-xhttp-hysteria2.json
-```
-
-Если `xray` нет — залить в панель и посмотреть, что панель не ругается на конфиг
-(Config profiles → проверить/сохранить).
+`legacy/` оставлен только для истории. Там были три отдельных скрипта
+(`setup-server.sh`, `finish-setup.sh`, `configure.sh`), которые ставили
+по частям и требовали ручных шагов между запусками. Их заменил `nsky-install.sh`.
 
 ## Версии
 
-Зафиксированы в compose-файлах:
-- `remnawave/backend:3.4.8`
+Зафиксированы в скрипте:
+- `remnawave/backend:3` (мажорная ветка, обновляется патчами)
 - `remnawave/node:3.4.4`
 - `postgres:18.4`, `valkey/valkey:9-alpine`
+- Xray-core внутри образа ноды: v26.10.31
 
-Обновление — осознанное действие: сменить тег, перечитать changelog, снять бэкап.
+Важно: тега `remnawave/node:3` **не существует** — только полные версии
+вида `3.4.4`. Поэтому версия ноды прописана явно.
 
-## Важно про профиль Xray
+## Что проверено в исходниках Remnawave
 
-В `xray/profile-reality-xhttp-hysteria2.json` первым ключом идёт блок `_comment`
-(пояснения). **Перед вставкой в панель его нужно удалить** — Xray не любит лишние ключи
-в корне конфигурации. JSON-валидность файла при этом сохранена.
+Эти особенности панели определили устройство скрипта:
+
+- **JWT требует заголовок** `X-Remnawave-Client-Type: browser`, иначе
+  403 «create own API-token» (`src/common/guards/jwt-guards/def-jwt-guard.ts`).
+- **Профиль по умолчанию уже создан** сидером, `POST /api/config-profiles`
+  вернёт ошибку — нужно найти и сделать `PATCH`.
+- **UUID инбаундов сохраняются при обновлении**: инбаунды сопоставляются
+  по тегу (`src/common/utils/inbounds/diff-inbounds.util.ts`), поэтому
+  повторный запуск не отвязывает ноду.
+- **Хосты обязательны**: без них подписка пустая («No hosts found»).
+- **Второй админ невозможен**: `prisma/seed/seeders/12_verify-admin.ts`
+  при каждом старте оставляет только самого старого админа.
+- **Hysteria2 требует TLS**: в Xray без `tlsSettings` инбаунд не стартует
+  (`transport/internet/hysteria/hub.go`: «tls config is nil»), причём падает
+  вся нода. Поэтому сертификат Caddy монтируется в панель.
