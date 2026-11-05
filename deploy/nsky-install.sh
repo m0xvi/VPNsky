@@ -42,6 +42,7 @@ DIR="/opt/nsky"
 STATE="$DIR/install-state.env"
 LOG="$DIR/install.log"
 PROJECT="nsky"
+NSKY_VERSION="2026-11-05.4"
 
 # Порты. 443/tcp занят Caddy (панель), поэтому туннели разведены:
 #   REALITY   → 8443/tcp
@@ -95,6 +96,7 @@ state_set() {
 # ─────────────────────────────────────────────────────────────────────────────
 bold "1/10. Проверка сервера"
 # ─────────────────────────────────────────────────────────────────────────────
+info "Версия установщика: $NSKY_VERSION"
 . /etc/os-release
 case "${ID:-}" in
   ubuntu|debian) ok "Система: ${PRETTY_NAME:-неизвестно}" ;;
@@ -315,35 +317,31 @@ ok "Открыты: $SSH_PORT(ssh), 80, 443/tcp (панель), $REALITY_PORT/tc
 # ─────────────────────────────────────────────────────────────────────────────
 bold "5/10. Подготовка к установке"
 # ─────────────────────────────────────────────────────────────────────────────
-# Старые контейнеры имеют те же имена (remnawave, remnawave-db, ...), и docker
-# откажется создавать новые поверх них. Поэтому контейнеры убираем ВСЕГДА —
-# это безопасно, данные лежат в томах и при обычном запуске сохраняются.
+# Старые контейнеры имеют те же имена (remnawave, remnawave-db, ...).
 OLD_CONTAINERS=(remnawave remnawave-db remnawave-redis remnanode)
-FOUND=0
-for c in "${OLD_CONTAINERS[@]}"; do
-  if docker ps -a --format '{{.Names}}' | awk -v n="$c" '$0==n {found=1} END {exit !found}'; then
-    FOUND=1
-  fi
-done
 
-if [[ "$FOUND" == "1" ]]; then
-  info "Найдена прошлая установка — останавливаю её контейнеры…"
-  for p in "$PROJECT" remnawave panel nsky; do
-    docker compose -p "$p" -f "$DIR/panel/docker-compose.yml" down >/dev/null 2>&1 || true
-    docker compose -p "$p" -f "$DIR/node/docker-compose.yml"   down >/dev/null 2>&1 || true
-  done
-  for c in "${OLD_CONTAINERS[@]}"; do
-    docker rm -f "$c" >/dev/null 2>&1 || true
-  done
-  ok "Старые контейнеры остановлены"
-else
-  info "Прошлых контейнеров нет"
-fi
+# Контейнеры убираем по именам и без условий: docker не даст создать новые
+# поверх существующих, а проверить, к какому проекту они относились, нельзя.
+# Это безопасно — данные лежат в томах, а не в контейнерах.
+for p in "$PROJECT" remnawave panel; do
+  docker compose -p "$p" -f "$DIR/panel/docker-compose.yml" down --remove-orphans >/dev/null 2>&1 || true
+  docker compose -p "$p" -f "$DIR/node/docker-compose.yml"   down --remove-orphans >/dev/null 2>&1 || true
+done
+for c in "${OLD_CONTAINERS[@]}"; do
+  docker rm -f "$c" >/dev/null 2>&1 || true
+done
+ok "Старые контейнеры убраны"
+
+# Сеть и том с unix-сокетом принадлежали прошлым запускам (проект panel и т.п.).
+# Их метки не совпадают с текущим проектом, и docker ругается при старте.
+# Данных в них нет: сеть создаётся заново, сокет пишет сам valkey.
+docker network rm nsky >/dev/null 2>&1 || true
+docker volume rm valkey-socket >/dev/null 2>&1 || true
 
 if [[ "$MODE" == "wipe" ]]; then
   info "Режим --wipe: удаляю данные прошлой установки (база панели, ключи)…"
-  for v in remnawave-db-data valkey-socket "${PROJECT}_db-data" "${PROJECT}_valkey-socket" \
-           panel_db-data panel_valkey-socket nsky_db-data nsky_valkey-socket db-data; do
+  for v in remnawave-db-data panel_db-data nsky_db-data db-data \
+           "${PROJECT}_db-data" "${PROJECT}_valkey-socket" panel_valkey-socket nsky_valkey-socket; do
     docker volume rm -f "$v" >/dev/null 2>&1 || true
   done
   rm -rf "$DIR/panel" "$DIR/node"
