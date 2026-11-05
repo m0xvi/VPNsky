@@ -2,17 +2,20 @@ name: build-client
 
 # Сборка VPNsky (клиент в app/) — Windows + Android.
 #
-# Почему свой workflow, а не upstream: в build.yaml FlClash проверки и сборка
-# обёрнуты в условие `!github.event.repository.private`, поэтому в приватном
-# репозитории они не запускаются вообще.
+# Почему свой workflow, а не upstream: в app/.github/workflows/build.yaml
+# проверки и сборка обёрнуты в условие `!github.event.repository.private`,
+# поэтому в приватном репозитории они не запускаются.
 #
-# Запуск: вкладка Actions → build-client → Run workflow.
-# Результат: артефакты во вкладке Actions у соответствующего запуска.
+# Запуск: тег вида v* (git push origin v0.1.0) или вручную
+#         Actions → build-client → Run workflow.
+# Результат: артефакты в разделе Actions.
+#
+# При падении хвост лога публикуется в ветку ci-logs — обычные логи Actions
+# хранятся в Azure Blob, недоступном из среды разработки.
 #
 # Секреты (Settings → Secrets and variables → Actions), все необязательные:
-#   ANDROID_KEYSTORE_BASE64 — keystore.jks в base64
-#   ANDROID_STORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
-# Без них соберётся debug-APK (годится только для проверки, не для раздачи).
+#   ANDROID_KEYSTORE_BASE64, ANDROID_STORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+# Без них gradle сам подпишет debug-ключом и добавит суффикс .dev.
 
 on:
   workflow_dispatch:
@@ -70,12 +73,19 @@ jobs:
 
       - name: Setup NDK
         uses: nttld/setup-ndk@v1
+        id: build-ndk
         with:
           ndk-version: ${{ env.NDK_VERSION }}
+          add-to-path: true
           link-to-sdk: true
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: app/plugins/rust_api/rust
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -83,7 +93,20 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # GitHub Actions не даёт обращаться к secrets в if: — проверяем в shell.
+      # Ядро встраивает этот файл через //go:embed. Пустой файл допустим, но
+      # upstream всегда кладёт настоящий бандл — повторяем поведение.
+      - name: Ensure CA bundle for core
+        shell: bash
+        run: |
+          bundle=core/Clash.Meta/component/ca/ca-certificates.crt
+          count=$(grep -c 'BEGIN CERTIFICATE' "$bundle" || true)
+          echo "сертификатов в бандле: $count"
+          if [ "${count:-0}" -lt 10 ]; then
+            echo "::warning::CA bundle пуст или мал, скачиваю"
+            curl -fsSL --retry 3 -o "$bundle" "https://curl.se/ca/cacert-2026-09-25.pem"
+            grep -c 'BEGIN CERTIFICATE' "$bundle"
+          fi
+
       - name: Prepare signing
         env:
           KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -97,38 +120,36 @@ jobs:
               "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" >> android/local.properties
             echo "SIGNED=true" >> "$GITHUB_ENV"
           else
-            echo "::warning::Секреты подписи не заданы — соберётся debug APK"
+            echo "::warning::Секреты подписи не заданы — APK будет с суффиксом .dev"
             echo "SIGNED=false" >> "$GITHUB_ENV"
           fi
 
-      # Важно: `flutter build apk` напрямую НЕ собирает Go-ядро (libclash).
-      # Его собирает только setup.dart через хук плагина setup, поэтому
-      # единственный правильный путь — всегда dart setup.dart android.
-      # Если секретов подписи нет, gradle сам подпишет debug-ключом и добавит
-      # суффикс .dev (см. android/app/build.gradle.kts: логика hasReleaseSigning).
+      # flutter build apk напрямую НЕ собирает Go-ядро: нужен setup.dart.
       - name: Build APK
+        env:
+          ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
         run: |
           set -o pipefail
           dart setup.dart android --env stable -v 2>&1 | tee /tmp/build-android.log
 
-      # Логи GitHub Actions лежат в хранилище, недоступном из среды разработки.
-      # Поэтому при падении кладём хвост лога в ветку ci-logs — оттуда его видно.
-      - name: Publish failure log
-        if: failure()
-        continue-on-error: true
-        run: |
-          tail -c 60000 /tmp/build-android.log > app-android.log 2>/dev/null || true
-          bash .github/ci-log-push.sh android app-android.log
-
       - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: vpnsky-android
           path: |
             app/dist/*.apk
             app/build/app/outputs/flutter-apk/*.apk
-          if-no-files-found: error
+          if-no-files-found: warn
           overwrite: true
+
+      - name: Publish failure log
+        if: failure()
+        uses: ./.github/actions/publish-log
+        with:
+          platform: android
+          log-path: /tmp/build-android.log
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   windows:
     if: ${{ github.event_name != 'workflow_dispatch' || inputs.build_windows }}
@@ -138,8 +159,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Enable git long paths
-        run: git config --global core.longpaths true
+        shell: bash
         working-directory: .
+        run: git config --global core.longpaths true
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -157,8 +179,27 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            app/services/helper
+            app/plugins/rust_api/rust
+
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Ensure CA bundle for core
+        shell: bash
+        run: |
+          bundle=core/Clash.Meta/component/ca/ca-certificates.crt
+          count=$(grep -c 'BEGIN CERTIFICATE' "$bundle" || true)
+          echo "сертификатов в бандле: $count"
+          if [ "${count:-0}" -lt 10 ]; then
+            echo "::warning::CA bundle пуст или мал, скачиваю"
+            curl -fsSL --retry 3 -o "$bundle" "https://curl.se/ca/cacert-2026-09-25.pem"
+            grep -c 'BEGIN CERTIFICATE' "$bundle"
+          fi
 
       - name: Build Windows
         shell: bash
@@ -166,19 +207,22 @@ jobs:
           set -o pipefail
           dart setup.dart windows --env stable -v 2>&1 | tee build-windows.log
 
-      - name: Publish failure log
-        if: failure()
-        continue-on-error: true
-        shell: bash
-        run: bash .github/ci-log-push.sh windows build-windows.log
-
       - name: Upload Windows artifacts
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: vpnsky-windows
           path: app/dist/*
-          if-no-files-found: error
+          if-no-files-found: warn
           overwrite: true
+
+      - name: Publish failure log
+        if: failure()
+        uses: ./.github/actions/publish-log
+        with:
+          platform: windows
+          log-path: app/build-windows.log
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   checksums:
     needs: [android, windows]
