@@ -130,7 +130,7 @@ jobs:
           ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
         run: |
           set -o pipefail
-          dart setup.dart android --env stable -v 2>&1 | tee /tmp/build-android.log
+          dart setup.dart android --env stable -v 2>&1 | tee /tmp/build-android.log || { echo "СБОРКА УПАЛА (код $?)" >> /tmp/build-android.log; exit 1; }
 
       - name: Upload APK
         if: success()
@@ -205,7 +205,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          dart setup.dart windows --env stable -v 2>&1 | tee build-windows.log
+          dart setup.dart windows --env stable -v 2>&1 | tee build-windows.log || { echo "СБОРКА УПАЛА (код $?)" >> build-windows.log; exit 1; }
 
       - name: Upload Windows artifacts
         if: success()

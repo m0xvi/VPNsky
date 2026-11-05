@@ -18,6 +18,8 @@ build/
 dist/
 out/
 *.exe
+# Служебная утилита upstream нужна для сборки Windows (CMake INSTALL).
+!app/windows/EnableLoopback.exe
 *.msi
 *.apk
 *.aab

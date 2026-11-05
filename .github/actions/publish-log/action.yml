@@ -27,12 +27,11 @@ runs:
         echo "лог: $LOG_PATH"
 
         if [ -f "$LOG_PATH" ]; then
-          tail -c 80000 "$LOG_PATH" > "/tmp/ci-$PLATFORM.log"
-          echo "размер лога: $(wc -c < "/tmp/ci-$PLATFORM.log") байт"
+          tail -c 80000 "$LOG_PATH" > "/tmp/ci-$PLATFORM.log" 2>/dev/null || cp "$LOG_PATH" "/tmp/ci-$PLATFORM.log"
         else
-          echo "файл лога не найден, публикую заглушку"
-          echo "log file not found: $LOG_PATH" > "/tmp/ci-$PLATFORM.log"
+          echo "файл лога не найден: $LOG_PATH" > "/tmp/ci-$PLATFORM.log"
         fi
+        echo "размер лога: $(wc -c < "/tmp/ci-$PLATFORM.log" 2>/dev/null || echo 0) байт"
 
         WORK="$(mktemp -d)"
         cp "/tmp/ci-$PLATFORM.log" "$WORK/$PLATFORM.log"
@@ -41,15 +40,15 @@ runs:
         git init -q .
         git config user.name "ci-log-bot"
         git config user.email "ci-log@vpnsky.invalid"
-        git checkout -q -b ci-logs
+        git checkout -q -b "ci-logs-$PLATFORM"
         git add "$PLATFORM.log"
         git commit -q -m "log: $PLATFORM build failure (run $GITHUB_RUN_NUMBER)" \
           || { echo "нечего коммитить"; exit 0; }
 
         # Ветка служебная: каждый прогон перезаписывает её.
         if git push -q --force \
-             "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" ci-logs; then
-          echo "ЛОГ ОПУБЛИКОВАН в ветку ci-logs"
+             "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "ci-logs-$PLATFORM"; then
+          echo "ЛОГ ОПУБЛИКОВАН в ветку ci-logs-$PLATFORM"
         else
           echo "::error::Не удалось опубликовать лог (нет прав contents: write?)"
         fi
