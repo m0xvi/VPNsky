@@ -6,6 +6,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'models.dart';
 import 'package:prism_ui/prism_ui.dart';
+import 'package:fl_clash/common/nsky_mode.dart';
 
 part 'generated/config.freezed.dart';
 part 'generated/config.g.dart';
@@ -254,6 +255,10 @@ abstract class AppSettingProps with _$AppSettingProps {
     @JsonKey(readValue: _readSidebarExpanded)
     bool sidebarExpanded,
     @Default(0) int acceptedDisclaimerVersion,
+    // NSky: роль устройства. Клиент — сотрудник, видит только кнопку и
+    // статус. Админ — ИТ-специалист, дополнительно видит профили, серверы,
+    // журналы и инструменты. Хранится локально: сервер об этом не знает.
+    @Default(NskyRole.client) NskyRole nskyRole,
     @Default(true) bool minimizeOnExit,
     @Default(false) bool hidden,
     @Default(false) bool developerMode,

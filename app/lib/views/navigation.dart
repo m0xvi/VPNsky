@@ -14,7 +14,21 @@ class Navigation implements NavigationPort {
   List<NavigationItem> getItems({
     bool openLogs = false,
     bool hasProxies = false,
+    bool isAdmin = false,
   }) {
+    // NSky: сотрудник видит только «Главную» — одна кнопка и статус.
+    // Всё остальное (серверы, профили, журналы, инструменты) появляется
+    // в режиме администратора. Так сотрудник физически не может залезть
+    // в настройки и что-то сломать.
+    if (!isAdmin) {
+      return [
+        NavigationItem(
+          glyph: AppGlyphs.dashboard,
+          label: PageLabel.dashboard,
+          builder: (_) => const DashboardView(),
+        ),
+      ];
+    }
     return [
       NavigationItem(
         glyph: AppGlyphs.dashboard,
