@@ -260,3 +260,44 @@ jobs:
           name: vpnsky-build-${{ github.run_number }}
           path: ./dist
           overwrite: true
+
+  release:
+    needs: [android, windows]
+    if: ${{ startsWith(github.ref, 'refs/tags/v') && (needs.android.result == 'success' || needs.windows.result == 'success') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: ./dist
+          merge-multiple: true
+
+      - name: Подготовить файлы
+        run: |
+          find ./dist -type f -printf '%s\t%p\n' | sort -rn | head -30
+          cd ./dist
+          : > SHA256SUMS.txt
+          find . -type f ! -name 'SHA256SUMS.txt' -print0 \
+            | while IFS= read -r -d '' f; do sha256sum "$f" >> SHA256SUMS.txt; done
+          cat SHA256SUMS.txt
+
+      - name: Создать релиз
+        uses: softprops/action-gh-release@v2
+        with:
+          name: VPNsky ${{ github.ref_name }}
+          body: |
+            Сборка клиента VPNsky (${{ github.ref_name }}).
+
+            **Что внутри**
+            - `vpnsky-android` — APK для Android
+            - `vpnsky-windows` — установщик и portable-версия для Windows
+            - `SHA256SUMS.txt` — контрольные суммы
+
+            **Установка Windows:** распаковать архив, запустить установщик.
+            **Установка Android:** открыть APK на телефоне, разрешить установку из этого источника.
+
+            Собрано автоматически из ветки `${{ github.ref_name }}`.
+          files: |
+            ./dist/**
+          draft: false
+          prerelease: true
+          fail_on_unmatched_files: false
