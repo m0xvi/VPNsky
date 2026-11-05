@@ -93,7 +93,11 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/data/
+    # NSky: ASN.mmdb (11 МБ) не включаем — база автономных систем нужна только
+    # для правил GEOIP,asn,... которых у нас нет. Экономит 11 МБ в каждом APK.
+    - assets/data/GEOIP.dat
+    - assets/data/GEOIP.metadb
+    - assets/data/GEOSITE.dat
     - assets/fonts/
     - assets/images/
     - assets/images/avatar/

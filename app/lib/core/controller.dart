@@ -48,7 +48,14 @@ extension type CoreController._(CoreHandlerInterface _interface)
 
   static Future<void> initGeo() async {
     final homePath = await appPath.homeDirPath;
-    const geoFileNameList = [MMDB, GEOIP, GEOSITE, ASN];
+    // NSky: грузим только то, что реально нужно корпоративным правилам.
+    //
+    // ASN.mmdb (11 МБ) — база автономных систем, нужна для правил вида
+    // GEOIP,asn,... В наших правилах её нет, поэтому не распаковываем:
+    // это минус 11 МБ с диска телефона и со сборки.
+    // GEOSITE (4.3 МБ) — списки доменов; при сплит-туннеле по доменам нужна,
+    // оставляем.
+    const geoFileNameList = [MMDB, GEOIP, GEOSITE];
     try {
       for (final geoFileName in geoFileNameList) {
         final geoFile = File(join(homePath, geoFileName));
