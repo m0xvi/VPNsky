@@ -1,0 +1,695 @@
+  "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\shadowsocks.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\shadowtls.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\snell.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\socks.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\sudoku.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\tlsmirror.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\tproxy.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\trojan.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\trusttunnel.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\tuic.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\tun.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\tunnel.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\vless.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inbound\\vmess.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inner\\tcp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\inner\\udp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\jls\\jls.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\listener.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\mieru\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\mixed\\mixed.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\parse.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\patch.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\reality\\reality.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\redir\\tcp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\redir\\tcp_other.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\restls\\restls.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\shadowquic\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\shadowsocks\\tcp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\shadowsocks\\udp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\shadowsocks\\utils.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\shadowtls\\listener.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing\\context.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing\\dialer.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing\\handler.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing\\sing.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing\\util.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing_hysteria2\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing_shadowsocks\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing_tun\\dns.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing_tun\\iface.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing_tun\\prepare.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing_tun\\redirect_stub.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing_tun\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing_tun\\server_windows.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing_tun\\tun_name_other.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing_vless\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing_vless\\service.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sing_vmess\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\snell\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\socks\\tcp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\socks\\udp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\socks\\utils.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\sudoku\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\tlsmirror\\tlsmirror.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\tproxy\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\tproxy\\setsockopt_other.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\tproxy\\tproxy.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\tproxy\\tproxy_iptables.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\tproxy\\udp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\tproxy\\udp_other.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\trojan\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\trojan\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\trusttunnel\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\tuic\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\tunnel\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\tunnel\\tcp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\listener\\tunnel\\udp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\log\\level.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\log\\log.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\log\\sing.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\ntp\\ntp\\service.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\ntp\\ntp\\time_windows.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\ntp\\time.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\bundle\\bundle.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\base.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\domain.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\domain_keyword.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\domain_regex.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\domain_suffix.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\domain_wildcard.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\dscp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\final.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\geoip.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\geosite.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\in_name.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\in_type.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\in_user.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\ipasn.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\ipcidr.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\ipsuffix.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\network_type.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\port.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\process.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\rematch_name.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\common\\uid.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\logic\\logic.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\parser.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\provider\\classical_strategy.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\provider\\domain_strategy.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\provider\\ipcidr_strategy.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\provider\\mrs_converter.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\provider\\mrs_reader.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\provider\\parse.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\provider\\provider.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\provider\\rule_set.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\rules\\wrapper\\wrapper.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\padding\\padding.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\pipe\\deadline.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\pipe\\io_pipe.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\session\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\session\\frame.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\session\\session.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\session\\stream.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\skiplist\\contianer.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\skiplist\\skiplist.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\skiplist\\skiplist_newnode.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\skiplist\\types.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\util\\deadline.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\util\\routine.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\util\\string_map.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\anytls\\util\\type.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\gost\\relay.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\gost\\websocket.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\gun\\gun.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\gun\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\gun\\utils.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\congestion\\brutal.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\congestion\\pacer.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\conns\\faketcp\\obfs.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\conns\\faketcp\\tcp_stub.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\conns\\udp\\hop.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\conns\\udp\\obfs.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\conns\\wechat\\obfs.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\core\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\core\\frag.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\core\\protocol.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\core\\stream.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\obfs\\dummy.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\obfs\\obfs.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\obfs\\xplus.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\pmtud_fix\\avail.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\transport\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\hysteria\\utils\\misc.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\jls\\jls.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\jls\\utls.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\kcptun\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\kcptun\\common.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\kcptun\\comp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\kcptun\\doc.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\kcptun\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\masque\\client_h2.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\masque\\l4proxy.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\masque\\masque.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mekya\\bundle.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mekya\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mekya\\config.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mekya\\deadline.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mekya\\packetconn.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mekya\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mkcp\\auth.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mkcp\\config.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mkcp\\conn.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mkcp\\header.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mkcp\\listener.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mkcp\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\mkcp\\segment.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\config.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\control.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\data.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\keymethod.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\lzo.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\mux.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\packetio.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\push.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\tlsauth.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\tlscrypt.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\openvpn\\tlscrypt_v2.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\restls\\restls.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowquic\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowquic\\congestion.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowquic\\dial.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowquic\\extension.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowquic\\extension_brutal.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowquic\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowquic\\protocol.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowquic\\quic_version.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowquic\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowquic\\state.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowquic\\stream_conn.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowsocks\\core\\cipher.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowsocks\\shadowaead\\cipher.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowsocks\\shadowaead\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowsocks\\shadowaead\\stream.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowsocks\\shadowstream\\chacha20.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowsocks\\shadowstream\\cipher.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowsocks\\shadowstream\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowsocks\\shadowstream\\stream.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowtls\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowtls\\protocol.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowtls\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowtls\\v2.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\shadowtls\\v3.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\simple-obfs\\http.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\simple-obfs\\http_server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\simple-obfs\\tls.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\simple-obfs\\tls_server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\snell\\cipher.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\snell\\pool.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\snell\\snell.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\snell\\v4.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\socks4\\socks4.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\socks5\\socks5.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\obfs\\base.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\obfs\\http_post.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\obfs\\http_simple.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\obfs\\obfs.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\obfs\\plain.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\obfs\\random_head.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\obfs\\tls1.2_ticket_auth.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\protocol\\auth_aes128_md5.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\protocol\\auth_aes128_sha1.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\protocol\\auth_chain_a.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\protocol\\auth_chain_b.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\protocol\\auth_sha1_v4.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\protocol\\base.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\protocol\\origin.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\protocol\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\protocol\\protocol.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\protocol\\stream.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\tools\\bufPool.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\tools\\crypto.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\ssr\\tools\\random.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\address.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\config.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\crypto\\ed25519.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\crypto\\record_conn.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\early_handshake.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\handshake.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\handshake_kip.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\httpmask_tunnel.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\init.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\kip.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\multiplex.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\multiplex\\session.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\multiplex_dialer.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\conn_helpers.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\early_handshake.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\halfpipe.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\masker.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\pathroot.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\tunnel_api.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\tunnel_conn_queue.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\tunnel_conn_split.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\tunnel_dial.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\tunnel_preconnect.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\tunnel_ready.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\tunnel_retry.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\tunnel_server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\tunnel_ws.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\tunnel_ws_server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\ws_auth.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\httpmask\\ws_stream_conn.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\ascii_mode.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\conn.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\downlink.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\encode.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\grid.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\layout.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\packed.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\padding_prob.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\rand.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\read_buffer.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\table.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\table_set.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\obfs\\sudoku\\write_buffer.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\replay.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\session_keys.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\table_probe.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\tables.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\sudoku\\uot.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tlsmirror\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tlsmirror\\config.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tlsmirror\\conn.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tlsmirror\\crypto.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tlsmirror\\enrollment.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tlsmirror\\mirror.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tlsmirror\\padding.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tlsmirror\\record.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tlsmirror\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tlsmirror\\traffic.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\trojan\\trojan.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\trusttunnel\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\trusttunnel\\doc.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\trusttunnel\\icmp.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\trusttunnel\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\trusttunnel\\protocol.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\trusttunnel\\quic.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\trusttunnel\\service.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\common\\congestion.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\common\\dial.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion\\bandwidth.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion\\bandwidth_sampler.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion\\bbr_sender.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion\\cubic.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion\\cubic_sender.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion\\hybrid_slow_start.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion\\minmax.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion\\minmax_go121.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion\\pacer.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion\\windowed_filter.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion_v2\\bandwidth.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion_v2\\bandwidth_sampler.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion_v2\\bbr_sender.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion_v2\\brutal.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion_v2\\minmax_go121.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion_v2\\pacer.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion_v2\\packet_number_indexed_queue.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion_v2\\ringbuffer.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\congestion_v2\\windowed_filter.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\pool_client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\tuic.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\types\\stream.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\types\\type.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\v4\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\v4\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\v4\\protocol.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\v4\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\v5\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\v5\\frag.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\v5\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\v5\\protocol.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\tuic\\v5\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\v2ray-plugin\\mux.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\v2ray-plugin\\websocket.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\addons.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\config.pb.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\conn.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\encryption\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\encryption\\common.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\encryption\\doc.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\encryption\\factory.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\encryption\\key.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\encryption\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\encryption\\xor.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\packet.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\vision\\conn.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\vision\\filter.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\vision\\padding.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\vision\\vision.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vless\\vless.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vmess\\aead.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vmess\\chunk.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vmess\\conn.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vmess\\h2.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vmess\\header.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vmess\\http.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vmess\\tls.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vmess\\user.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vmess\\vmess.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vmess\\websocket.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\vmess\\websocket_go121.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\xhttp\\browser.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\xhttp\\client.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\xhttp\\config.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\xhttp\\conn.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\xhttp\\reuse.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\xhttp\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\xhttp\\upload_queue.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\transport\\xhttp\\xpadding.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\tunnel\\connection.go",
+[   +1 ms]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\tunnel\\dns_dialer.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\tunnel\\mode.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\tunnel\\patch.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\tunnel\\statistic\\manager.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\tunnel\\statistic\\patch.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\tunnel\\statistic\\tracker.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\tunnel\\status.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\Clash.Meta\\tunnel\\tunnel.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\certificate.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\cmd\\core\\main.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\config.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\connection.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\delay.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\dial_pipe.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\dns_query.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\exit.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\filter.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\geo.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\go.mod",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\go.sum",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\hooks.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\lifecycle.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\log.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\message.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\method.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\outbound_ip.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\ownership_other.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\probe.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\profile_base.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\protocol.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\provider.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\proxy.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\region.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\request_traffic.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\route.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\rule_set.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\server.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\service_check.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\service_rules.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\share_link.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\short_id.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\slots.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\core\\spill.go",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\lib\\setup_hooks.dart",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\lib\\src\\build.dart",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\lib\\src\\build_cache.dart",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\lib\\src\\core_builder.dart",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\lib\\src\\error.dart",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\lib\\src\\fingerprint.dart",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\lib\\src\\go_builder.dart",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\lib\\src\\logging.dart",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\lib\\src\\options.dart",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\lib\\src\\rust_builder.dart",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\lib\\src\\target.dart",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\lib\\src\\util.dart",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\pubspec.lock",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\plugins\\setup\\setup_hooks\\pubspec.yaml",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\services\\helper\\Cargo.lock",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\services\\helper\\Cargo.toml",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\services\\helper\\build.rs",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\services\\helper\\src\\main.rs",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\services\\helper\\src\\service\\hub.rs",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\services\\helper\\src\\service\\linux.rs",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\services\\helper\\src\\service\\mod.rs",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\services\\helper\\src\\service\\owner.rs",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\services\\helper\\src\\service\\peer.rs",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\services\\helper\\src\\service\\windows.rs",
+[        ]                    "D:\\a\\VPNsky\\VPNsky\\app\\libclash\\windows\\"
+[        ]                  ],
+[        ]                  "status": "success",
+[        ]                  "timestamp": "2026-11-05 16:41:56.000"
+[        ]                }
+[ +434 ms]   [ +510 ms] File modified during build. Build must be rerun.
+[  +11 ms]   [  +11 ms] Running build hooks for windows_x64 done.
+[  +10 ms]   [  +10 ms] build_hooks: Complete
+[  +87 ms]   [  +87 ms] Persisting file store
+[   +6 ms]   [   +7 ms] Done persisting file store
+[   +8 ms]   [   +7 ms] Target kernel_snapshot_program failed: Exception
+[        ]              #0      KernelSnapshot.build (package:flutter_tools/src/build_system/targets/common.dart:315:7)
+[        ]              <asynchronous suspension>
+[        ]              #1      _BuildInstance._invokeInternal (package:flutter_tools/src/build_system/build_system.dart:937:9)
+[        ]              <asynchronous suspension>
+[        ]              #2      Future.wait.<anonymous closure> (dart:async/future.dart:567:21)
+[        ]              <asynchronous suspension>
+[        ]              #3      _BuildInstance.invokeTarget (package:flutter_tools/src/build_system/build_system.dart:875:32)
+[        ]              <asynchronous suspension>
+[        ]              #4      Future.wait.<anonymous closure> (dart:async/future.dart:567:21)
+[        ]              <asynchronous suspension>
+[        ]              #5      _BuildInstance.invokeTarget (package:flutter_tools/src/build_system/build_system.dart:875:32)
+[        ]              <asynchronous suspension>
+[        ]              #6      Future.wait.<anonymous closure> (dart:async/future.dart:567:21)
+[        ]              <asynchronous suspension>
+[        ]              #7      _BuildInstance.invokeTarget (package:flutter_tools/src/build_system/build_system.dart:875:32)
+[        ]              <asynchronous suspension>
+[        ]              #8      FlutterBuildSystem.build (package:flutter_tools/src/build_system/build_system.dart:684:16)
+[        ]              <asynchronous suspension>
+[        ]              #9      AssembleCommand.runCommand (package:flutter_tools/src/commands/assemble.dart:369:32)
+[        ]              <asynchronous suspension>
+[        ]              #10     FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1663:27)
+[        ]              <asynchronous suspension>
+[        ]              #11     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+[        ]              <asynchronous suspension>
+[        ]              #12     CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+[        ]              <asynchronous suspension>
+[        ]              #13     FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+[        ]              <asynchronous suspension>
+[        ]              #14     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+[        ]              <asynchronous suspension>
+[        ]              #15     FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+[        ]              <asynchronous suspension>
+[        ]              #16     FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+[        ]              <asynchronous suspension>
+[        ]              #17     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+[        ]              <asynchronous suspension>
+[        ]              #18     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+[        ]              <asynchronous suspension>
+[        ]              #19     main (package:flutter_tools/executable.dart:103:3)
+[        ]              <asynchronous suspension>
+[   +5 ms]   [   +8 ms] "flutter assemble" took 345,595ms.
+[   +3 ms]   [   +3 ms] 
+[        ]              #0      throwToolExit (package:flutter_tools/src/base/common.dart:34:3)
+[        ]              #1      AssembleCommand.runCommand (package:flutter_tools/src/commands/assemble.dart:387:7)
+[        ]              <asynchronous suspension>
+[        ]              #2      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1663:27)
+[        ]              <asynchronous suspension>
+[        ]              #3      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+[        ]              <asynchronous suspension>
+[        ]              #4      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+[        ]              <asynchronous suspension>
+[        ]              #5      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+[        ]              <asynchronous suspension>
+[        ]              #6      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+[        ]              <asynchronous suspension>
+[        ]              #7      FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+[        ]              <asynchronous suspension>
+[        ]              #8      FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+[        ]              <asynchronous suspension>
+[        ]   [        ] Running 1 shutdown hook
+[        ]              #9      run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+[        ]              <asynchronous suspension>
+[        ]              #10     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+[        ]              <asynchronous suspension>
+[        ]              #11     main (package:flutter_tools/executable.dart:103:3)
+[        ]              <asynchronous suspension>
+[        ]   [        ] Shutdown hooks complete
+[        ]   [        ] exiting with code 1
+[  +46 ms] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(254,5): error MSB8066: Custom build for 'D:\a\VPNsky\VPNsky\app\build\windows\x64\CMakeFiles\cf7f13e015c9165ff5d061c0f4df99f7\flutter_windows.dll.rule;D:\a\VPNsky\VPNsky\app\build\windows\x64\CMakeFiles\9ef0ca5feafd88061847dd9bc6c1bfda\flutter_assemble.rule;D:\a\VPNsky\VPNsky\app\windows\flutter\CMakeLists.txt' exited with code 1. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[   +9 ms] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj" (default targets) -- FAILED.
+[   +1 ms] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (default targets) -- FAILED.
+[ +230 ms] Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\ALL_BUILD.vcxproj" (3) is building "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\jni\shared\jni.vcxproj" (12) on node 1 (default targets).
+[        ] PrepareForBuild:
+[        ]   Creating directory "jni.dir\Release\".
+[   +1 ms]   Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
+[        ]   Creating directory "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\jni\shared\Release\".
+[        ]   Creating directory "jni.dir\Release\jni.tlog\".
+[   +1 ms] InitializeBuildStatus:
+[        ]   Creating "jni.dir\Release\jni.tlog\unsuccessfulbuild" because "AlwaysCreate" was specified.
+[        ]   Touching "jni.dir\Release\jni.tlog\unsuccessfulbuild".
+[  +25 ms] CustomBuild:
+[        ]   Building Custom Rule D:/a/VPNsky/VPNsky/app/windows/flutter/ephemeral/.plugin_symlinks/jni/src/CMakeLists.txt
+[  +76 ms] ClCompile:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /ID:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\jni\src\..\third_party /nologo /W3 /WX- /diagnostics:column /O2 /Ob2 /D _WINDLL /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D DART_SHARED_LIB /D UNICODE /D _UNICODE /D "CMAKE_INTDIR=\"Release\"" /D jni_EXPORTS /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"jni.dir\Release\\" /Fd"jni.dir\Release\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\jni\src\dartjni.c D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\jni\src\third_party\global_jni_env.c D:\a\VPNsky\VPNsky\app\windows\flutter\ephemeral\.plugin_symlinks\jni\src\include\dart_api_dl.c
+[  +37 ms]   dartjni.c
+[+1095 ms]   global_jni_env.c
+[ +181 ms]   dart_api_dl.c
+[  +18 ms]   Generating Code...
+[ +235 ms] Link:
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /ERRORREPORT:QUEUE /OUT:"D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\jni\shared\Release\dartjni.dll" /INCREMENTAL:NO /NOLOGO "C:\hostedtoolcache\windows\Java_Temurin-Hotspot_jdk\8.0.504-1\x64\lib\jvm.lib" kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/jni/shared/Release/dartjni.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/jni/shared/Release/dartjni.lib" /MACHINE:X64  /machine:x64 /DLL jni.dir\Release\dartjni.obj
+[        ]   jni.dir\Release\global_jni_env.obj
+[        ]   jni.dir\Release\dart_api_dl.obj
+[  +61 ms]      Creating library D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/jni/shared/Release/dartjni.lib and object D:/a/VPNsky/VPNsky/app/build/windows/x64/plugins/jni/shared/Release/dartjni.exp
+[  +60 ms]   jni.vcxproj -> D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\jni\shared\Release\dartjni.dll
+[  +13 ms] FinalizeBuildStatus:
+[        ]   Deleting file "jni.dir\Release\jni.tlog\unsuccessfulbuild".
+[        ]   Touching "jni.dir\Release\jni.tlog\jni.lastbuildstate".
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\plugins\jni\shared\jni.vcxproj" (default targets).
+[ +109 ms] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\ALL_BUILD.vcxproj" (default targets) -- FAILED.
+[        ] Done Building Project "D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj" (default targets) -- FAILED.
+[   +7 ms] Build FAILED.
+[  +83 ms] "D:\a\VPNsky\VPNsky\app\build\windows\x64\INSTALL.vcxproj" (default target) (1) ->
+[        ] "D:\a\VPNsky\VPNsky\app\build\windows\x64\ALL_BUILD.vcxproj" (default target) (3) ->
+[        ] "D:\a\VPNsky\VPNsky\app\build\windows\x64\runner\FlClash.vcxproj" (default target) (4) ->
+[        ] "D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj" (default target) (5) ->
+[        ] (CustomBuild target) -> 
+[        ]   [+4902 ms] lib/models/config.dart(280,8): error G1E741313: The constructor function type '_AppSettingProps Function({int acceptedDisclaimerVersion, bool autoCheckUpdate, bool autoLaunch, bool autoRun, bool checkCertificate, bool closeConnections, List<DashboardWidget> dashboardWidgets, int delayTestTimeout, bool developerMode, List<String> disabledServices, EditorFontSize editorFontSize, bool editorLineWrap, List<Filter> filters, bool floatingNavigationBar, bool hidden, bool hideIp, String? locale, bool minimizeOnExit, bool monochromeTrayIcon, bool onlyStatisticsProxy, bool openLogs, Map<String, String> recordGroupings, RequestFeed requestFeed, RestoreStrategy restoreStrategy, List<String> serviceOrder, bool showNotificationStopAction, bool showTrayTitle, bool sidebarExpanded, bool silentLaunch, TabAnimation tabAnimation, Map<String, Map<String, double>> tableColumnWidths, List<String> userAgents})' isn't a subtype of 'AppSettingProps Function({int acceptedDisclaimerVersion, bool autoCheckUpdate, bool autoLaunch, bool autoRun, bool checkCertificate, bool closeConnections, List<DashboardWidget> dashboardWidgets, int delayTestTimeout, bool developerMode, List<String> disabledServices, EditorFontSize editorFontSize, bool editorLineWrap, List<Filter> filters, bool floatingNavigationBar, bool hidden, bool hideIp, String? locale, bool minimizeOnExit, bool monochromeTrayIcon, NskyRole nskyRole, bool onlyStatisticsProxy, bool openLogs, Map<String, String> recordGroupings, RequestFeed requestFeed, RestoreStrategy restoreStrategy, List<String> serviceOrder, bool showNotificationStopAction, bool showTrayTitle, bool sidebarExpanded, bool silentLaunch, TabAnimation tabAnimation, Map<String, Map<String, double>> tableColumnWidths, List<String> userAgents})'. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[        ]   [+1565 ms] lib/providers/state/navigation.dart(7,27): error G4127D1E8: The getter 'nskyRole' isn't defined for the type 'AppSettingProps'. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(254,5): error MSB8066: Custom build for 'D:\a\VPNsky\VPNsky\app\build\windows\x64\CMakeFiles\cf7f13e015c9165ff5d061c0f4df99f7\flutter_windows.dll.rule;D:\a\VPNsky\VPNsky\app\build\windows\x64\CMakeFiles\9ef0ca5feafd88061847dd9bc6c1bfda\flutter_assemble.rule;D:\a\VPNsky\VPNsky\app\windows\flutter\CMakeLists.txt' exited with code 1. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[        ]     0 Warning(s)
+[        ]     3 Error(s)
+[        ] Time Elapsed 00:05:49.76
+[  +24 ms] Building Windows application... (completed in 366.6s)
+[        ] "flutter windows" took 368,197ms.
+[   +1 ms] Build process failed.
+[        ] 
+           #0      throwToolExit (package:flutter_tools/src/base/common.dart:34:3)
+           #1      _runBuild (package:flutter_tools/src/windows/build_windows.dart:262:5)
+           <asynchronous suspension>
+           #2      buildWindows (package:flutter_tools/src/windows/build_windows.dart:118:5)
+           <asynchronous suspension>
+           #3      BuildWindowsCommand.runCommand (package:flutter_tools/src/commands/build_windows.dart:73:5)
+           <asynchronous suspension>
+           #4      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1663:27)
+           <asynchronous suspension>
+           #5      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #6      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+           <asynchronous suspension>
+           #7      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+           <asynchronous suspension>
+           #8      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #9      FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+           <asynchronous suspension>
+           #10     FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+           <asynchronous suspension>
+           #11     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+           <asynchronous suspension>
+           #12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #13     main (package:flutter_tools/executable.dart:103:3)
+           <asynchronous suspension>
+
+
+[        ] Running 1 shutdown hook
+[        ] Shutdown hooks complete
+[        ] exiting with code 1
+BuildError: [+4927 ms] [+4902 ms] lib/models/config.dart(280,8): error G1E741313: The constructor function type '_AppSettingProps Function({int acceptedDisclaimerVersion, bool autoCheckUpdate, bool autoLaunch, bool autoRun, bool checkCertificate, bool closeConnections, List<DashboardWidget> dashboardWidgets, int delayTestTimeout, bool developerMode, List<String> disabledServices, EditorFontSize editorFontSize, bool editorLineWrap, List<Filter> filters, bool floatingNavigationBar, bool hidden, bool hideIp, String? locale, bool minimizeOnExit, bool monochromeTrayIcon, bool onlyStatisticsProxy, bool openLogs, Map<String, String> recordGroupings, RequestFeed requestFeed, RestoreStrategy restoreStrategy, List<String> serviceOrder, bool showNotificationStopAction, bool showTrayTitle, bool sidebarExpanded, bool silentLaunch, TabAnimation tabAnimation, Map<String, Map<String, double>> tableColumnWidths, List<String> userAgents})' isn't a subtype of 'AppSettingProps Function({int acceptedDisclaimerVersion, bool autoCheckUpdate, bool autoLaunch, bool autoRun, bool checkCertificate, bool closeConnections, List<DashboardWidget> dashboardWidgets, int delayTestTimeout, bool developerMode, List<String> disabledServices, EditorFontSize editorFontSize, bool editorLineWrap, List<Filter> filters, bool floatingNavigationBar, bool hidden, bool hideIp, String? locale, bool minimizeOnExit, bool monochromeTrayIcon, NskyRole nskyRole, bool onlyStatisticsProxy, bool openLogs, Map<String, String> recordGroupings, RequestFeed requestFeed, RestoreStrategy restoreStrategy, List<String> serviceOrder, bool showNotificationStopAction, bool showTrayTitle, bool sidebarExpanded, bool silentLaunch, TabAnimation tabAnimation, Map<String, Map<String, double>> tableColumnWidths, List<String> userAgents})'. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[+1540 ms] [+1565 ms] lib/providers/state/navigation.dart(7,27): error G4127D1E8: The getter 'nskyRole' isn't defined for the type 'AppSettingProps'. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[  +46 ms] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(254,5): error MSB8066: Custom build for 'D:\a\VPNsky\VPNsky\app\build\windows\x64\CMakeFiles\cf7f13e015c9165ff5d061c0f4df99f7\flutter_windows.dll.rule;D:\a\VPNsky\VPNsky\app\build\windows\x64\CMakeFiles\9ef0ca5feafd88061847dd9bc6c1bfda\flutter_assemble.rule;D:\a\VPNsky\VPNsky\app\windows\flutter\CMakeLists.txt' exited with code 1. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[        ]   [+4902 ms] lib/models/config.dart(280,8): error G1E741313: The constructor function type '_AppSettingProps Function({int acceptedDisclaimerVersion, bool autoCheckUpdate, bool autoLaunch, bool autoRun, bool checkCertificate, bool closeConnections, List<DashboardWidget> dashboardWidgets, int delayTestTimeout, bool developerMode, List<String> disabledServices, EditorFontSize editorFontSize, bool editorLineWrap, List<Filter> filters, bool floatingNavigationBar, bool hidden, bool hideIp, String? locale, bool minimizeOnExit, bool monochromeTrayIcon, bool onlyStatisticsProxy, bool openLogs, Map<String, String> recordGroupings, RequestFeed requestFeed, RestoreStrategy restoreStrategy, List<String> serviceOrder, bool showNotificationStopAction, bool showTrayTitle, bool sidebarExpanded, bool silentLaunch, TabAnimation tabAnimation, Map<String, Map<String, double>> tableColumnWidths, List<String> userAgents})' isn't a subtype of 'AppSettingProps Function({int acceptedDisclaimerVersion, bool autoCheckUpdate, bool autoLaunch, bool autoRun, bool checkCertificate, bool closeConnections, List<DashboardWidget> dashboardWidgets, int delayTestTimeout, bool developerMode, List<String> disabledServices, EditorFontSize editorFontSize, bool editorLineWrap, List<Filter> filters, bool floatingNavigationBar, bool hidden, bool hideIp, String? locale, bool minimizeOnExit, bool monochromeTrayIcon, NskyRole nskyRole, bool onlyStatisticsProxy, bool openLogs, Map<String, String> recordGroupings, RequestFeed requestFeed, RestoreStrategy restoreStrategy, List<String> serviceOrder, bool showNotificationStopAction, bool showTrayTitle, bool sidebarExpanded, bool silentLaunch, TabAnimation tabAnimation, Map<String, Map<String, double>> tableColumnWidths, List<String> userAgents})'. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[        ]   [+1565 ms] lib/providers/state/navigation.dart(7,27): error G4127D1E8: The getter 'nskyRole' isn't defined for the type 'AppSettingProps'. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(254,5): error MSB8066: Custom build for 'D:\a\VPNsky\VPNsky\app\build\windows\x64\CMakeFiles\cf7f13e015c9165ff5d061c0f4df99f7\flutter_windows.dll.rule;D:\a\VPNsky\VPNsky\app\build\windows\x64\CMakeFiles\9ef0ca5feafd88061847dd9bc6c1bfda\flutter_assemble.rule;D:\a\VPNsky\VPNsky\app\windows\flutter\CMakeLists.txt' exited with code 1. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[   +1 ms] Build process failed.
+[        ] 
+           #0      throwToolExit (package:flutter_tools/src/base/common.dart:34:3)
+           #1      _runBuild (package:flutter_tools/src/windows/build_windows.dart:262:5)
+           <asynchronous suspension>
+           #2      buildWindows (package:flutter_tools/src/windows/build_windows.dart:118:5)
+           <asynchronous suspension>
+           #3      BuildWindowsCommand.runCommand (package:flutter_tools/src/commands/build_windows.dart:73:5)
+           <asynchronous suspension>
+           #4      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1663:27)
+           <asynchronous suspension>
+           #5      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #6      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+           <asynchronous suspension>
+           #7      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+           <asynchronous suspension>
+           #8      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #9      FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+           <asynchronous suspension>
+           #10     FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+           <asynchronous suspension>
+           #11     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+           <asynchronous suspension>
+           #12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #13     main (package:flutter_tools/executable.dart:103:3)
+           <asynchronous suspension>
+
+
+
+#0      AppBuilder.build (package:flutter_app_builder/src/builders/app_builder.dart:72:7)
+<asynchronous suspension>
+#1      UnifiedDistributor.package (package:unified_distributor/src/unified_distributor.dart:176:27)
+<asynchronous suspension>
+#2      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#3      main (file:///C:/Users/runneradmin/AppData/Local/Pub/Cache/git/flutter_distributor-47e263a8001aec32884b62c68dbb6a78d90e821b/packages/flutter_distributor/bin/main.dart:13:5)
+<asynchronous suspension>
+
+BuildError: [+4927 ms] [+4902 ms] lib/models/config.dart(280,8): error G1E741313: The constructor function type '_AppSettingProps Function({int acceptedDisclaimerVersion, bool autoCheckUpdate, bool autoLaunch, bool autoRun, bool checkCertificate, bool closeConnections, List<DashboardWidget> dashboardWidgets, int delayTestTimeout, bool developerMode, List<String> disabledServices, EditorFontSize editorFontSize, bool editorLineWrap, List<Filter> filters, bool floatingNavigationBar, bool hidden, bool hideIp, String? locale, bool minimizeOnExit, bool monochromeTrayIcon, bool onlyStatisticsProxy, bool openLogs, Map<String, String> recordGroupings, RequestFeed requestFeed, RestoreStrategy restoreStrategy, List<String> serviceOrder, bool showNotificationStopAction, bool showTrayTitle, bool sidebarExpanded, bool silentLaunch, TabAnimation tabAnimation, Map<String, Map<String, double>> tableColumnWidths, List<String> userAgents})' isn't a subtype of 'AppSettingProps Function({int acceptedDisclaimerVersion, bool autoCheckUpdate, bool autoLaunch, bool autoRun, bool checkCertificate, bool closeConnections, List<DashboardWidget> dashboardWidgets, int delayTestTimeout, bool developerMode, List<String> disabledServices, EditorFontSize editorFontSize, bool editorLineWrap, List<Filter> filters, bool floatingNavigationBar, bool hidden, bool hideIp, String? locale, bool minimizeOnExit, bool monochromeTrayIcon, NskyRole nskyRole, bool onlyStatisticsProxy, bool openLogs, Map<String, String> recordGroupings, RequestFeed requestFeed, RestoreStrategy restoreStrategy, List<String> serviceOrder, bool showNotificationStopAction, bool showTrayTitle, bool sidebarExpanded, bool silentLaunch, TabAnimation tabAnimation, Map<String, Map<String, double>> tableColumnWidths, List<String> userAgents})'. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[+1540 ms] [+1565 ms] lib/providers/state/navigation.dart(7,27): error G4127D1E8: The getter 'nskyRole' isn't defined for the type 'AppSettingProps'. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[  +46 ms] C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(254,5): error MSB8066: Custom build for 'D:\a\VPNsky\VPNsky\app\build\windows\x64\CMakeFiles\cf7f13e015c9165ff5d061c0f4df99f7\flutter_windows.dll.rule;D:\a\VPNsky\VPNsky\app\build\windows\x64\CMakeFiles\9ef0ca5feafd88061847dd9bc6c1bfda\flutter_assemble.rule;D:\a\VPNsky\VPNsky\app\windows\flutter\CMakeLists.txt' exited with code 1. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[        ]   [+4902 ms] lib/models/config.dart(280,8): error G1E741313: The constructor function type '_AppSettingProps Function({int acceptedDisclaimerVersion, bool autoCheckUpdate, bool autoLaunch, bool autoRun, bool checkCertificate, bool closeConnections, List<DashboardWidget> dashboardWidgets, int delayTestTimeout, bool developerMode, List<String> disabledServices, EditorFontSize editorFontSize, bool editorLineWrap, List<Filter> filters, bool floatingNavigationBar, bool hidden, bool hideIp, String? locale, bool minimizeOnExit, bool monochromeTrayIcon, bool onlyStatisticsProxy, bool openLogs, Map<String, String> recordGroupings, RequestFeed requestFeed, RestoreStrategy restoreStrategy, List<String> serviceOrder, bool showNotificationStopAction, bool showTrayTitle, bool sidebarExpanded, bool silentLaunch, TabAnimation tabAnimation, Map<String, Map<String, double>> tableColumnWidths, List<String> userAgents})' isn't a subtype of 'AppSettingProps Function({int acceptedDisclaimerVersion, bool autoCheckUpdate, bool autoLaunch, bool autoRun, bool checkCertificate, bool closeConnections, List<DashboardWidget> dashboardWidgets, int delayTestTimeout, bool developerMode, List<String> disabledServices, EditorFontSize editorFontSize, bool editorLineWrap, List<Filter> filters, bool floatingNavigationBar, bool hidden, bool hideIp, String? locale, bool minimizeOnExit, bool monochromeTrayIcon, NskyRole nskyRole, bool onlyStatisticsProxy, bool openLogs, Map<String, String> recordGroupings, RequestFeed requestFeed, RestoreStrategy restoreStrategy, List<String> serviceOrder, bool showNotificationStopAction, bool showTrayTitle, bool sidebarExpanded, bool silentLaunch, TabAnimation tabAnimation, Map<String, Map<String, double>> tableColumnWidths, List<String> userAgents})'. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[        ]   [+1565 ms] lib/providers/state/navigation.dart(7,27): error G4127D1E8: The getter 'nskyRole' isn't defined for the type 'AppSettingProps'. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[        ]   C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(254,5): error MSB8066: Custom build for 'D:\a\VPNsky\VPNsky\app\build\windows\x64\CMakeFiles\cf7f13e015c9165ff5d061c0f4df99f7\flutter_windows.dll.rule;D:\a\VPNsky\VPNsky\app\build\windows\x64\CMakeFiles\9ef0ca5feafd88061847dd9bc6c1bfda\flutter_assemble.rule;D:\a\VPNsky\VPNsky\app\windows\flutter\CMakeLists.txt' exited with code 1. [D:\a\VPNsky\VPNsky\app\build\windows\x64\flutter\flutter_assemble.vcxproj]
+[   +1 ms] Build process failed.
+[        ] 
+           #0      throwToolExit (package:flutter_tools/src/base/common.dart:34:3)
+           #1      _runBuild (package:flutter_tools/src/windows/build_windows.dart:262:5)
+           <asynchronous suspension>
+           #2      buildWindows (package:flutter_tools/src/windows/build_windows.dart:118:5)
+           <asynchronous suspension>
+           #3      BuildWindowsCommand.runCommand (package:flutter_tools/src/commands/build_windows.dart:73:5)
+           <asynchronous suspension>
+           #4      FlutterCommand.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command.dart:1663:27)
+           <asynchronous suspension>
+           #5      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #6      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+           <asynchronous suspension>
+           #7      FlutterCommandRunner.runCommand.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:496:9)
+           <asynchronous suspension>
+           #8      AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #9      FlutterCommandRunner.runCommand (package:flutter_tools/src/runner/flutter_command_runner.dart:431:5)
+           <asynchronous suspension>
+           #10     FlutterCommandRunner.run.<anonymous closure> (package:flutter_tools/src/runner/flutter_command_runner.dart:307:33)
+           <asynchronous suspension>
+           #11     run.<anonymous closure>.<anonymous closure> (package:flutter_tools/runner.dart:104:11)
+           <asynchronous suspension>
+           #12     AppContext.run.<anonymous closure> (package:flutter_tools/src/base/context.dart:154:19)
+           <asynchronous suspension>
+           #13     main (package:flutter_tools/executable.dart:103:3)
+           <asynchronous suspension>
+
+
+
+#0      AppBuilder.build (package:flutter_app_builder/src/builders/app_builder.dart:72:7)
+<asynchronous suspension>
+#1      UnifiedDistributor.package (package:unified_distributor/src/unified_distributor.dart:176:27)
+<asynchronous suspension>
+#2      CommandRunner.runCommand (package:args/command_runner.dart:212:13)
+<asynchronous suspension>
+#3      main (file:///C:/Users/runneradmin/AppData/Local/Pub/Cache/git/flutter_distributor-47e263a8001aec32884b62c68dbb6a78d90e821b/packages/flutter_distributor/bin/main.dart:13:5)
+<asynchronous suspension>
+
+СБОРКА УПАЛА (код 1)
