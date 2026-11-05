@@ -37,3 +37,18 @@ Thumbs.db
 *.log
 *.tmp
 /scratch/
+
+# Форк клиента (app/) — тяжёлые сборочные каталоги
+app/.dart_tool/
+app/build/
+app/dist/
+app/.flutter-plugins*
+app/android/.gradle/
+app/android/local.properties
+app/android/app/keystore.jks
+app/core/Clash.Meta/.git/
+app/plugins/prism_ui/.git/
+app/windows/flutter/ephemeral/
+app/linux/flutter/ephemeral/
+app/macos/Flutter/ephemeral/
+app/ios/Flutter/ephemeral/

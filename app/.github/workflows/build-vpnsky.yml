@@ -1,0 +1,191 @@
+name: build-vpnsky
+
+# Сборка VPNsky (форк FlClash) в приватном репозитории.
+# В отличие от upstream workflow, здесь нет условий `!private` — сборка идёт всегда.
+#
+# Матрица:
+#   - windows  : NSIS-установщик + portable zip (x64)
+#   - android  : universal APK (подпись берётся из секретов, см. ниже)
+#
+# Секреты (Settings → Secrets and variables → Actions):
+#   ANDROID_KEYSTORE_BASE64  — keystore.jks в base64  (обязательно для подписанного APK)
+#   ANDROID_STORE_PASSWORD   — storePassword
+#   ANDROID_KEY_ALIAS        — keyAlias
+#   ANDROID_KEY_PASSWORD     — keyPassword
+# Без секретов соберётся debug-APK (для тестов, не для раздачи сотрудникам).
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_android:
+        description: 'Собрать Android'
+        type: boolean
+        default: true
+      build_windows:
+        description: 'Собрать Windows'
+        type: boolean
+        default: true
+
+env:
+  FLUTTER_VERSION: '3.47.6'
+  GO_VERSION: '1.27.1'
+  NODE_VERSION: '22'
+  NDK_VERSION: r28c
+
+jobs:
+  android:
+    if: ${{ inputs.build_android || github.event_name != 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: core/go.sum
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Setup NDK
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: ${{ env.NDK_VERSION }}
+          add-to-path: true
+          link-to-sdk: true
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # GitHub Actions не позволяет обращаться к secrets в if: — поэтому проверяем в shell.
+      - name: Decode keystore (если задан)
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > android/app/keystore.jks
+            printf 'storePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' \
+              "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" >> android/local.properties
+            echo "SIGNED=true" >> "$GITHUB_ENV"
+          else
+            echo "::warning::ANDROID_KEYSTORE_BASE64 не задан — собираем debug APK"
+            echo "SIGNED=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build APK (release)
+        if: env.SIGNED == 'true'
+        run: dart setup.dart android -v
+
+      - name: Build APK (debug)
+        if: env.SIGNED != 'true'
+        run: flutter build apk --debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: vpnsky-android
+          path: |
+            dist/*.apk
+            build/app/outputs/flutter-apk/*.apk
+          if-no-files-found: error
+          overwrite: true
+
+  windows:
+    if: ${{ inputs.build_windows || github.event_name != 'workflow_dispatch' }}
+    runs-on: windows-2022
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Enable git long paths
+        run: git config --global core.longpaths true
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: core/go.sum
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Windows
+        run: dart setup.dart windows -v
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: vpnsky-windows
+          path: dist/*
+          if-no-files-found: error
+          overwrite: true
+
+  release:
+    needs: [android, windows]
+    if: ${{ always() && (needs.android.result == 'success' || needs.windows.result == 'success') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: ./dist
+          merge-multiple: true
+
+      - name: List artifacts
+        run: ls -la ./dist
+
+      - name: Create checksums
+        run: |
+          cd ./dist
+          find . -type f ! -name 'SHA256SUMS.txt' -exec sha256sum {} \; > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Upload build (artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: vpnsky-build-${{ github.run_number }}
+          path: ./dist
+          overwrite: true
