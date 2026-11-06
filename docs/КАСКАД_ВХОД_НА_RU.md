@@ -49,7 +49,7 @@ UUID пользователя, `pbk`, `sid` и SNI — вводить их ру�
 
 ```
 cd /root
-curl -fsSL -o nsky-entry.sh https://raw.githubusercontent.com/m0xvi/VPNsky/4f86260ad747bd57c5cd26864edae5f6009daa4b/deploy/nsky-entry.sh
+curl -fsSL -o nsky-entry.sh https://raw.githubusercontent.com/m0xvi/VPNsky/785aa15a4e800d5a5454cc11477c0049ce734768/deploy/nsky-entry.sh
 ```
 
 ```
@@ -176,8 +176,8 @@ bash nsky-entry.sh --remove    # снять вход-узел (NL не трог�
 Скачивать по **полному SHA коммита** (ветка `main` может отставать):
 
 ```
-curl -fsSL -o /root/nsky-entry.sh https://raw.githubusercontent.com/m0xvi/VPNsky/4f86260ad747bd57c5cd26864edae5f6009daa4b/deploy/nsky-entry.sh
+curl -fsSL -o /root/nsky-entry.sh https://raw.githubusercontent.com/m0xvi/VPNsky/785aa15a4e800d5a5454cc11477c0049ce734768/deploy/nsky-entry.sh
 sha256sum /root/nsky-entry.sh
 ```
 
-sha256 этой версии: `2845ab8c82daf84a97cc910cc0f62b5fe14b6bb8cb0e8e0225e7a16bf2709ad6`
+sha256 этой версии: `240c5cf08630913fc669bb075acc650465680dd8e0228c7bc4671e3af1441b40`
