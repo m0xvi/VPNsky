@@ -38,7 +38,7 @@
 
 set -Eeuo pipefail
 
-VERSION="2026-11-06.1"
+VERSION="2026-11-06.2"
 
 # Пути можно переопределить переменными окружения (нужно для локальных тестов).
 DIR="${NSKY_ENTRY_DIR:-/opt/nsky-entry}"
@@ -428,17 +428,24 @@ JSON
 }
 
 config_ok() {
-  local f="$1" out
-  if out="$("$BIN" run -test -config "$f" 2>&1)"; then return 0; fi
-  if out="$("$BIN" -test -config "$f" 2>&1)"; then return 0; fi
+  local f="$1" out=""
+  if "$BIN" run -test -config "$f" >/dev/null 2>&1; then return 0; fi
+  if "$BIN" -test -config "$f" >/dev/null 2>&1; then return 0; fi
+  # Показываем только суть ошибки, а не баннер с версией.
+  out="$("$BIN" run -test -config "$f" 2>&1 | grep -iE 'fail|error|invalid|unknown|unsupported|expected' | head -5 || true)"
+  [[ -n "$out" ]] || out="$("$BIN" -test -config "$f" 2>&1 | grep -iE 'fail|error|invalid|unknown|unsupported|expected' | head -5 || true)"
   printf '%s\n' "$out" >&2
   return 1
 }
 
 write_config() {
-  local tmp variant net destkey
+  local tmp base variant net destkey
   mkdir -p "$(dirname "$CONF")"
-  tmp="$(mktemp)"
+  # Xray определяет формат конфига по РАСШИРЕНИЮ файла: без .json он отвечает
+  # «Failed to get format of /tmp/tmp.XXXX». Поэтому временный файл — всегда *.json.
+  base="$(mktemp)"
+  tmp="${base}.json"
+  rm -f "$base"
 
   # Xray 25.9+ переименовал tcp→raw и dest→target. Новый вариант первый,
   # старый — как совместимость, если поставился более старый бинарник.
