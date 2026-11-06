@@ -38,7 +38,7 @@
 
 set -Eeuo pipefail
 
-VERSION="2026-11-06.7"
+VERSION="2026-11-06.8"
 
 # Пути можно переопределить переменными окружения (нужно для локальных тестов).
 DIR="${NSKY_ENTRY_DIR:-/opt/nsky-entry}"
@@ -51,6 +51,9 @@ SOCKS_DIRECT="${NSKY_ENTRY_SOCKS_DIRECT:-1082}"
 
 MODE="apply"
 REGEN=0
+UPDATE=0
+SELF_URL="${NSKY_ENTRY_SELF_URL:-https://raw.githubusercontent.com/m0xvi/VPNsky/refs/heads/arena/7fd1d6ce-vpnsky/deploy/nsky-entry.sh}"
+ORIG_ARGS=("$@")
 PORT="${NSKY_ENTRY_PORT:-443}"
 ALT_PORT="${NSKY_ENTRY_ALT_PORT:-8443}"
 SNI="${NSKY_ENTRY_SNI:-www.microsoft.com}"
@@ -98,6 +101,7 @@ NSky Entry — вход-узел каскада на русском VPS (VLESS+R
 
   --port <N>        основной порт входа (по умолчанию 443)
   --alt-port <N>    резервный порт (по умолчанию 8443, 0 — не открывать)
+  --update          скачать свежую версию скрипта и перезапустить его
   --regen-keys      пересоздать ключи входа и выдать новую ссылку
   --ip <IP>         внешний IP этого VPS (иначе определится автоматически)
   --sni <домен>     маска REALITY (по умолчанию www.microsoft.com)
@@ -114,6 +118,7 @@ while [[ $# -gt 0 ]]; do
     --status)   MODE="status"; shift ;;
     --remove)   MODE="remove"; shift ;;
     --regen-keys) REGEN=1; shift ;;
+    --update)   UPDATE=1; shift ;;
     --port)     PORT_ARG="${2:-}"; shift 2; PORT="${PORT_ARG}" ;;
     --alt-port) ALT_ARG="${2:-}"; shift 2; ALT_PORT="${ALT_ARG}" ;;
     --ip)       PUBIP_ARG="${2:-}"; shift 2 ;;
@@ -123,6 +128,22 @@ while [[ $# -gt 0 ]]; do
     *)          die "Неизвестный аргумент: $1 (--help)" ;;
   esac
 done
+
+if [[ "$UPDATE" == "1" ]]; then
+  _tmp="$(mktemp)"
+  printf '  обновляю скрипт: %s\n' "$SELF_URL"
+  if ! curl -fsSL --max-time 30 -o "$_tmp" "$SELF_URL"; then
+    rm -f "$_tmp"; die "Не удалось скачать свежую версию"
+  fi
+  if ! bash -n "$_tmp" 2>/dev/null; then
+    rm -f "$_tmp"; die "Скачанная версия битая — оставляю текущую"
+  fi
+  install -m 755 "$_tmp" "$0" 2>/dev/null || cp -f "$_tmp" "$0"
+  rm -f "$_tmp"
+  _args=()
+  for _a in "${ORIG_ARGS[@]}"; do [[ "$_a" == "--update" ]] || _args+=("$_a"); done
+  exec bash "$0" "${_args[@]}"
+fi
 
 [[ "$PORT" =~ ^[0-9]+$ ]] || die "--port должен быть числом"
 [[ -z "$ALT_PORT" || "$ALT_PORT" =~ ^[0-9]+$ ]] || die "--alt-port должен быть числом"
@@ -638,8 +659,8 @@ target_state() {
 # (VLESS+REALITY+vision, тот же SNI/ключ/shortId), и через него идём в интернет.
 # Зелёная строка = серверная часть целиком рабочая, дело не в DNAT и не в ключах.
 probe_config() {
-  # probe_config <адрес входа> <socks-порт>
-  local host="$1" cport="$2"
+  # probe_config <адрес входа> <socks-порт> <fingerprint>
+  local host="$1" cport="$2" fp="$3"
   cat <<PROBE
 {
   "log": { "loglevel": "debug" },
@@ -658,7 +679,7 @@ probe_config() {
         "security": "reality",
         "realitySettings": {
           "serverName": "${SNI}",
-          "fingerprint": "chrome",
+          "fingerprint": "${fp}",
           "publicKey": "${RU_PUB}",
           "shortId": "${RU_SID}",
           "spiderX": "/"
@@ -672,12 +693,12 @@ PROBE
 
 probe_once() {
   # probe_once <адрес входа> — возвращает 0 и печатает IP, либо 1 и печатает журнал
-  local host="$1"
+  local host="$1" fp="${2:-chrome}"
   local base cfg log cport pid i out u ip=""
   cport=$(( 18000 + RANDOM % 2000 ))
   base="$(mktemp)"; cfg="${base}.json"; rm -f "$base"
   log="${cfg%.json}.log"
-  probe_config "$host" "$cport" > "$cfg"
+  probe_config "$host" "$cport" "$fp" > "$cfg"
 
   "$BIN" run -config "$cfg" >"$log" 2>&1 &
   pid=$!
@@ -718,7 +739,7 @@ probe_once() {
 # Пробуем два адреса: публичный (как телефон) и 127.0.0.1 (если VPS не умеет
 # ходить на свой же публичный IP — hairpin NAT, это не поломка входа).
 check_first_hop() {
-  local host reach
+  local host fp reach
   for host in "$PUBIP" "127.0.0.1"; do
     if timeout 5 bash -c "cat < /dev/null > /dev/tcp/${host}/${PORT}" 2>/dev/null; then
       reach="открыт"
@@ -727,39 +748,36 @@ check_first_hop() {
     fi
     info "адрес ${host}:${PORT} с этого VPS — ${reach}"
 
+   for fp in chrome safari; do
     PROBE_IP=""; PROBE_LOG=""
-    if probe_once "$host"; then
-      if [[ -z "$PROBE_IP" ]]; then
-        chk_ok "клиент прошёл ВЕСЬ путь через ${host}:${PORT}"
-      elif [[ "$PROBE_IP" == "$NL_HOST" ]]; then
-        chk_ok "клиент прошёл ВЕСЬ путь через ${host}:${PORT}, выходной IP ${PROBE_IP} (NL)"
+    if probe_once "$host" "$fp"; then
+      if [[ "$PROBE_IP" == "$NL_HOST" ]]; then
+        chk_ok "клиент прошёл ВЕСЬ путь через ${host}:${PORT} (fp=${fp}), выходной IP ${PROBE_IP} (NL)"
         info "Это ровно тот маршрут, по которому пойдёт телефон. Серверная часть рабочая"
       else
-        chk_ok "клиент прошёл ВЕСЬ путь через ${host}:${PORT}, выходной IP ${PROBE_IP}"
+        chk_ok "клиент прошёл ВЕСЬ путь через ${host}:${PORT} (fp=${fp}), выходной IP ${PROBE_IP}"
       fi
       return 0
     fi
 
     if [[ -n "${PROBE_ERR:-}" ]]; then
-      info "ответ curl: ${PROBE_ERR}"
+      info "fp=${fp}: ответ curl: ${PROBE_ERR}"
     fi
     if [[ -n "${PROBE_LOG:-}" ]]; then
-      info "журнал пробного клиента (${host}):"
-      printf '%s\n' "$PROBE_LOG" | sed 's/^/      /'
+      info "fp=${fp}: последние строки клиента:"
+      printf '%s\n' "$PROBE_LOG" | tail -6 | sed 's/^/      /'
     fi
+   done
   done
 
   chk_bad "клиент через вход не прошёл ни по публичному IP, ни по 127.0.0.1"
   local jlog
-  jlog="$(journalctl -u "$SERVICE" -n 400 --no-pager 2>/dev/null \
-          | grep -iE 'reality|vision|vless|xtls|fail|reject|timeout|error' \
-          | grep -viE 'Choosing .* target|non-443 ports' | tail -25 || true)"
+  jlog="$(journalctl -u "$SERVICE" --since "-3min" --no-pager 2>/dev/null \
+          | grep -viE 'Choosing .* target|non-443 ports|Reading config|core: Xray|unified platform|Penetrates' \
+          | tail -30 || true)"
   if [[ -n "$jlog" ]]; then
-    info "журнал сервера (REALITY/Vision/ошибки):"
+    info "журнал сервера за последние 3 минуты:"
     printf '%s\n' "$jlog" | sed 's/^/      /'
-  else
-    info "в журнале сервера нет ни одной ошибки REALITY — рукопожатие до него не доходило"
-    info "  journalctl -u ${SERVICE} -n 50 --no-pager"
   fi
   return 0
 }
