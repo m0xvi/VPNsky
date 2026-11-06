@@ -31,7 +31,7 @@
 
 set -Eeuo pipefail
 
-VERSION="2026-11-06.1"
+VERSION="2026-11-06.2"
 STATE="/opt/nsky/install-state.env"
 RELAY_STATE="/opt/nsky-relay/nl-ip"
 SUB_FILE=""
@@ -107,6 +107,10 @@ if [[ "$MODE" == "relay" ]]; then
     NL_IP="$(cat "$RELAY_STATE" 2>/dev/null || true)"
   fi
   if [[ -z "$NL_IP" ]]; then
+    if [[ -f "$STATE" ]]; then
+      warn "Похоже, --relay запущен на NL-сервере: /opt/nsky-relay/nl-ip есть только на русском VPS."
+      info "Запустите чекер на русском VPS (можно с явным --nl <IP_нидерландской_ноды>)."
+    fi
     bad "Не знаю IP нидерландской ноды. Укажите: --nl <IP>"
     exit 1
   fi
@@ -159,7 +163,7 @@ if [[ "$MODE" == "relay" ]]; then
     info "ufw не установлен"
   fi
   info "Слушающие порты на релее (должно быть пусто для 8443/2053/udp443):"
-  ss -lntu 2>/dev/null | awk '/:(8443|2053)/ || ($1 ~ /^udp/ && /:443/) { print "  " $0 }' || true
+  ss -lntu 2>/dev/null | awk '/:(8443|2053)/ || /:443/ { print "  " $0 }' || true
 
   if [[ "$NO_PROBE" -eq 0 ]]; then
     head2 "Прямая доступность ноды с релея"
@@ -170,14 +174,14 @@ if [[ "$MODE" == "relay" ]]; then
         bad "$NL_IP:$p/tcp недоступен (ufw на NL или нода не слушает)"
       fi
     done
-    warn "UDP/443 с релея так не проверить — используйте --relay на NL-сервере или телефон."
+    warn "UDP/443 с релея так не проверить — это делает обычный режим чекера на NL-сервере или телефон."
   fi
 
   printf '\n'
   if [[ "$FAIL" -eq 0 && "$MISSING" -eq 0 ]]; then
     ok "ИТОГ (RU): правила релея на месте. Дальше проверьте NL-сервер и телефон."
   else
-    bad "ИТОГ (RU): есть проблемы. Исправьте: bash nsky-relay.sh $NL_IP"
+    printf '\033[1;31m  ✗ ИТОГ (RU): есть проблемы. Исправьте: bash nsky-relay.sh %s\033[0m\n' "$NL_IP"
   fi
   printf '  проверок ok: %s, ошибок: %s\n\n' "$PASS" "$FAIL"
   if [[ "$FAIL" -gt 0 ]]; then exit 1; fi
@@ -216,6 +220,40 @@ if [[ -z "$RU_IP" ]]; then
 fi
 if [[ -n "$SERVER_IP" && "$RU_IP" == "$SERVER_IP" ]]; then
   bad "IP релея совпадает с IP ноды — каскад настроен неверно"
+fi
+
+head2 "Согласованность секретного пути подписки"
+CADDY_SEC=""
+if [[ -f /etc/caddy/Caddyfile ]]; then
+  CADDY_SEC="$(grep -oP '(?<=handle /)[^/]+(?=/api/sub)' /etc/caddy/Caddyfile 2>/dev/null | head -1 || true)"
+  if [[ -z "$CADDY_SEC" ]]; then
+    CADDY_SEC="$(sed -n 's/.*handle \/\([^/]*\)\/api\/sub.*/\1/p' /etc/caddy/Caddyfile 2>/dev/null | head -1 || true)"
+  fi
+fi
+PANEL_SEC=""
+PANEL_ENV="/opt/nsky/panel/.env"
+if [[ -f "$PANEL_ENV" ]]; then
+  SPD="$(awk -F= '/^SUB_PUBLIC_DOMAIN=/ { print substr($0, length("SUB_PUBLIC_DOMAIN=") + 1); exit }' "$PANEL_ENV")"
+  PANEL_SEC="${SPD#*/}"
+  PANEL_SEC="${PANEL_SEC%%/*}"
+fi
+if [[ -n "$CADDY_SEC" && -n "$PANEL_SEC" ]]; then
+  if [[ "$CADDY_SEC" == "$PANEL_SEC" ]]; then
+    ok "Caddy и панель используют один секретный сегмент"
+  else
+    bad "сегмент в Caddyfile и в SUB_PUBLIC_DOMAIN панели РАСХОДИТСЯ — часть ссылок будет 404"
+  fi
+else
+  warn "не удалось сравнить секрет: не найден сегмент в Caddyfile и/или SUB_PUBLIC_DOMAIN в .env панели"
+fi
+if [[ -n "$SUB_SECRET" && -n "$CADDY_SEC" ]]; then
+  if [[ "$SUB_SECRET" == "$CADDY_SEC" ]]; then
+    ok "SUB_SECRET в state совпадает с Caddyfile"
+  else
+    bad "SUB_SECRET в state не совпадает с Caddyfile — ссылка из state и ссылка из панели разные"
+  fi
+else
+  info "сверка с state пропущена: SUB_SECRET отсутствует (см. раздел 1 инструкции)"
 fi
 
 TMP="$(mktemp -d)"
@@ -331,9 +369,11 @@ if [[ "$NO_PROBE" -eq 0 ]]; then
     else
       bad "публичная ссылка не отвечает (HTTP $CODE); проверьте Caddyfile и SUB_SECRET"
     fi
+  else
+    warn "проверка публичной ссылки пропущена: нет SUB_SECRET в state (исправьте по разделу 1 инструкции)"
   fi
   info "Слушающие порты:"
-  ss -lntu 2>/dev/null | awk 'NR==1 || /:(8443|8444|2053)/ || ($1 ~ /^udp/ && /:443/) { print "  " $0 }' | head -20 || true
+  ss -lntu 2>/dev/null | awk 'NR==1 || /:(8443|8444|2053)/ || /:443/ { print "  " $0 }' | head -20 || true
   if command -v ufw >/dev/null 2>&1; then
     info "ufw (нужны 8443/tcp, 2053/tcp, 443/udp, 443/tcp):"
     ufw status 2>/dev/null | awk '/8443|2053|443\/udp|443\/tcp/ { print "  " $0 }' || true
@@ -411,7 +451,9 @@ if [[ "$FAIL" -eq 0 ]]; then
   fi
   info "Осталась главная проверка — телефон в сети Билайн (не Wi-Fi), сервер с пометкой (RU)."
 else
-  bad "ИТОГ (NL): найдены проблемы (см. ✗ выше)."
+  printf '\033[1;31m  ✗ ИТОГ (NL): найдено проблем: %s (см. строки ✗ выше).\033[0m\n' "$FAIL"
+  info "Если все проверки подписки, TLS и UDP отмечены ✓ — сам каскад работает,"
+  info "а оставшиеся ✗ относятся к оформлению/секретам и на连接方式 не влияют."
 fi
 printf '  проверок ok: %s, ошибок: %s\n\n' "$PASS" "$FAIL"
 if [[ "$FAIL" -gt 0 ]]; then exit 1; fi
