@@ -49,7 +49,7 @@ STATE="$DIR/install-state.env"
 LOG="$DIR/install.log"
 PROJECT="nsky"
 PROJECT_NODE="nsky-node"
-NSKY_VERSION="2026-11-06.1"
+NSKY_VERSION="2026-11-06.2"
 
 # Порты. 443/tcp — публичная подписка для клиентов. Панель управления
 # живёт на отдельном порту, доступном только с IP офиса:
@@ -119,6 +119,8 @@ state_set() {
 [[ -z "$PANEL_PORT" ]] && PANEL_PORT=8444
 [[ -z "$PANEL_ALLOW_FROM" ]] && PANEL_ALLOW_FROM="$(state_get PANEL_ALLOW_FROM)"
 [[ -n "$PANEL_ALLOW_FROM" ]] || PANEL_ALLOW_FROM=""
+# Секретный сегмент в URL подписки: прячет известный сканерам путь /api/sub.
+SUB_SECRET="$(state_get SUB_SECRET)"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -192,12 +194,23 @@ if [[ "$MODE" == "check" ]]; then
   else
     chk "Панель (порт $PANEL_PORT)" "✗ не отвечает"
   fi
+  SUB_PREFIX=""
+  if [[ -n "$SUB_SECRET" ]]; then
+    SUB_PREFIX="$SUB_SECRET/"
+  fi
   SUB_CODE="$(curl -sS --max-time 10 -o /dev/null -w '%{http_code}' \
-    "https://$DOMAIN/api/sub/probe" 2>/dev/null || echo 000)"
+    "https://$DOMAIN/$SUB_PREFIX/api/sub/probe" 2>/dev/null || echo 000)"
   if [[ "$SUB_CODE" != "000" ]]; then
     chk "Подписка на 443" "✓ отвечает (HTTP $SUB_CODE)"
   else
     chk "Подписка на 443" "✗ не отвечает"
+  fi
+  HID_CODE="$(curl -sS --max-time 10 -o /dev/null -w '%{http_code}' \
+    "https://$DOMAIN/api/sub/probe" 2>/dev/null || echo 000)"
+  if [[ "$HID_CODE" == "404" ]]; then
+    chk "Скрытие /api/sub" "✓ наружу 404 (путь спрятан)"
+  else
+    chk "Скрытие /api/sub" "✗ /api/sub отвечает $HID_CODE — отпечаток виден"
   fi
   chk "Caddy" "$(systemctl is-active caddy 2>/dev/null || echo 'нет')"
   CERT_PATH="$(ls -1 /var/lib/caddy/.local/share/caddy/certificates/*/"$DOMAIN"/"$DOMAIN".crt 2>/dev/null | head -1 || true)"
@@ -235,7 +248,7 @@ if [[ "$MODE" == "check" ]]; then
         CNT=$(( CNT + n ))
       done
       chk "Ссылок в подписке" "${CNT:-0}"
-      printf '\n  Ссылка подписки:\n    https://%s/api/sub/%s\n' "$DOMAIN" "$TEST_SUB"
+      printf '\n  Ссылка подписки:\n    https://%s/%sapi/sub/%s\n' "$DOMAIN" "${SUB_SECRET:+$SUB_SECRET/}" "$TEST_SUB"
     else
       chk "Тестовая подписка" "не создана (запустите установку)"
     fi
@@ -437,6 +450,15 @@ fi
 source "$STATE"
 [[ -n "${ADMIN_PASS:-}" ]] || { ADMIN_PASS="$(gen_password)"; state_set ADMIN_PASS "$ADMIN_PASS"; }
 
+# Секрет в URL подписки: создаётся один раз, живёт в state (переживает
+# обновления, при --wipe создаётся заново вместе со всей установкой).
+if [[ -z "$SUB_SECRET" ]]; then
+  SUB_SECRET="$(rnd 6)"
+  state_set SUB_SECRET "$SUB_SECRET"
+fi
+[[ -n "$SUB_SECRET" ]] || SUB_SECRET="sub"
+SUB_PUBLIC_DOMAIN="${DOMAIN}/${SUB_SECRET}/api/sub"
+
 cat > "$DIR/panel/.env" <<ENV
 APP_PORT=3000
 METRICS_PORT=3001
@@ -450,7 +472,7 @@ APP_SECRET=${APP_SECRET}
 IS_TELEGRAM_NOTIFICATIONS_ENABLED=false
 PANEL_DOMAIN=${DOMAIN}
 FRONT_END_DOMAIN=https://${DOMAIN}
-SUB_PUBLIC_DOMAIN=${DOMAIN}/api/sub
+SUB_PUBLIC_DOMAIN=${SUB_PUBLIC_DOMAIN}
 METRICS_USER=nsky
 METRICS_PASS=${METRICS_PASS}
 WEBHOOK_ENABLED=false
@@ -581,15 +603,20 @@ $DOMAIN:$PANEL_PORT {
     encode gzip zstd
 }
 
-# Публичная подписка для клиентов — на 443, открыта для всех.
-# Здесь только /api/sub*; остальные пути на 443 не нужны (UI панели теперь
-# на $PANEL_PORT). handle (не handle_path) — иначе Caddy срезал бы префикс
-# и подписка пришла в панель без /api/sub.
+# Публичная подписка — на 443, но спрятана под секретный сегмент URL.
+# Путь /api/sub известен сканерам как отпечаток Remnawave, поэтому наружу
+# он отдаёт 404 самим Caddy (панель не участвует, отпечатков нет).
+# Панель одобряет подписку только по секретному пути; клиенты просто
+# получают готовую ссылку, для них это обычный URL.
 $DOMAIN {
-    handle /api/sub* {
+    handle /$SUB_SECRET/api/sub* {
+        uri strip_prefix /$SUB_SECRET
         reverse_proxy 127.0.0.1:3000 {
             header_up X-Real-IP {remote_host}
         }
+    }
+    header {
+        -Server
     }
     respond "Not Found" 404
 }
@@ -1130,6 +1157,35 @@ else
   warn "Нода не подключилась. Проверьте: ss -lunp | grep 443  (порт для Hysteria2)"
 fi
 
+# 9.9 Порт ноды 2222 снаружи не нужен: панель ходит на неё из docker-сети.
+# Закрываем публичный доступ, разрешаем только subnet сети nsky.
+# Если нода перестанет быть видна панели — правило откатывается автоматически:
+# работающий VPN важнее идеальной закрытости.
+if [[ "$NODE_OK" == "1" ]]; then
+  NSKY_SUBNET="$(docker network inspect nsky --format '{{(index .IPAM.Config 0).Subnet}}' 2>/dev/null || true)"
+  if [[ -n "$NSKY_SUBNET" ]]; then
+    ufw delete allow "$NODE_PORT/tcp" >/dev/null 2>&1 || true
+    ufw allow from "$NSKY_SUBNET" to any port "$NODE_PORT" proto tcp >/dev/null
+    ok "Порт ноды $NODE_PORT/tcp закрыт снаружи (разрешён только $NSKY_SUBNET)"
+    st="false"
+    for _ in $(seq 1 20); do
+      sleep 3
+      resp=$(api "${auth_hdr[@]}" "$API/nodes" 2>/dev/null || true)
+      st=$(printf '%s' "$resp" | jq -r '.response[0].isConnected // false' 2>/dev/null || echo false)
+      [[ "$st" == "true" ]] && break
+    done
+    if [[ "$st" == "true" ]]; then
+      ok "Нода работает за закрытым портом"
+    else
+      ufw delete allow from "$NSKY_SUBNET" to any port "$NODE_PORT" proto tcp >/dev/null 2>&1 || true
+      ufw allow "$NODE_PORT/tcp" >/dev/null
+      warn "Нода не видна панели за закрытым портом — правило откачено (2222 снова открыт)"
+    fi
+  else
+    warn "Не удалось узнать subnet сети nsky — порт ноды $NODE_PORT оставлен открытым"
+  fi
+fi
+
 # ─────────────────────────────────────────────────────────────────────────────
 bold "10/10. Проверка и тестовая учётка"
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1158,7 +1214,7 @@ SUB_URL=""
 LINKS_OK=0
 if [[ -n "$TEST_SUB" ]]; then
   state_set TEST_SHORT_UUID "$TEST_SUB"
-  SUB_URL="https://$DOMAIN/api/sub/$TEST_SUB"
+  SUB_URL="https://$DOMAIN/$SUB_SECRET/api/sub/$TEST_SUB"
   state_set SUB_URL "$SUB_URL"
 
   # Панель требует заголовков прокси, иначе 403.
