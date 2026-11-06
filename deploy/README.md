@@ -114,3 +114,20 @@ deploy/
 трафика (TLS через русский IP, возврат UDP/443); на русском VPS — правила
 DNAT/FORWARD, `ip_forward` и systemd. Подробности:
 [../docs/ПРОВЕРКА_КАСКАДА.md](../docs/ПРОВЕРКА_КАСКАДА.md).
+
+## Каскад v2: вход-узел (`nsky-entry.sh`)
+
+Скачивать по полному SHA коммита (ветка `main` может отставать):
+
+```
+curl -fsSL -o /root/nsky-entry.sh https://raw.githubusercontent.com/m0xvi/VPNsky/4f86260ad747bd57c5cd26864edae5f6009daa4b/deploy/nsky-entry.sh
+sha256sum /root/nsky-entry.sh
+```
+
+Ожидаемый sha256 (версия `2026-11-06.1`):
+
+```
+2845ab8c82daf84a97cc910cc0f62b5fe14b6bb8cb0e8e0225e7a16bf2709ad6  /root/nsky-entry.sh
+```
+
+Инструкция: [../docs/КАСКАД_ВХОД_НА_RU.md](../docs/КАСКАД_ВХОД_НА_RU.md).
