@@ -38,7 +38,7 @@
 
 set -Eeuo pipefail
 
-VERSION="2026-11-06.8"
+VERSION="2026-11-06.9"
 
 # Пути можно переопределить переменными окружения (нужно для локальных тестов).
 DIR="${NSKY_ENTRY_DIR:-/opt/nsky-entry}"
@@ -52,7 +52,11 @@ SOCKS_DIRECT="${NSKY_ENTRY_SOCKS_DIRECT:-1082}"
 MODE="apply"
 REGEN=0
 UPDATE=0
-SELF_URL="${NSKY_ENTRY_SELF_URL:-https://raw.githubusercontent.com/m0xvi/VPNsky/refs/heads/arena/7fd1d6ce-vpnsky/deploy/nsky-entry.sh}"
+SELF_URLS=(
+  "https://raw.githubusercontent.com/m0xvi/VPNsky/arena/7fd1d6ce-vpnsky/deploy/nsky-entry.sh"
+  "https://raw.githubusercontent.com/m0xvi/VPNsky/refs/heads/arena/7fd1d6ce-vpnsky/deploy/nsky-entry.sh"
+)
+[[ -n "${NSKY_ENTRY_SELF_URL:-}" ]] && SELF_URLS=("$NSKY_ENTRY_SELF_URL")
 ORIG_ARGS=("$@")
 PORT="${NSKY_ENTRY_PORT:-443}"
 ALT_PORT="${NSKY_ENTRY_ALT_PORT:-8443}"
@@ -131,8 +135,12 @@ done
 
 if [[ "$UPDATE" == "1" ]]; then
   _tmp="$(mktemp)"
-  printf '  обновляю скрипт: %s\n' "$SELF_URL"
-  if ! curl -fsSL --max-time 30 -o "$_tmp" "$SELF_URL"; then
+  _got=0
+  for _u in "${SELF_URLS[@]}"; do
+    printf '  обновляю скрипт: %s\n' "$_u"
+    if curl -fsSL --max-time 30 -o "$_tmp" "$_u" && [[ -s "$_tmp" ]]; then _got=1; break; fi
+  done
+  if [[ "$_got" != "1" ]]; then
     rm -f "$_tmp"; die "Не удалось скачать свежую версию"
   fi
   if ! bash -n "$_tmp" 2>/dev/null; then
