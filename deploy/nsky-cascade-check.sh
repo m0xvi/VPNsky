@@ -31,7 +31,7 @@
 
 set -Eeuo pipefail
 
-VERSION="2026-11-06.3"
+VERSION="2026-11-06.4"
 STATE="/opt/nsky/install-state.env"
 RELAY_STATE="/opt/nsky-relay/nl-ip"
 SUB_FILE=""
@@ -322,7 +322,9 @@ else
     case "$line" in *"#"*) remark="$(urldecode "${line##*#}")" ;; esac
     sni=""
     case "$qpart" in *sni=*) sni="${qpart#*sni=}"; sni="${sni%%&*}"; sni="$(urldecode "$sni")" ;; esac
-    base="${proto}://${userinfo}@ADDR:${port}?${qpart}"
+    # Порт хоста намеренно нормализован: «план Б» меняет порт входа на релее,
+    # но не инбаунд ноды. Иначе сравнение пар даёт ложное «разные инбаунды».
+    base="${proto}://${userinfo}@ADDR:PORT?${qpart}"
     if [[ -n "$remark" ]]; then
       H_ADDR["$remark"]="$host"
       H_PORT["$remark"]="$port"
@@ -338,6 +340,7 @@ else
     bad "В подписке нет ни одной ссылки с названием сервера"
   fi
 
+  PLAN_B_PORT=""
   check_pair() {
     local direct="$1" ru="$2" want_port="$3" want_sni="$4"
     local d="${H_ADDR[$direct]:-}" r="${H_ADDR[$ru]:-}"
@@ -345,10 +348,16 @@ else
     if [[ -z "$r" ]]; then bad "НЕТ КАСКАДНОГО ХОСТА «$ru» — в подписке только прямые серверы"; return 0; fi
     if [[ "$r" == "$RU_IP" ]]; then ok "«$ru» → $RU_IP"; else bad "«$ru» ведёт на $r, а должен на $RU_IP"; fi
     if [[ "$d" == "$SERVER_IP" ]]; then ok "«$direct» → $SERVER_IP"; else warn "«$direct» ведёт на $d (ожидался $SERVER_IP) — сверьте вручную"; fi
-    if [[ "${H_PORT[$ru]:-}" == "$want_port" && "${H_PORT[$direct]:-}" == "$want_port" ]]; then
+    local dp="${H_PORT[$direct]:-?}" rp="${H_PORT[$ru]:-?}"
+    if [[ "$dp" != "$want_port" ]]; then
+      bad "порт прямого хоста = $dp, ожидался $want_port — проверьте Hosts в панели"
+    elif [[ "$rp" == "$want_port" ]]; then
       ok "порт $want_port у обеих записей"
+    elif [[ "$want_port" == "8443" && "$rp" == "443" ]]; then
+      warn "план Б: (RU) входит на 443/tcp вместо 8443 — на релее ОБЯЗАТЕЛЬНО нужен DNAT tcp/443 → NL:8443"
+      PLAN_B_PORT=443
     else
-      bad "порт не совпал: прямой=${H_PORT[$direct]:-?}, RU=${H_PORT[$ru]:-?}, нужно $want_port"
+      bad "порт (RU) = $rp, отличается от $want_port, и это не план Б — проверьте Hosts в панели"
     fi
     if [[ "${H_SNI[$ru]:-}" == "$want_sni" ]]; then ok "SNI у (RU) = $want_sni"; else bad "SNI у (RU) = ${H_SNI[$ru]:-пусто}, нужно $want_sni"; fi
     if [[ "${H_BASE[$ru]:-}" == "${H_BASE[$direct]:-}" ]]; then
@@ -408,34 +417,44 @@ if [[ "$NO_PROBE" -eq 0 ]]; then
       | openssl x509 -noout -subject 2>/dev/null || true
   }
   tls_probe() {
-    local port="$1" label="$2"
+    local port="$1" label="$2" direct_port="${3:-$1}"
     if command -v openssl >/dev/null 2>&1; then
       local subject="" direct=""
       subject="$(tls_subject "$RU_IP" "$port")"
       if [[ -n "$subject" ]]; then
-        ok "$label: TLS-рукопожатие дошло до ноды ($subject)"
+        ok "$label [:$port]: TLS-рукопожатие дошло до ноды ($subject)"
         return 0
       fi
       # Контрольный замер: тот же запрос напрямую в локальный Xray.
       # Если и там пусто — дело в target REALITY, а не в каскаде.
-      direct="$(tls_subject "127.0.0.1" "$port")"
+      # Порт control-замера — всегда порт ИНБАУНДА, даже при плане Б.
+      direct="$(tls_subject "127.0.0.1" "$direct_port")"
       if [[ -n "$direct" ]]; then
-        bad "$label: напрямую TLS есть, через $RU_IP — нет → не работает DNAT/форвард/ufw"
+        bad "$label [:$port]: напрямую TLS есть, через $RU_IP — нет → не работает DNAT/форвард/ufw"
       else
-        warn "$label: TLS нет ни через релей, ни напрямую — проверьте доступность target $REALITY_SNI:443 с ноды; каскад этим тестом не подтверждён"
+        warn "$label [:$port]: TLS нет ни через релей, ни напрямую — проверьте доступность target $REALITY_SNI:443 с ноды; каскад этим тестом не подтверждён"
       fi
     else
       if timeout 4 bash -c "cat < /dev/null > /dev/tcp/$RU_IP/$port" 2>/dev/null; then
-        warn "$label: TCP есть, но openssl не найден — проверка слабая"
+        warn "$label [:$port]: TCP есть, но openssl не найден — проверка слабая"
       else
         bad "$label: $RU_IP:$port недоступен"
       fi
     fi
   }
-  tls_probe 8443 "REALITY (RU)"
-  tls_probe 2053 "XHTTP (RU)"
+  # Порт берём из подписки: если в панели включён «план Б» (443/tcp),
+  # проверять надо именно его, а не жёстко заданный 8443 — иначе получается
+  # зелёная галочка для пути, которым телефон уже не пользуется.
+  REALITY_RU_PORT="${H_PORT["NSky REALITY (RU)"]:-8443}"
+  XHTTP_RU_PORT="${H_PORT["NSky XHTTP (RU)"]:-2053}"
+  tls_probe "$REALITY_RU_PORT" "REALITY (RU)" 8443
+  tls_probe "$XHTTP_RU_PORT"   "XHTTP (RU)"   2053
 
   head2 "Сквозной путь: UDP/443 (Hysteria2)"
+  HY2_RU_PORT="${H_PORT["NSky Hysteria2 (RU)"]:-443}"
+  if [[ "$HY2_RU_PORT" != "443" ]]; then
+    warn "(RU) Hysteria2 в подписке на порту $HY2_RU_PORT, а релей слушает udp/443 — порт надо вернуть на 443"
+  fi
   if command -v tcpdump >/dev/null 2>&1; then
     CAP="$TMP/udp.cap"
     # Шлём UDP на RU_IP:443. Релей DNAT'ит его обратно на NL:443, и пакет
