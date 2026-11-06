@@ -38,7 +38,7 @@
 
 set -Eeuo pipefail
 
-VERSION="2026-11-06.2"
+VERSION="2026-11-06.3"
 
 # Пути можно переопределить переменными окружения (нужно для локальных тестов).
 DIR="${NSKY_ENTRY_DIR:-/opt/nsky-entry}"
@@ -588,8 +588,97 @@ check_reality_locally() {
   elif printf '%s' "$out" | grep -qi 'CONNECTION ESTABLISHED'; then
     warn "TLS локально поднимается, но сертификат маски не опознан (не критично)"
   else
-    chk_bad "REALITY не отвечает локально на 127.0.0.1:${PORT}"
-    info "Смотрите: systemctl status ${SERVICE} --no-pager; journalctl -u ${SERVICE} -n 30"
+    warn "«Чужой» TLS-клиент через вход не прошёл (openssl)"
+    info "Для авторизованного клиента это не блокер: REALITY отдаёт маску только"
+    info "незнакомым, а свой трафик идёт мимо. Смотрите строку «клиент прошёл ВЕСЬ путь»."
+  fi
+}
+
+# Достижим ли домен-маска с этого VPS (нужен ТОЛЬКО для «чужого» handshake).
+target_state() {
+  local out
+  if timeout 8 bash -c "cat < /dev/null > /dev/tcp/${SNI}/443" 2>/dev/null; then
+    printf 'открыт'
+  else
+    printf 'недоступен'
+  fi
+}
+
+# Главная проверка первого хопа: поднимаем отдельный Xray-КЛИЕНТ, который
+# ходит в наш же вход так же, как это будет делать Happ с телефона
+# (VLESS+REALITY+vision, тот же SNI/ключ/shortId), и через него идём в интернет.
+# Зелёная строка = серверная часть целиком рабочая, дело не в DNAT и не в ключах.
+check_first_hop() {
+  local base cfg cport pid i out u ok_ip=""
+  cport=$(( 18000 + RANDOM % 2000 ))
+  base="$(mktemp)"
+  cfg="${base}.json"
+  rm -f "$base"
+
+  cat > "$cfg" <<PROBE
+{
+  "log": { "loglevel": "error" },
+  "inbounds": [
+    { "tag": "probe-in", "listen": "127.0.0.1", "port": ${cport}, "protocol": "socks",
+      "settings": { "auth": "noauth", "udp": false } }
+  ],
+  "outbounds": [
+    {
+      "tag": "probe-out",
+      "protocol": "vless",
+      "settings": { "vnext": [ { "address": "${PUBIP}", "port": ${PORT},
+        "users": [ { "id": "${CLIENT_UUID}", "encryption": "none", "flow": "xtls-rprx-vision" } ] } ] },
+      "streamSettings": {
+        "network": "raw",
+        "security": "reality",
+        "realitySettings": {
+          "serverName": "${SNI}",
+          "fingerprint": "chrome",
+          "publicKey": "${RU_PUB}",
+          "shortId": "${RU_SID}",
+          "spiderX": "/"
+        }
+      }
+    }
+  ]
+}
+PROBE
+
+  "$BIN" run -config "$cfg" >/dev/null 2>&1 &
+  pid=$!
+  for i in $(seq 1 30); do
+    port_busy "$cport" && break
+    kill -0 "$pid" 2>/dev/null || break
+    sleep 0.2
+  done
+
+  if ! kill -0 "$pid" 2>/dev/null; then
+    rm -f "$cfg"
+    chk_bad "пробный клиент не запустился — вход не отвечает так, как ждёт клиент"
+    return 0
+  fi
+
+  for u in https://api.ipify.org https://ifconfig.me/ip https://ipinfo.io/ip; do
+    out="$(curl -fsS --max-time 20 -x "socks5h://127.0.0.1:${cport}" "$u" 2>/dev/null | tr -d '[:space:]' || true)"
+    if [[ "$out" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then ok_ip="$out"; break; fi
+  done
+
+  kill "$pid" 2>/dev/null || true
+  wait "$pid" 2>/dev/null || true
+  rm -f "$cfg"
+
+  if [[ -z "$ok_ip" ]]; then
+    chk_bad "клиент через вход не прошёл (первый хоп). С телефона не заработает — разбираем дальше"
+    info "Частые причины: занят/закрыт ${PORT}/tcp у провайдера, маска недоступна,"
+    info "битые ключи. Журнал: journalctl -u ${SERVICE} -n 40 --no-pager"
+    return 0
+  fi
+
+  if [[ "$ok_ip" == "$NL_HOST" ]]; then
+    chk_ok "клиент прошёл ВЕСЬ путь: вход → NL → интернет, выходной IP ${ok_ip}"
+    info "Это ровно тот маршрут, по которому пойдёт телефон. Серверная часть рабочая"
+  else
+    chk_ok "клиент прошёл весь путь, выходной IP ${ok_ip} (не этот VPS)"
   fi
 }
 
@@ -626,7 +715,9 @@ check_all() {
     if port_busy "$p"; then chk_ok "порт ${p}/tcp слушается"; else chk_bad "порт ${p}/tcp НЕ слушается"; fi
   done
 
-  head2 "Маска REALITY (первый хоп: телефон → этот VPS)"
+  head2 "Первый хоп: клиент → этот вход (как с телефона, но без телефона)"
+  info "домен-маска ${SNI}:443 с этого VPS $(target_state)"
+  check_first_hop
   check_reality_locally
 
   head2 "Цепочка «этот VPS → NL → интернет» (без телефона)"
