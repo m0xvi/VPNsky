@@ -17,6 +17,7 @@
 # Использование:
 #   bash nsky-install.sh <домен> <email>            # установка
 #   bash nsky-install.sh <домен> <email> --wipe     # снести и поставить заново
+#   bash nsky-install.sh <домен> <email> --panel-ip 1.2.3.4,5.6.7.0/24  # панель только с IP офиса
 #   bash nsky-install.sh <домен> <email> --check    # только диагностика
 #
 # Пример:
@@ -31,10 +32,15 @@ set -Eeuo pipefail
 DOMAIN="${1:-}"
 EMAIL="${2:-}"
 MODE="install"
-for arg in "$@"; do
-  case "$arg" in
-    --wipe)  MODE="wipe" ;;
-    --check) MODE="check" ;;
+PANEL_PORT_ARG=""
+PANEL_ALLOW_FROM_ARG=""
+_args=("$@")
+for (( _i = 2; _i < ${#_args[@]}; _i++ )); do
+  case "${_args[_i]}" in
+    --wipe)       MODE="wipe" ;;
+    --check)      MODE="check" ;;
+    --panel-port) PANEL_PORT_ARG="${_args[_i+1]}"; (( _i++ )) ;;
+    --panel-ip)   PANEL_ALLOW_FROM_ARG="${_args[_i+1]}"; (( _i++ )) ;;
   esac
 done
 
@@ -43,16 +49,22 @@ STATE="$DIR/install-state.env"
 LOG="$DIR/install.log"
 PROJECT="nsky"
 PROJECT_NODE="nsky-node"
-NSKY_VERSION="2026-11-05.4"
+NSKY_VERSION="2026-11-06.1"
 
-# Порты. 443/tcp занят Caddy (панель), поэтому туннели разведены:
+# Порты. 443/tcp — публичная подписка для клиентов. Панель управления
+# живёт на отдельном порту, доступном только с IP офиса:
 #   REALITY   → 8443/tcp
 #   XHTTP     → 2053/tcp
 #   Hysteria2 → 443/udp   (UDP с Caddy не конфликтует)
+#   PANEL     → 8444/tcp  (только с IP офиса, см. --panel-ip)
 REALITY_PORT=8443
 XHTTP_PORT=2053
 HY2_PORT=443
 NODE_PORT=2222
+PANEL_PORT="${PANEL_PORT_ARG:-}"
+PANEL_ALLOW_FROM="${PANEL_ALLOW_FROM_ARG:-}"
+# PANEL_PORT / PANEL_ALLOW_FROM подхватываются из состояния ниже,
+# после определения state_get (STATE доступна уже сейчас).
 
 REALITY_SNI="${REALITY_SNI:-www.microsoft.com}"
 
@@ -70,7 +82,7 @@ die()  { bad "$*"; printf '\n  Полный лог: %s\n\n' "$LOG"; exit 1; }
 trap 'bad "Прервано на строке $LINENO. Лог: $LOG"' ERR
 
 [[ $EUID -eq 0 ]] || die "Запустите от root:  sudo bash $0 <домен> <email>"
-[[ -n "$DOMAIN" ]] || die "Использование: bash $0 <домен> <email> [--wipe|--check]"
+[[ -n "$DOMAIN" ]] || die "Использование: bash $0 <домен> <email> [--wipe|--check] \\n           [--panel-port <порт>] [--panel-ip <IP/CIDR,...>]"
 
 # ─── утилиты ─────────────────────────────────────────────────────────────────
 rnd() { openssl rand -hex "$1"; }
@@ -101,6 +113,13 @@ state_set() {
   sed -i "/^$1=/d" "$STATE"
   printf '%s=%s\n' "$1" "$2" >> "$STATE"
 }
+
+# Панель: порт и список IP офиса из прошлого запуска (если не задано заново).
+[[ -z "$PANEL_PORT" ]] && PANEL_PORT="$(state_get PANEL_PORT)"
+[[ -z "$PANEL_PORT" ]] && PANEL_PORT=8444
+[[ -z "$PANEL_ALLOW_FROM" ]] && PANEL_ALLOW_FROM="$(state_get PANEL_ALLOW_FROM)"
+[[ -n "$PANEL_ALLOW_FROM" ]] || PANEL_ALLOW_FROM=""
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 bold "1/10. Проверка сервера"
@@ -168,10 +187,17 @@ if [[ "$MODE" == "check" ]]; then
   else
     chk "Локальный health" "✗ не отвечает (docker logs remnawave)"
   fi
-  if curl -fsS --max-time 10 "https://$DOMAIN" >/dev/null 2>&1; then
-    chk "HTTPS" "✓ работает"
+  if curl -fsS --max-time 10 "https://$DOMAIN:$PANEL_PORT" >/dev/null 2>&1; then
+    chk "Панель (https://$DOMAIN:$PANEL_PORT)" "✓ работает"
   else
-    chk "HTTPS" "✗ не отвечает"
+    chk "Панель (порт $PANEL_PORT)" "✗ не отвечает"
+  fi
+  SUB_CODE="$(curl -sS --max-time 10 -o /dev/null -w '%{http_code}' \
+    "https://$DOMAIN/api/sub/probe" 2>/dev/null || echo 000)"
+  if [[ "$SUB_CODE" != "000" ]]; then
+    chk "Подписка на 443" "✓ отвечает (HTTP $SUB_CODE)"
+  else
+    chk "Подписка на 443" "✗ не отвечает"
   fi
   chk "Caddy" "$(systemctl is-active caddy 2>/dev/null || echo 'нет')"
   CERT_PATH="$(ls -1 /var/lib/caddy/.local/share/caddy/certificates/*/"$DOMAIN"/"$DOMAIN".crt 2>/dev/null | head -1 || true)"
@@ -320,8 +346,31 @@ ufw default allow outgoing >/dev/null
 for p in "$SSH_PORT/tcp" "80/tcp" "443/tcp" "$REALITY_PORT/tcp" "$XHTTP_PORT/tcp" "$HY2_PORT/udp" "$NODE_PORT/tcp"; do
   ufw allow "$p" >/dev/null
 done
+# Панель — отдельный порт, доступный только с IP офиса.
+# Сначала закрываем глобально (ufw default deny incoming уже это делает,
+# но явный deny нужен, если порт ранее открывали без ограничений),
+# потом разрешаем нужным IP.
+ufw deny "$PANEL_PORT/tcp" >/dev/null 2>&1 || true
+if [[ -n "$PANEL_ALLOW_FROM" ]]; then
+  _pf=0
+  IFS=',' read -ra _PAIPS <<< "$PANEL_ALLOW_FROM"
+  for _paip in "${_PAIPS[@]}"; do
+    _paip="${_paip//[[:space:]]/}"
+    [[ -n "$_paip" ]] || continue
+    ufw allow from "$_paip" to any port "$PANEL_PORT" proto tcp >/dev/null 2>&1 && _pf=1
+    info "разрешено с $_paip"
+  done
+  if [[ "$_pf" == "1" ]]; then
+    ok "панель $PANEL_PORT/tcp — только с IP офиса ($PANEL_ALLOW_FROM)"
+  else
+    warn "не удалось разрешить $PANEL_PORT/tcp для $PANEL_ALLOW_FROM"
+  fi
+else
+  warn "PANEL_ALLOW_FROM не задан — панель открыта для всех IP (задайте --panel-ip <IP/CIDR>)"
+  ufw allow "$PANEL_PORT/tcp" >/dev/null
+fi
 ufw --force enable >/dev/null
-ok "Открыты: $SSH_PORT(ssh), 80, 443/tcp (панель), $REALITY_PORT/tcp (REALITY), $XHTTP_PORT/tcp (XHTTP), $HY2_PORT/udp (Hysteria2), $NODE_PORT/tcp (нода)"
+ok "Открыты: $SSH_PORT(ssh), 80, 443/tcp (подписка), $REALITY_PORT/tcp (REALITY), $XHTTP_PORT/tcp (XHTTP), $HY2_PORT/udp (Hysteria2), $NODE_PORT/tcp (нода), $PANEL_PORT/tcp (панель)"
 
 # ─────────────────────────────────────────────────────────────────────────────
 bold "5/10. Подготовка к установке"
@@ -518,7 +567,9 @@ cat > /etc/caddy/Caddyfile <<CADDY
     }
 }
 
-$DOMAIN {
+# Панель управления — отдельный порт. ufw ниже не допускает посторонние
+# IP, поэтому они вообще не дойдут до Caddy.
+$DOMAIN:$PANEL_PORT {
     reverse_proxy 127.0.0.1:3000 {
         header_up X-Real-IP {remote_host}
     }
@@ -528,6 +579,19 @@ $DOMAIN {
         -Server
     }
     encode gzip zstd
+}
+
+# Публичная подписка для клиентов — на 443, открыта для всех.
+# Здесь только /api/sub*; остальные пути на 443 не нужны (UI панели теперь
+# на $PANEL_PORT). handle (не handle_path) — иначе Caddy срезал бы префикс
+# и подписка пришла в панель без /api/sub.
+$DOMAIN {
+    handle /api/sub* {
+        reverse_proxy 127.0.0.1:3000 {
+            header_up X-Real-IP {remote_host}
+        }
+    }
+    respond "Not Found" 404
 }
 CADDY
 # Проверяем конфиг до перезапуска: ошибка в Caddyfile уронила бы HTTPS.
@@ -543,8 +607,8 @@ systemctl restart caddy
 sleep 6
 
 HTTPS_OK=0
-if [[ "$DNS_OK" == "1" ]] && curl -fsS --max-time 15 "https://$DOMAIN" >/dev/null 2>&1; then
-  HTTPS_OK=1; ok "HTTPS работает: https://$DOMAIN"
+if [[ "$DNS_OK" == "1" ]] && curl -fsS --max-time 15 "https://$DOMAIN:$PANEL_PORT" >/dev/null 2>&1; then
+  HTTPS_OK=1; ok "Панель отвечает: https://$DOMAIN:$PANEL_PORT"
 else
   warn "HTTPS пока не отвечает. Причины: DNS не совпал или порт 80 закрыт у хостера."
   warn "Сертификат выпустится сам, как только условия выполнятся."
@@ -653,7 +717,7 @@ if [[ -z "$JWT" ]]; then
   echo "         bash $0 $DOMAIN $EMAIL --wipe"
   echo "       Это удалит базу панели (пользователей пока нет) и задаст новый пароль."
   echo "    2) Если в панели есть нужные данные — не запускайте --wipe,"
-  echo "       а войдите паролем вручную на https://$DOMAIN и запустите скрипт снова."
+  echo "       а войдите паролем вручную на https://$DOMAIN:$PANEL_PORT и запустите скрипт снова."
   echo
   die "Установка остановлена на шаге 8"
 fi
@@ -718,6 +782,8 @@ state_set REALITY_PUB "$REALITY_PUB"
 state_set REALITY_SNI "$REALITY_SNI"
 state_set REALITY_SHORT_ID "$REALITY_SHORT_ID"
 state_set XHTTP_PATH "$XHTTP_PATH"
+state_set PANEL_PORT "$PANEL_PORT"
+state_set PANEL_ALLOW_FROM "$PANEL_ALLOW_FROM"
 
 # 9.2 Профиль: панель создаёт Default-Profile сидером, поэтому ищем и обновляем,
 #     а не создаём (POST вернёт 400).
@@ -1137,7 +1203,7 @@ echo "╔═══════════════════════�
 echo "║  Установка завершена                                             ║"
 echo "╚══════════════════════════════════════════════════════════════════╝"
 echo
-echo "  Панель:    https://$DOMAIN"
+echo "  Панель:    https://$DOMAIN:$PANEL_PORT    (только с IP офиса: ${PANEL_ALLOW_FROM:-не ограничено})"
 echo "  Логин:     $ADMIN_USER"
 echo "  Пароль:    $ADMIN_PASS"
 if [[ "$HTTPS_OK" == "1" ]]; then
