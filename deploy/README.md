@@ -120,14 +120,14 @@ DNAT/FORWARD, `ip_forward` и systemd. Подробности:
 Скачивать по полному SHA коммита (ветка `main` может отставать):
 
 ```
-curl -fsSL -o /root/nsky-entry.sh https://raw.githubusercontent.com/m0xvi/VPNsky/785aa15a4e800d5a5454cc11477c0049ce734768/deploy/nsky-entry.sh
+curl -fsSL -o /root/nsky-entry.sh https://raw.githubusercontent.com/m0xvi/VPNsky/8a134f33d25233bbb9565da10d9aebae86d11fda/deploy/nsky-entry.sh
 sha256sum /root/nsky-entry.sh
 ```
 
-Ожидаемый sha256 (версия `2026-11-06.2`):
+Ожидаемый sha256 (версия `2026-11-06.3`):
 
 ```
-240c5cf08630913fc669bb075acc650465680dd8e0228c7bc4671e3af1441b40  /root/nsky-entry.sh
+77d4c80f2dd84e0e744b577d50b15d3fed3422520ba03deef3a0b7f58b345504  /root/nsky-entry.sh
 ```
 
 Инструкция: [../docs/КАСКАД_ВХОД_НА_RU.md](../docs/КАСКАД_ВХОД_НА_RU.md).
