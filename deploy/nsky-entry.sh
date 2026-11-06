@@ -38,7 +38,7 @@
 
 set -Eeuo pipefail
 
-VERSION="2026-11-06.5"
+VERSION="2026-11-06.7"
 
 # Пути можно переопределить переменными окружения (нужно для локальных тестов).
 DIR="${NSKY_ENTRY_DIR:-/opt/nsky-entry}"
@@ -341,6 +341,9 @@ new_uuid() {
 }
 
 # ── рендер конфига ──────────────────────────────────────────────────────────
+# Важно: вход делаем БЕЗ xtls-rprx-vision. Vision на входе + vision на выходе
+# в NL — это вложенный Vision; соединение при этом устанавливается, но данные
+# не идут. Vision остаётся только на плече RU→NL (значение берётся из ссылки).
 render_config() {
   # render_config <сеть: raw|tcp> <ключ адреса fallback: target|dest>
   local net="$1" destkey="$2"
@@ -355,7 +358,7 @@ render_config() {
       "listen": "0.0.0.0",
       "port": ${ALT_PORT},
       "protocol": "vless",
-      "settings": { "clients": [ { "id": "${CLIENT_UUID}", "flow": "xtls-rprx-vision" } ], "decryption": "none" },
+      "settings": { "clients": [ { "id": "${CLIENT_UUID}" } ], "decryption": "none" },
       "streamSettings": {
         "network": "${net}",
         "security": "reality",
@@ -367,8 +370,7 @@ render_config() {
           "privateKey": "${RU_PRIV}",
           "shortIds": [ "${RU_SID}" ]
         }
-      },
-      "sniffing": { "enabled": true, "destOverride": [ "http", "tls", "quic" ] }
+      }
     }
 ALT
 )"
@@ -395,14 +397,14 @@ SOCKS
 
   cat <<JSON
 {
-  "log": { "loglevel": "info" },
+  "log": { "loglevel": "debug" },
   "inbounds": [
     {
       "tag": "vless-reality-${PORT}",
       "listen": "0.0.0.0",
       "port": ${PORT},
       "protocol": "vless",
-      "settings": { "clients": [ { "id": "${CLIENT_UUID}", "flow": "xtls-rprx-vision" } ], "decryption": "none" },
+      "settings": { "clients": [ { "id": "${CLIENT_UUID}" } ], "decryption": "none" },
       "streamSettings": {
         "network": "${net}",
         "security": "reality",
@@ -414,8 +416,7 @@ SOCKS
           "privateKey": "${RU_PRIV}",
           "shortIds": [ "${RU_SID}" ]
         }
-      },
-      "sniffing": { "enabled": true, "destOverride": [ "http", "tls", "quic" ] }
+      }
     }${alt_block}${socks_chain_block}
   ],
   "outbounds": [
@@ -583,7 +584,7 @@ wait_listen() {
 # ── ссылки для телефона ─────────────────────────────────────────────────────
 build_link() {
   local port="$1"
-  local q="encryption=none&flow=xtls-rprx-vision&security=reality&sni=${SNI}&fp=chrome&pbk=${RU_PUB}&sid=${RU_SID}&type=tcp&headerType=none"
+  local q="encryption=none&security=reality&sni=${SNI}&fp=chrome&pbk=${RU_PUB}&sid=${RU_SID}&type=tcp&headerType=none"
   printf 'vless://%s@%s:%s?%s#%s\n' "$CLIENT_UUID" "$PUBIP" "$port" "$q" "NSky-RU-REALITY-${port}"
 }
 
@@ -651,7 +652,7 @@ probe_config() {
       "tag": "probe-out",
       "protocol": "vless",
       "settings": { "vnext": [ { "address": "${host}", "port": ${PORT},
-        "users": [ { "id": "${CLIENT_UUID}", "encryption": "none", "flow": "xtls-rprx-vision" } ] } ] },
+        "users": [ { "id": "${CLIENT_UUID}", "encryption": "none" } ] } ] },
       "streamSettings": {
         "network": "raw",
         "security": "reality",
@@ -692,10 +693,14 @@ probe_once() {
     return 1
   fi
 
-  for u in https://api.ipify.org https://ifconfig.me/ip; do
-    out="$(curl -fsS --max-time 8 --connect-timeout 5 -x "socks5h://127.0.0.1:${cport}" "$u" 2>/dev/null | tr -d '[:space:]' || true)"
+  local cerr=""
+  for u in https://api.ipify.org https://ifconfig.me/ip https://ipinfo.io/ip; do
+    cerr="$(curl -fsS --max-time 15 --connect-timeout 10 -x "socks5h://127.0.0.1:${cport}" "$u" 2>&1 >/tmp/.nsky_probe_ip || true)"
+    out="$(tr -d '[:space:]' < /tmp/.nsky_probe_ip 2>/dev/null || true)"
+    rm -f /tmp/.nsky_probe_ip
     if [[ "$out" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]]; then ip="$out"; break; fi
   done
+  PROBE_ERR="${cerr:-}"
 
   kill "$pid" 2>/dev/null || true
   wait "$pid" 2>/dev/null || true
@@ -735,6 +740,9 @@ check_first_hop() {
       return 0
     fi
 
+    if [[ -n "${PROBE_ERR:-}" ]]; then
+      info "ответ curl: ${PROBE_ERR}"
+    fi
     if [[ -n "${PROBE_LOG:-}" ]]; then
       info "журнал пробного клиента (${host}):"
       printf '%s\n' "$PROBE_LOG" | sed 's/^/      /'
@@ -743,10 +751,15 @@ check_first_hop() {
 
   chk_bad "клиент через вход не прошёл ни по публичному IP, ни по 127.0.0.1"
   local jlog
-  jlog="$(journalctl -u "$SERVICE" -n 15 --no-pager 2>/dev/null | tail -15 || true)"
+  jlog="$(journalctl -u "$SERVICE" -n 400 --no-pager 2>/dev/null \
+          | grep -iE 'reality|vision|vless|xtls|fail|reject|timeout|error' \
+          | grep -viE 'Choosing .* target|non-443 ports' | tail -25 || true)"
   if [[ -n "$jlog" ]]; then
-    info "последние строки журнала сервера:"
+    info "журнал сервера (REALITY/Vision/ошибки):"
     printf '%s\n' "$jlog" | sed 's/^/      /'
+  else
+    info "в журнале сервера нет ни одной ошибки REALITY — рукопожатие до него не доходило"
+    info "  journalctl -u ${SERVICE} -n 50 --no-pager"
   fi
   return 0
 }

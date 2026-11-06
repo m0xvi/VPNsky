@@ -20,6 +20,10 @@
 | подписка тянется с зарубежного домена → таймаут на LTE | ссылка добавляется вручную, подписка не нужна |
 | проверить можно только с телефона | цепочка RU→NL проверяется **без телефона** |
 
+Вход работает как **обычный VLESS+REALITY без `xtls-rprx-vision`**, а vision
+остаётся только на плече RU→NL. Причина: vision на входе плюс vision на выходе
+дают вложенный Vision — соединение устанавливается, но данные не идут.
+
 NL-сервер, панель Remnawave, подписки и ключи существующих инбаундов
 **не изменяются**. Всё, что делает скрипт, живёт в `/opt/nsky-entry` и
 снимается одной командой.
@@ -49,7 +53,7 @@ UUID пользователя, `pbk`, `sid` и SNI — вводить их ру�
 
 ```
 cd /root
-curl -fsSL -o nsky-entry.sh https://raw.githubusercontent.com/m0xvi/VPNsky/e8499c305eb4cc5f69c56c53678bbb06180777e7/deploy/nsky-entry.sh
+curl -fsSL -o nsky-entry.sh https://raw.githubusercontent.com/m0xvi/VPNsky/5f304a37280899a6c9856ac96eea0c1261bfd383/deploy/nsky-entry.sh
 ```
 
 ```
@@ -186,8 +190,8 @@ bash nsky-entry.sh --remove    # снять вход-узел (NL не трог�
 Скачивать по **полному SHA коммита** (ветка `main` может отставать):
 
 ```
-curl -fsSL -o /root/nsky-entry.sh https://raw.githubusercontent.com/m0xvi/VPNsky/e8499c305eb4cc5f69c56c53678bbb06180777e7/deploy/nsky-entry.sh
+curl -fsSL -o /root/nsky-entry.sh https://raw.githubusercontent.com/m0xvi/VPNsky/5f304a37280899a6c9856ac96eea0c1261bfd383/deploy/nsky-entry.sh
 sha256sum /root/nsky-entry.sh
 ```
 
-sha256 этой версии: `3433ecb1ff85a1d1e5b2436fd17e62d80ab431a5520ee3c3575f347e09a34409`
+sha256 этой версии: `d085dc56e43360ee683848470e1b3ccf5a5e24b53d68f4c920d2545060709007`
