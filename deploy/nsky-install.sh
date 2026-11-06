@@ -49,7 +49,7 @@ STATE="$DIR/install-state.env"
 LOG="$DIR/install.log"
 PROJECT="nsky"
 PROJECT_NODE="nsky-node"
-NSKY_VERSION="2026-11-06.2"
+NSKY_VERSION="2026-11-06.3"
 
 # Порты. 443/tcp — публичная подписка для клиентов. Панель управления
 # живёт на отдельном порту, доступном только с IP офиса:
@@ -242,9 +242,18 @@ if [[ "$MODE" == "check" ]]; then
     if [[ -n "$TEST_SUB" ]]; then
       SUB_RAW="$(curl -sS --max-time 15 -H 'x-forwarded-for: 127.0.0.1' \
         -H 'x-forwarded-proto: https' "$API/sub/$TEST_SUB" 2>/dev/null || true)"
+      # Панель для неизвестных ей программ отдаёт подписку в base64.
+      SUB_TEXT="$SUB_RAW"
+      case "$SUB_RAW" in
+        *"://"*) : ;;
+        *)
+          DECODED="$(printf '%s' "$SUB_RAW" | base64 -d 2>/dev/null || true)"
+          case "$DECODED" in *"://"*) SUB_TEXT="$DECODED" ;; esac
+          ;;
+      esac
       CNT=0
       for proto in vless hysteria2 trojan ss; do
-        n=$(printf '%s' "$SUB_RAW" | awk -v p="$proto" 'index($0, p "://") == 1 {c++} END {print c+0}')
+        n=$(printf '%s' "$SUB_TEXT" | awk -v p="$proto" 'index($0, p "://") == 1 {c++} END {print c+0}')
         CNT=$(( CNT + n ))
       done
       chk "Ссылок в подписке" "${CNT:-0}"
@@ -360,10 +369,10 @@ for p in "$SSH_PORT/tcp" "80/tcp" "443/tcp" "$REALITY_PORT/tcp" "$XHTTP_PORT/tcp
   ufw allow "$p" >/dev/null
 done
 # Панель — отдельный порт, доступный только с IP офиса.
-# Сначала закрываем глобально (ufw default deny incoming уже это делает,
-# но явный deny нужен, если порт ранее открывали без ограничений),
-# потом разрешаем нужным IP.
-ufw deny "$PANEL_PORT/tcp" >/dev/null 2>&1 || true
+# ВАЖНО: никакого общего "ufw deny <порт>". ufw применяет правила сверху
+# вниз, первое совпадение выигрывает — deny, добавленный раньше, закрыл бы
+# и офис. Закрытость даёт "ufw default deny incoming" выше: кто не попал
+# в разрешённые IP, тот не проходит.
 if [[ -n "$PANEL_ALLOW_FROM" ]]; then
   _pf=0
   IFS=',' read -ra _PAIPS <<< "$PANEL_ALLOW_FROM"
