@@ -23,7 +23,7 @@
 #   bash nsky-install.sh <домен> <email> --check    # только диагностика
 #
 # Пример:
-#   bash nsky-install.sh oijas.rknmrz.xyz admin@example.com
+#   bash nsky-install.sh vpn.example.com admin@example.com
 #
 # Повторный запуск без --wipe безопасен: пароли и данные не перезаписываются,
 # профиль обновляется по тегам инбаундов (UUID сохраняются), нода не пересоздаётся.

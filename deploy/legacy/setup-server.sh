@@ -15,7 +15,7 @@
 #   bash setup-server.sh <домен> <email>
 #
 # Пример:
-#   bash setup-server.sh oijas.rknmrz.xyz admin@example.com
+#   bash setup-server.sh vpn.example.com admin@example.com
 #
 # Требования: Ubuntu 22.04/24.04, root, домен уже указывает на IP сервера.
 # Повторный запуск безопасен: данные и пароли не перезаписываются.
