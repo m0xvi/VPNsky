@@ -18,6 +18,8 @@
 #   bash nsky-install.sh <домен> <email>            # установка
 #   bash nsky-install.sh <домен> <email> --wipe     # снести и поставить заново
 #   bash nsky-install.sh <домен> <email> --panel-ip 1.2.3.4,5.6.7.0/24  # панель только с IP офиса
+#   bash nsky-install.sh <домен> <email> --cascade 5.6.7.8         # каскад через русский VPS
+#   bash nsky-install.sh <домен> <email> --cascade-remove          # выключить каскад
 #   bash nsky-install.sh <домен> <email> --check    # только диагностика
 #
 # Пример:
@@ -34,6 +36,8 @@ EMAIL="${2:-}"
 MODE="install"
 PANEL_PORT_ARG=""
 PANEL_ALLOW_FROM_ARG=""
+CASCADE_ARG=""
+CASCADE_REMOVE="0"
 _args=("$@")
 for (( _i = 2; _i < ${#_args[@]}; _i++ )); do
   case "${_args[_i]}" in
@@ -41,6 +45,8 @@ for (( _i = 2; _i < ${#_args[@]}; _i++ )); do
     --check)      MODE="check" ;;
     --panel-port) PANEL_PORT_ARG="${_args[_i+1]}"; (( _i++ )) ;;
     --panel-ip)   PANEL_ALLOW_FROM_ARG="${_args[_i+1]}"; (( _i++ )) ;;
+    --cascade)    CASCADE_ARG="${_args[_i+1]}"; (( _i++ )) ;;
+    --cascade-remove) CASCADE_REMOVE="1" ;;
   esac
 done
 
@@ -49,7 +55,7 @@ STATE="$DIR/install-state.env"
 LOG="$DIR/install.log"
 PROJECT="nsky"
 PROJECT_NODE="nsky-node"
-NSKY_VERSION="2026-11-06.3"
+NSKY_VERSION="2026-11-06.4"
 
 # Порты. 443/tcp — публичная подписка для клиентов. Панель управления
 # живёт на отдельном порту, доступном только с IP офиса:
@@ -121,6 +127,9 @@ state_set() {
 [[ -n "$PANEL_ALLOW_FROM" ]] || PANEL_ALLOW_FROM=""
 # Секретный сегмент в URL подписки: прячет известный сканерам путь /api/sub.
 SUB_SECRET="$(state_get SUB_SECRET)"
+# Каскад: IP русского релея (--cascade). Пусто = каскада нет.
+CASCADE_IP="${CASCADE_ARG:-}"
+[[ -n "$CASCADE_IP" || "$CASCADE_REMOVE" == "1" ]] || CASCADE_IP="$(state_get CASCADE_IP)"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -257,6 +266,16 @@ if [[ "$MODE" == "check" ]]; then
         CNT=$(( CNT + n ))
       done
       chk "Ссылок в подписке" "${CNT:-0}"
+
+      CASCADE_CHK="$(state_get CASCADE_IP)"
+      if [[ -n "$CASCADE_CHK" ]]; then
+        chk "Каскад" "$CASCADE_CHK"
+        if timeout 4 bash -c "cat < /dev/null > /dev/tcp/$CASCADE_CHK/8443" 2>/dev/null; then
+          chk "Релей RU→NL (8443)" "✓ проходит через каскад"
+        else
+          chk "Релей RU→NL (8443)" "✗ не проходит — проверь nsky-relay на русском VPS"
+        fi
+      fi
       printf '\n  Ссылка подписки:\n    https://%s/%sapi/sub/%s\n' "$DOMAIN" "${SUB_SECRET:+$SUB_SECRET/}" "$TEST_SUB"
     else
       chk "Тестовая подписка" "не создана (запустите установку)"
@@ -992,7 +1011,7 @@ state_set SQUAD_UUID "$SQUAD_UUID"
 #     Без них клиент получает "No hosts found".
 HOSTS_FAILED=0
 ensure_host() {
-  local remark="$1" inb="$2" port="$3" sni="$4" alpn="$5" resp uuid
+  local remark="$1" inb="$2" port="$3" sni="$4" alpn="$5" addr="${6:-$SERVER_IP}" resp uuid
   resp=$(api "${auth_hdr[@]}" "$API/hosts")
   uuid=$(printf '%s' "$resp" | jq -r --arg r "$remark" \
     '[.response[]? | select(.remark==$r)][0].uuid // empty' 2>/dev/null || true)
@@ -1013,7 +1032,7 @@ ensure_host() {
 
   local body
   body=$(jq -n --arg r "$remark" --arg pu "$PROFILE_UUID" --arg iu "$inb" \
-    --arg a "$SERVER_IP" --argjson p "$port" "${jq_extra[@]}" \
+    --arg a "$addr" --argjson p "$port" "${jq_extra[@]}" \
     "{inbound:{configProfileUuid:\$pu,configProfileInboundUuid:\$iu},
       remark:\$r, address:\$a, port:\$p, isDisabled:false} | $filter")
 
@@ -1048,6 +1067,36 @@ if [[ "$HOSTS_FAILED" == "1" ]]; then
   warn "Проверьте вручную: панель → Hosts. Подробности в $LOG"
 fi
 info "Hysteria2 работает по UDP."
+
+# 9.5b Каскад: дубли хостов с адресом русского релея.
+# Сквад ссылается только на инбаунды, поэтому хосты с теми же инбаундами
+# попадают в ту же подписку автоматически — сотрудники увидят серверы (RU).
+if [[ "$CASCADE_REMOVE" == "1" ]]; then
+  resp=$(api "${auth_hdr[@]}" "$API/hosts")
+  REMOVED=0
+  for u in $(printf '%s' "$resp" | jq -r '.response[]? | select((.remark|endswith(" (RU)"))) | .uuid' 2>/dev/null || true); do
+    api -X DELETE "$API/hosts/$u" "${auth_hdr[@]}" >/dev/null 2>&1 || true
+    REMOVED=$(( REMOVED + 1 ))
+  done
+  CASCADE_IP=""
+  state_set CASCADE_IP ""
+  ok "Каскад выключен, хостов удалено: $REMOVED"
+elif [[ -n "$CASCADE_IP" ]]; then
+  [[ "$CASCADE_IP" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}$ ]] \
+    || die "--cascade: не похоже на IPv4: $CASCADE_IP"
+  HOSTS_FAILED=0
+  ensure_host "NSky REALITY (RU)"   "$INB_REALITY" "$REALITY_PORT" "$REALITY_SNI" "" "$CASCADE_IP"
+  ensure_host "NSky XHTTP (RU)"     "$INB_XHTTP"   "$XHTTP_PORT"   "$REALITY_SNI" "" "$CASCADE_IP"
+  if [[ -n "$TLS_CERT" && -n "$INB_HY2" ]]; then
+    ensure_host "NSky Hysteria2 (RU)" "$INB_HY2"   "$HY2_PORT"     "$DOMAIN"      "" "$CASCADE_IP"
+  fi
+  if [[ "$HOSTS_FAILED" == "1" ]]; then
+    warn "Часть каскадных хостов не создалась. Подробности в $LOG"
+  else
+    state_set CASCADE_IP "$CASCADE_IP"
+    ok "Каскад активен: серверы (RU) идут через $CASCADE_IP"
+  fi
+fi
 
 # 9.6 Нода
 resp=$(api "${auth_hdr[@]}" "$API/nodes")
@@ -1252,6 +1301,7 @@ if [[ -n "$TEST_SUB" ]]; then
     fi
   done
 
+  PROTO_FOUND="$(printf '%s\n' $PROTO_FOUND | awk 'NF' | sort -u | tr '\n' ' ')"
   if [[ "$COUNT" -ge 1 ]]; then
     LINKS_OK=1
     ok "Подписка отдаёт ссылок: $COUNT"
@@ -1277,6 +1327,10 @@ else
   echo "  HTTPS:     ждёт DNS или порт 80 (сертификат выпустится сам)"
 fi
 echo
+if [[ -n "$(state_get CASCADE_IP)" ]]; then
+  echo "  Каскад:    серверы с пометкой (RU) идут через русский релей $(state_get CASCADE_IP)"
+  echo "             мобильным сотрудникам — выбрать в приложении сервер (RU)"
+fi
 echo "  Протоколы:"
 echo "    VLESS + REALITY    $SERVER_IP:$REALITY_PORT/tcp   маскировка под $REALITY_SNI"
 echo "    VLESS + XHTTP      $SERVER_IP:$XHTTP_PORT/tcp     path $XHTTP_PATH"
