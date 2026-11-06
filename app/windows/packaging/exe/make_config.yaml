@@ -1,0 +1,18 @@
+script_template: inno_setup.iss
+app_id: 5B2C7E1A-9D44-4F83-A611-7C0E93D5B2F7
+app_name: NSky
+publisher: NSky
+publisher_url: https://github.com/m0xvi/VPNsky
+display_name: NSky
+executable_name: FlClash.exe
+output_base_file_name: NSky-Setup.exe
+# Resolved against the project root: flutter_distributor turns this into an
+# absolute path via Directory.current.
+setup_icon_file: windows\runner\resources\app_icon.ico
+locales:
+  # Written into the .iss verbatim, so this one stays relative to the generated
+  # script in dist/.
+  - lang: zh
+    file: ..\windows\packaging\exe\ChineseSimplified.isl
+  - lang: en
+privileges_required: admin

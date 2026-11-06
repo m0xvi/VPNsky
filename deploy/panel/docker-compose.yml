@@ -1,0 +1,105 @@
+# Remnawave Panel (панель управления) — сервер РФ или «нейтральный» хост, НЕ на IP ноды.
+#
+# Версии зафиксированы явно, чтобы обновление было осознанным действием.
+# Официальный источник: https://github.com/remnawave/backend/blob/main/docker-compose-prod.yml
+# Этот файл — упрощённый вариант: панель + БД + valkey. TLS-терминация — Caddy (отдельно).
+#
+# Запуск:
+#   1. рядом положить .env (шаблон — .env.example в этой папке)
+#   2. docker compose up -d
+#   3. docker compose logs -f  -> дождаться "Application is running"
+
+x-common: &common
+  ulimits:
+    nofile:
+      soft: 1048576
+      hard: 1048576
+  restart: always
+  networks:
+    - remnawave-network
+
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      max-size: 100m
+      max-file: 5
+
+services:
+  remnawave:
+    image: remnawave/backend:3.4.8
+    container_name: remnawave
+    hostname: remnawave
+    <<: [*common, *logging]
+    env_file: .env
+    volumes:
+      - valkey-socket:/var/run/valkey
+    ports:
+      # Только loopback: наружу отдаёт Caddy с TLS.
+      - 127.0.0.1:3000:3000
+      - 127.0.0.1:3001:3001
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      remnawave-db:
+        condition: service_healthy
+      remnawave-redis:
+        condition: service_healthy
+
+  remnawave-db:
+    image: postgres:18.4
+    container_name: remnawave-db
+    hostname: remnawave-db
+    shm_size: 512mb
+    <<: [*common, *logging]
+    env_file: .env
+    ports:
+      - 127.0.0.1:6767:5432
+    volumes:
+      - remnawave-db-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 3s
+      timeout: 10s
+      retries: 3
+
+  remnawave-redis:
+    image: valkey/valkey:9-alpine
+    container_name: remnawave-redis
+    hostname: remnawave-redis
+    <<: [*common, *logging]
+    volumes:
+      - valkey-socket:/var/run/valkey
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 3s
+      timeout: 10s
+      retries: 3
+
+  remnawave-subscription-page:
+    image: remnawave/subscription-page:latest
+    container_name: remnawave-subscription-page
+    hostname: remnawave-subscription-page
+    <<: [*common, *logging]
+    environment:
+      - REMNAWAVE_PANEL_URL=http://remnawave:3000
+      - APP_PORT=3010
+      # API-токен создаётся в панели: Settings → API Tokens
+      - REMNAWAVE_API_TOKEN=${REMNAWAVE_API_TOKEN}
+    ports:
+      - 127.0.0.1:3010:3010
+    depends_on:
+      - remnawave
+
+volumes:
+  remnawave-db-data:
+  valkey-socket:
+
+networks:
+  remnawave-network:
+    name: remnawave-network
+    driver: bridge

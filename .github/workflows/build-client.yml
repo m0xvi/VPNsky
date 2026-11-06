@@ -1,0 +1,329 @@
+name: build-client
+
+# Сборка VPNsky (клиент в app/) — Windows + Android.
+#
+# Почему свой workflow, а не upstream: в app/.github/workflows/build.yaml
+# проверки и сборка обёрнуты в условие `!github.event.repository.private`,
+# поэтому в приватном репозитории они не запускаются.
+#
+# Запуск: тег вида v* (git push origin v0.1.0) или вручную
+#         Actions → build-client → Run workflow.
+# Результат: артефакты в разделе Actions.
+#
+# При падении хвост лога публикуется в ветку ci-logs — обычные логи Actions
+# хранятся в Azure Blob, недоступном из среды разработки.
+#
+# Секреты (Settings → Secrets and variables → Actions), все необязательные:
+#   ANDROID_KEYSTORE_BASE64, ANDROID_STORE_PASSWORD, ANDROID_KEY_ALIAS, ANDROID_KEY_PASSWORD
+# Без них gradle сам подпишет debug-ключом и добавит суффикс .dev.
+
+on:
+  workflow_dispatch:
+    inputs:
+      build_android:
+        description: 'Собрать Android'
+        type: boolean
+        default: true
+      build_windows:
+        description: 'Собрать Windows'
+        type: boolean
+        default: true
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+env:
+  FLUTTER_VERSION: '3.47.6'
+  GO_VERSION: '1.27.1'
+  NDK_VERSION: r28c
+
+defaults:
+  run:
+    working-directory: app
+
+jobs:
+  android:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.build_android }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: app/core/Clash.Meta/go.sum
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Setup NDK
+        uses: nttld/setup-ndk@v1
+        id: build-ndk
+        with:
+          ndk-version: ${{ env.NDK_VERSION }}
+          add-to-path: true
+          link-to-sdk: true
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: app/plugins/rust_api/rust
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Модели (freezed/json_serializable) кодогенерируются: генераты в репо
+      # могут отставать от рукописных полей — пересобираем перед сборкой.
+      - name: Regenerate freezed/json code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      # Ядро встраивает этот файл через //go:embed. Пустой файл допустим, но
+      # upstream всегда кладёт настоящий бандл — повторяем поведение.
+      - name: Ensure CA bundle for core
+        shell: bash
+        run: |
+          bundle=core/Clash.Meta/component/ca/ca-certificates.crt
+          count=$(grep -c 'BEGIN CERTIFICATE' "$bundle" || true)
+          echo "сертификатов в бандле: $count"
+          if [ "${count:-0}" -lt 10 ]; then
+            echo "::warning::CA bundle пуст или мал, скачиваю"
+            curl -fsSL --retry 3 -o "$bundle" "https://curl.se/ca/cacert-2026-09-25.pem"
+            grep -c 'BEGIN CERTIFICATE' "$bundle"
+          fi
+
+      - name: Prepare signing
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.ANDROID_STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > android/app/keystore.jks
+            printf 'storePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' \
+              "$STORE_PASSWORD" "$KEY_ALIAS" "$KEY_PASSWORD" >> android/local.properties
+            echo "SIGNED=true" >> "$GITHUB_ENV"
+          else
+            echo "::warning::Секреты подписи не заданы — APK будет с суффиксом .dev"
+            echo "SIGNED=false" >> "$GITHUB_ENV"
+          fi
+
+      # flutter build apk напрямую НЕ собирает Go-ядро: нужен setup.dart.
+      # Gradle иногда получает 504 от серверов зависимостей — это сетевой сбой,
+      # а не ошибка кода. Три попытки с паузой снимают такие падения.
+      - name: Build APK
+        env:
+          ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
+        run: |
+          set -o pipefail
+          for attempt in 1 2 3; do
+            echo "=== попытка $attempt из 3 ==="
+            if dart setup.dart android --env stable -v 2>&1 | tee -a /tmp/build-android.log; then
+              echo "сборка удалась с попытки $attempt"
+              exit 0
+            fi
+            echo "попытка $attempt не удалась"
+            sleep 30
+          done
+          echo "все попытки исчерпаны"
+          exit 1 || { echo "СБОРКА УПАЛА (код $?)" >> /tmp/build-android.log; exit 1; }
+
+      - name: Upload APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nsky-android
+          path: |
+            app/dist/*.apk
+            app/build/app/outputs/flutter-apk/*.apk
+          if-no-files-found: warn
+          overwrite: true
+
+      - name: Publish failure log
+        if: failure()
+        uses: ./.github/actions/publish-log
+        with:
+          platform: android
+          log-path: /tmp/build-android.log
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  windows:
+    if: ${{ github.event_name != 'workflow_dispatch' || inputs.build_windows }}
+    runs-on: windows-2022
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable git long paths
+        shell: bash
+        working-directory: .
+        run: git config --global core.longpaths true
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: app/core/Clash.Meta/go.sum
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: |
+            app/services/helper
+            app/plugins/rust_api/rust
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Модели (freezed/json_serializable) кодогенерируются: генераты в репо
+      # могут отставать от рукописных полей — пересобираем перед сборкой.
+      - name: Regenerate freezed/json code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Ensure CA bundle for core
+        shell: bash
+        run: |
+          bundle=core/Clash.Meta/component/ca/ca-certificates.crt
+          count=$(grep -c 'BEGIN CERTIFICATE' "$bundle" || true)
+          echo "сертификатов в бандле: $count"
+          if [ "${count:-0}" -lt 10 ]; then
+            echo "::warning::CA bundle пуст или мал, скачиваю"
+            curl -fsSL --retry 3 -o "$bundle" "https://curl.se/ca/cacert-2026-09-25.pem"
+            grep -c 'BEGIN CERTIFICATE' "$bundle"
+          fi
+
+      - name: Build Windows
+        shell: bash
+        run: |
+          set -o pipefail
+          dart setup.dart windows --env stable -v 2>&1 | tee build-windows.log || { echo "СБОРКА УПАЛА (код $?)" >> build-windows.log; exit 1; }
+
+      - name: Upload Windows artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nsky-windows
+          path: app/dist/*
+          if-no-files-found: warn
+          overwrite: true
+
+      - name: Publish failure log
+        if: failure()
+        uses: ./.github/actions/publish-log
+        with:
+          platform: windows
+          log-path: app/build-windows.log
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  checksums:
+    needs: [android, windows]
+    if: ${{ always() && (needs.android.result == 'success' || needs.windows.result == 'success') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: ./dist
+          merge-multiple: true
+
+      # Шаг вспомогательный: он не должен ронять сборку, если имена файлов
+      # окажутся неожиданными (кириллица, пробелы, вложенные каталоги).
+      - name: List and hash
+        continue-on-error: true
+        run: |
+          echo "--- содержимое ./dist ---"
+          find ./dist -type f -printf '%s\t%p\n' | sort -rn | head -50
+
+          echo "--- считаю SHA256 ---"
+          out=./dist/SHA256SUMS.txt
+          : > "$out"
+          find ./dist -type f ! -name 'SHA256SUMS.txt' -print0 \
+            | while IFS= read -r -d '' f; do
+                sha256sum "$f" >> "$out" 2>/dev/null || echo "не смог посчитать: $f"
+              done
+
+          echo "--- результат ---"
+          cat "$out" || echo "файл пуст"
+
+      - name: Upload combined build
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: nsky-build-${{ github.run_number }}
+          path: ./dist
+          overwrite: true
+
+  release:
+    needs: [android, windows]
+    if: ${{ startsWith(github.ref, 'refs/tags/v') && (needs.android.result == 'success' || needs.windows.result == 'success') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: ./dist
+          merge-multiple: true
+
+      # Не должен ронять релиз: если имена файлов окажутся неожиданными,
+      # релиз всё равно опубликуется, а суммы просто не приложатся.
+      - name: Подготовить файлы
+        continue-on-error: true
+        run: |
+          echo "--- что пришло ---"
+          find ./dist -type f -printf '%s\t%p\n' | sort -rn | head -30
+          cd ./dist
+          : > SHA256SUMS.txt
+          find . -type f ! -name 'SHA256SUMS.txt' -print0 \
+            | while IFS= read -r -d '' f; do sha256sum "$f" >> SHA256SUMS.txt 2>/dev/null || true; done
+          cat SHA256SUMS.txt || true
+
+      - name: Создать релиз
+        uses: softprops/action-gh-release@v2
+        with:
+          name: NSky ${{ github.ref_name }}
+          body: |
+            Сборка клиента NSky (${{ github.ref_name }}).
+
+            **Что внутри**
+            - `nsky-android` — APK для Android
+            - `nsky-windows` — установщик и portable-версия для Windows
+            - `SHA256SUMS.txt` — контрольные суммы
+
+            **Установка Windows:** распаковать архив, запустить установщик.
+            **Установка Android:** открыть APK на телефоне, разрешить установку из этого источника.
+
+            Собрано автоматически из ветки `${{ github.ref_name }}`.
+          files: |
+            ./dist/**
+          draft: false
+          prerelease: true
+          fail_on_unmatched_files: false

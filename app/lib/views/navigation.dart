@@ -1,0 +1,94 @@
+import 'package:fl_clash/common/app_ports.dart';
+import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/ui/icons/app_glyphs.dart';
+import 'package:fl_clash/views/views.dart';
+
+/// VPNsky: меню рассчитано на сотрудника, а не на разработчика.
+/// Диагностика (запросы, DNS) на телефоне убрана из меню — её место в «инструментах»
+/// и в логах по запросу поддержки. На десктопе она остаётся в разделе «Ещё».
+class Navigation implements NavigationPort {
+  static Navigation? _instance;
+
+  @override
+  List<NavigationItem> getItems({
+    bool openLogs = false,
+    bool hasProxies = false,
+    bool isAdmin = false,
+  }) {
+    // NSky: сотрудник видит только «Главную» — одна кнопка и статус.
+    // Всё остальное (серверы, профили, журналы, инструменты) появляется
+    // в режиме администратора. Так сотрудник физически не может залезть
+    // в настройки и что-то сломать.
+    if (!isAdmin) {
+      return [
+        NavigationItem(
+          glyph: AppGlyphs.dashboard,
+          label: PageLabel.dashboard,
+          builder: (_) => const DashboardView(),
+        ),
+      ];
+    }
+    return [
+      NavigationItem(
+        glyph: AppGlyphs.dashboard,
+        label: PageLabel.dashboard,
+        builder: (_) => const DashboardView(),
+      ),
+      NavigationItem(
+        glyph: AppGlyphs.proxies,
+        label: PageLabel.proxies,
+        builder: (_) => const ProxiesView(),
+        modes: hasProxies
+            ? [NavigationItemMode.mobile, NavigationItemMode.desktop]
+            : [],
+      ),
+      NavigationItem(
+        glyph: AppGlyphs.profiles,
+        label: PageLabel.profiles,
+        builder: (_) => const ProfilesView(),
+      ),
+      NavigationItem(
+        glyph: AppGlyphs.requests,
+        label: PageLabel.requests,
+        builder: (_) => const RequestsView(),
+        modes: [NavigationItemMode.desktop],
+      ),
+      NavigationItem(
+        glyph: AppGlyphs.dns,
+        label: PageLabel.dns,
+        builder: (_) => const DnsQueriesView(),
+        modes: [NavigationItemMode.desktop],
+      ),
+      NavigationItem(
+        glyph: AppGlyphs.resources,
+        label: PageLabel.resources,
+        builder: (_) => const ResourcesView(),
+        modes: [NavigationItemMode.more],
+      ),
+      NavigationItem(
+        glyph: AppGlyphs.logs,
+        label: PageLabel.logs,
+        builder: (_) => const LogsView(),
+        modes: openLogs
+            ? [NavigationItemMode.desktop, NavigationItemMode.more]
+            : [],
+      ),
+      NavigationItem(
+        glyph: AppGlyphs.tools,
+        label: PageLabel.tools,
+        builder: (_) => const ToolsView(),
+        modes: [NavigationItemMode.desktop, NavigationItemMode.mobile],
+      ),
+    ];
+  }
+
+  Navigation._internal();
+
+  factory Navigation() {
+    _instance ??= Navigation._internal();
+    return _instance!;
+  }
+}
+
+final navigation = Navigation();

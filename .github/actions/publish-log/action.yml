@@ -1,0 +1,54 @@
+name: Publish build log
+description: Публикует хвост лога сборки в ветку ci-logs, чтобы его можно было прочитать извне.
+
+inputs:
+  platform:
+    description: Имя платформы (android/windows) — попадёт в имя файла
+    required: true
+  log-path:
+    description: Путь к логу
+    required: true
+  token:
+    description: Токен с правом push (secrets.GITHUB_TOKEN)
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Push log to ci-logs
+      shell: bash
+      env:
+        PLATFORM: ${{ inputs.platform }}
+        LOG_PATH: ${{ inputs.log-path }}
+        TOKEN: ${{ inputs.token }}
+      run: |
+        set -u
+        echo "платформа: $PLATFORM"
+        echo "лог: $LOG_PATH"
+
+        if [ -f "$LOG_PATH" ]; then
+          tail -c 80000 "$LOG_PATH" > "/tmp/ci-$PLATFORM.log" 2>/dev/null || cp "$LOG_PATH" "/tmp/ci-$PLATFORM.log"
+        else
+          echo "файл лога не найден: $LOG_PATH" > "/tmp/ci-$PLATFORM.log"
+        fi
+        echo "размер лога: $(wc -c < "/tmp/ci-$PLATFORM.log" 2>/dev/null || echo 0) байт"
+
+        WORK="$(mktemp -d)"
+        cp "/tmp/ci-$PLATFORM.log" "$WORK/$PLATFORM.log"
+        cd "$WORK"
+
+        git init -q .
+        git config user.name "ci-log-bot"
+        git config user.email "ci-log@nsky.invalid"
+        git checkout -q -b "ci-logs-$PLATFORM"
+        git add "$PLATFORM.log"
+        git commit -q -m "log: $PLATFORM build failure (run $GITHUB_RUN_NUMBER)" \
+          || { echo "нечего коммитить"; exit 0; }
+
+        # Ветка служебная: каждый прогон перезаписывает её.
+        if git push -q --force \
+             "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "ci-logs-$PLATFORM"; then
+          echo "ЛОГ ОПУБЛИКОВАН в ветку ci-logs-$PLATFORM"
+        else
+          echo "::error::Не удалось опубликовать лог (нет прав contents: write?)"
+        fi

@@ -1,0 +1,17 @@
+# ВНИМАНИЕ (VPNsky)
+#
+# Эти подмодули больше не используются: исходники core/Clash.Meta и
+# plugins/prism_ui лежат в репозитории обычными каталогами, чтобы сборка в CI
+# не зависела от SSH-доступа к github.com.
+#
+# Файл оставлен только для совместимости с upstream-скриптами. Если вы вернёте
+# подмодули (git submodule add), удалите этот комментарий.
+
+[submodule "core/Clash.Meta"]
+	path = core/Clash.Meta
+	url = https://github.com/chen08209/Clash.Meta.git
+	branch = FlClash
+[submodule "plugins/prism_ui"]
+	path = plugins/prism_ui
+	url = https://github.com/chen08209/prism_ui.git
+	branch = main

@@ -1,0 +1,120 @@
+{
+  "_comment": [
+    "Профиль Xray для ноды Remnawave: VLESS+REALITY (TCP/443), VLESS+XHTTP (TCP/8443), Hysteria2 (UDP/443).",
+    "ПЕРЕД ИСПОЛЬЗОВАНИЕМ удалите весь блок _comment и замените плейсхолдеры:",
+    "__REALITY_PRIVATE_KEY__ — приватный ключ REALITY (панель: Settings -> Tools -> x25519 generate)",
+    "__REALITY_SHORT_ID__ — shortId, hex, 1..16 символов",
+    "__REALITY_SNI__ — домен-маска, например www.microsoft.com (для target и serverNames)",
+    "__XHTTP_PATH__ — произвольный путь, например /a1b2c3",
+    "__TLS_CERT__ / __TLS_KEY__ — сертификат и ключ для Hysteria2 (TLS)",
+    "clients[] и users[] пустые намеренно — пользователей подставляет Remnawave.",
+    "На TCP/443 в Xray помещается один протокол, поэтому XHTTP вынесен на 8443.",
+    "Проверка: xray run -test -c <этот файл> (после удаления _comment)"
+  ],
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "tag": "vless-reality-443",
+      "listen": "0.0.0.0",
+      "port": 443,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "raw",
+        "security": "reality",
+        "realitySettings": {
+          "show": false,
+          "target": "__REALITY_SNI__:443",
+          "xver": 0,
+          "serverNames": ["__REALITY_SNI__"],
+          "privateKey": "__REALITY_PRIVATE_KEY__",
+          "shortIds": ["__REALITY_SHORT_ID__"]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls", "quic"],
+        "routeOnly": true
+      }
+    },
+    {
+      "tag": "vless-xhttp-8443",
+      "listen": "0.0.0.0",
+      "port": 8443,
+      "protocol": "vless",
+      "settings": {
+        "clients": [],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "reality",
+        "realitySettings": {
+          "show": false,
+          "target": "__REALITY_SNI__:443",
+          "xver": 0,
+          "serverNames": ["__REALITY_SNI__"],
+          "privateKey": "__REALITY_PRIVATE_KEY__",
+          "shortIds": ["__REALITY_SHORT_ID__"]
+        },
+        "xhttpSettings": {
+          "path": "__XHTTP_PATH__",
+          "mode": "auto"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls", "quic"],
+        "routeOnly": true
+      }
+    },
+    {
+      "tag": "hysteria2-443-udp",
+      "listen": "0.0.0.0",
+      "port": 443,
+      "protocol": "hysteria",
+      "settings": {
+        "version": 2,
+        "users": []
+      },
+      "streamSettings": {
+        "network": "hysteria",
+        "security": "tls",
+        "tlsSettings": {
+          "alpn": ["h3"],
+          "certificates": [
+            {
+              "certificateFile": "__TLS_CERT__",
+              "keyFile": "__TLS_KEY__"
+            }
+          ]
+        },
+        "hysteriaSettings": {
+          "version": 2,
+          "udpIdleTimeout": 60
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls", "quic"],
+        "routeOnly": true
+      }
+    }
+  ],
+  "outbounds": [
+    { "protocol": "freedom", "tag": "DIRECT" },
+    { "protocol": "blackhole", "tag": "BLOCK" }
+  ],
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      { "protocol": ["bittorrent"], "outboundTag": "BLOCK" },
+      { "ip": ["geoip:private"], "outboundTag": "DIRECT" }
+    ]
+  }
+}

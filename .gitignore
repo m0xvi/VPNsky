@@ -1,0 +1,56 @@
+# Секреты и локальные данные — никогда в репозиторий
+*.env
+.env
+.env.local
+.env.*.local
+!.env.example
+secrets/
+*.pem
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.mobileprovision
+*.provisionprofile
+
+# Сборочные артефакты
+build/
+dist/
+out/
+*.exe
+# Служебная утилита upstream нужна для сборки Windows (CMake INSTALL).
+!app/windows/EnableLoopback.exe
+*.msi
+*.apk
+*.aab
+*.ipa
+*.dll
+*.so
+*.dylib
+*.xcframework
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Временное
+*.log
+*.tmp
+/scratch/
+
+# Форк клиента (app/) — тяжёлые сборочные каталоги
+app/.dart_tool/
+app/build/
+app/dist/
+app/.flutter-plugins*
+app/android/.gradle/
+app/android/local.properties
+app/android/app/keystore.jks
+app/core/Clash.Meta/.git/
+app/plugins/prism_ui/.git/
+app/windows/flutter/ephemeral/
+app/linux/flutter/ephemeral/
+app/macos/Flutter/ephemeral/
+app/ios/Flutter/ephemeral/
