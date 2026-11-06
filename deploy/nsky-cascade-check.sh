@@ -31,7 +31,7 @@
 
 set -Eeuo pipefail
 
-VERSION="2026-11-06.2"
+VERSION="2026-11-06.3"
 STATE="/opt/nsky/install-state.env"
 RELAY_STATE="/opt/nsky-relay/nl-ip"
 SUB_FILE=""
@@ -105,6 +105,19 @@ info "Режим только для чтения: конфиги и прави�
 if [[ "$MODE" == "relay" ]]; then
   if [[ -z "$NL_IP" && -f "$RELAY_STATE" ]]; then
     NL_IP="$(cat "$RELAY_STATE" 2>/dev/null || true)"
+  fi
+  # На релее почти всегда есть сгенерированный apply.sh с NL_IP=... — берём
+  # оттуда, чтобы --relay работал и без файла состояния, и без --nl.
+  if [[ -z "$NL_IP" && -f /opt/nsky-relay/apply.sh ]]; then
+    NL_IP="$(awk -F'"' '/^NL_IP=/ { print $2; exit }' /opt/nsky-relay/apply.sh 2>/dev/null || true)"
+  fi
+  # Крайний случай: состояние потеряно, но правила DNAT уже применены.
+  if [[ -z "$NL_IP" && ( -d /opt/nsky-relay || -f /etc/systemd/system/nsky-relay.service ) ]]; then
+    NL_IP="$(iptables -t nat -S PREROUTING 2>/dev/null \
+      | grep -E -e 'dport (8443|2053|443)' 2>/dev/null \
+      | grep -oP '(?<=--to-destination )[0-9.]+' 2>/dev/null \
+      | head -1 || true)"
+    [[ -z "$NL_IP" ]] || info "IP выходного сервера взят из правил DNAT: $NL_IP"
   fi
   if [[ -z "$NL_IP" ]]; then
     if [[ -f "$STATE" ]]; then
@@ -362,13 +375,18 @@ if [[ "$NO_PROBE" -eq 0 ]]; then
   head2 "Публичная ссылка и порты на NL-ноде"
   if [[ -n "$SUB_SECRET" && -n "$TEST_SUB" && -n "$DOMAIN" ]]; then
     PUBLIC_URL="https://$DOMAIN/$SUB_SECRET/api/sub/$TEST_SUB"
+    # curl при ошибке сам печатает 000; второй echo давал «000000», который
+    # раньше ошибочно проходил проверку. Теперь код проверяется строго.
     CODE="$(curl -sS --max-time 12 -o /dev/null -w '%{http_code}' \
-      -H 'User-Agent: Happ/1.0' "$PUBLIC_URL" 2>/dev/null || echo 000)"
-    if [[ "$CODE" != "000" && "$CODE" != "404" ]]; then
-      ok "публичная ссылка отвечает (HTTP $CODE) — секретный путь Caddy работает"
-    else
-      bad "публичная ссылка не отвечает (HTTP $CODE); проверьте Caddyfile и SUB_SECRET"
-    fi
+      -H 'User-Agent: Happ/1.0' "$PUBLIC_URL" 2>/dev/null || true)"
+    [[ "$CODE" =~ ^[0-9]{3}$ ]] || CODE="000"
+    case "$CODE" in
+      2??|3??) ok "публичная ссылка отвечает (HTTP $CODE) — секретный путь Caddy работает" ;;
+      404)     bad "публичная ссылка отдаёт 404 — секрет в Caddyfile не совпадает с SUB_PUBLIC_DOMAIN панели" ;;
+      000)     bad "публичная ссылка недоступна: curl не смог подключиться (Caddy/сертификат/DNS). Повторите через минуту" ;;
+      4??|5??) bad "публичная ссылка вернула HTTP $CODE — клиенты не смогут обновить подписку" ;;
+      *)       warn "публичная ссылка вернула HTTP $CODE — проверьте вручную" ;;
+    esac
   else
     warn "проверка публичной ссылки пропущена: нет SUB_SECRET в state (исправьте по разделу 1 инструкции)"
   fi
