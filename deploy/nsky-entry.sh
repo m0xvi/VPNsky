@@ -38,7 +38,7 @@
 
 set -Eeuo pipefail
 
-VERSION="2026-11-06.4"
+VERSION="2026-11-06.5"
 
 # Пути можно переопределить переменными окружения (нужно для локальных тестов).
 DIR="${NSKY_ENTRY_DIR:-/opt/nsky-entry}"
@@ -50,6 +50,7 @@ SOCKS_CHAIN="${NSKY_ENTRY_SOCKS_CHAIN:-1081}"
 SOCKS_DIRECT="${NSKY_ENTRY_SOCKS_DIRECT:-1082}"
 
 MODE="apply"
+REGEN=0
 PORT="${NSKY_ENTRY_PORT:-443}"
 ALT_PORT="${NSKY_ENTRY_ALT_PORT:-8443}"
 SNI="${NSKY_ENTRY_SNI:-www.microsoft.com}"
@@ -97,6 +98,7 @@ NSky Entry — вход-узел каскада на русском VPS (VLESS+R
 
   --port <N>        основной порт входа (по умолчанию 443)
   --alt-port <N>    резервный порт (по умолчанию 8443, 0 — не открывать)
+  --regen-keys      пересоздать ключи входа и выдать новую ссылку
   --ip <IP>         внешний IP этого VPS (иначе определится автоматически)
   --sni <домен>     маска REALITY (по умолчанию www.microsoft.com)
 
@@ -111,6 +113,7 @@ while [[ $# -gt 0 ]]; do
     --link)     MODE="link"; shift ;;
     --status)   MODE="status"; shift ;;
     --remove)   MODE="remove"; shift ;;
+    --regen-keys) REGEN=1; shift ;;
     --port)     PORT_ARG="${2:-}"; shift 2; PORT="${PORT_ARG}" ;;
     --alt-port) ALT_ARG="${2:-}"; shift 2; ALT_PORT="${ALT_ARG}" ;;
     --ip)       PUBIP_ARG="${2:-}"; shift 2 ;;
@@ -276,24 +279,49 @@ ensure_xray() {
 }
 
 # ── ключи REALITY для входного инбаунда ─────────────────────────────────────
+derive_pubkey() {
+  # derive_pubkey <приватный ключ> -> публичный ключ (или пусто, если Xray так не умеет)
+  local priv="$1" out
+  out="$("$BIN" x25519 -i "$priv" 2>/dev/null || true)"
+  if [[ -z "$out" ]]; then
+    out="$(printf '%s\n' "$priv" | "$BIN" x25519 -i 2>/dev/null || true)"
+  fi
+  printf '%s\n' "$out" | grep -oE '[A-Za-z0-9_-]{43}' | grep -vxF "$priv" | head -1
+  return 0
+}
+
 gen_reality_keys() {
-  local out priv pub tokens
+  local out tokens cand d other
   out="$("$BIN" x25519 2>/dev/null || true)"
   [[ -n "$out" ]] || die "«$BIN x25519» не выдал ключи"
+  tokens="$(printf '%s\n' "$out" | grep -oE '[A-Za-z0-9_-]{43}' | awk '!seen[$0]++')"
+  [[ -n "$tokens" ]] || die "Не разобрал вывод x25519: $out"
 
-  priv="$(printf '%s\n' "$out" | grep -iE 'private' | grep -oE '[A-Za-z0-9_-]{43}' | head -1 || true)"
-  pub="$(printf '%s\n' "$out" | grep -iE 'public|password' | grep -oE '[A-Za-z0-9_-]{43}' | head -1 || true)"
+  # Пару проверяем по существу: просим Xray вывести публичный ключ ИЗ приватного
+  # и ищем совпадение среди напечатанных. Метки в выводе x25519 между версиями
+  # разные (PrivateKey/Password/Seed/...), полагаться на них нельзя.
+  for cand in $tokens; do
+    d="$(derive_pubkey "$cand")"
+    [[ -n "$d" ]] || continue
+    for other in $tokens; do
+      if [[ "$other" == "$d" && "$other" != "$cand" ]]; then
+        RU_PRIV="$cand"
+        RU_PUB="$other"
+        ok "Пара ключей REALITY сверена (публичный выведен из приватного)"
+        return 0
+      fi
+    done
+  done
 
-  if [[ -z "$priv" || -z "$pub" ]]; then
-    tokens="$(printf '%s\n' "$out" | grep -oE '[A-Za-z0-9_-]{43}' | awk '!seen[$0]++' || true)"
-    priv="$(printf '%s\n' "$tokens" | sed -n 1p)"
-    pub="$(printf '%s\n' "$tokens" | sed -n 2p)"
+  warn "Xray не подтвердил пару ключей — беру по меткам (может не сработать)"
+  RU_PRIV="$(printf '%s\n' "$out" | grep -iE 'private' | grep -oE '[A-Za-z0-9_-]{43}' | head -1 || true)"
+  RU_PUB="$(printf '%s\n' "$out" | grep -iE 'public|password' | grep -oE '[A-Za-z0-9_-]{43}' | head -1 || true)"
+  if [[ -z "$RU_PRIV" || -z "$RU_PUB" ]]; then
+    RU_PRIV="$(printf '%s\n' "$tokens" | sed -n 1p)"
+    RU_PUB="$(printf '%s\n' "$tokens" | sed -n 2p)"
   fi
-
-  [[ "$priv" =~ ^[A-Za-z0-9_-]{43}$ ]] || die "Не разобрал приватный ключ REALITY: $out"
-  [[ "$pub"  =~ ^[A-Za-z0-9_-]{43}$ ]] || die "Не разобрал публичный ключ REALITY: $out"
-  RU_PRIV="$priv"
-  RU_PUB="$pub"
+  [[ "$RU_PRIV" =~ ^[A-Za-z0-9_-]{43}$ && "$RU_PUB" =~ ^[A-Za-z0-9_-]{43}$ ]] \
+    || die "Не разобрал ключи REALITY: $out"
 }
 
 new_short_id() {
@@ -367,7 +395,7 @@ SOCKS
 
   cat <<JSON
 {
-  "log": { "loglevel": "warning" },
+  "log": { "loglevel": "info" },
   "inbounds": [
     {
       "tag": "vless-reality-${PORT}",
@@ -613,7 +641,7 @@ probe_config() {
   local host="$1" cport="$2"
   cat <<PROBE
 {
-  "log": { "loglevel": "warning" },
+  "log": { "loglevel": "debug" },
   "inbounds": [
     { "tag": "probe-in", "listen": "127.0.0.1", "port": ${cport}, "protocol": "socks",
       "settings": { "auth": "noauth", "udp": false } }
@@ -659,7 +687,7 @@ probe_once() {
   done
 
   if ! kill -0 "$pid" 2>/dev/null; then
-    PROBE_LOG="$(sed -n '1,12p' "$log" 2>/dev/null)"
+    PROBE_LOG="$(tail -20 "$log" 2>/dev/null)"
     rm -f "$cfg" "$log"
     return 1
   fi
@@ -671,7 +699,7 @@ probe_once() {
 
   kill "$pid" 2>/dev/null || true
   wait "$pid" 2>/dev/null || true
-  PROBE_LOG="$(sed -n '1,12p' "$log" 2>/dev/null)"
+  PROBE_LOG="$(tail -20 "$log" 2>/dev/null)"
   rm -f "$cfg" "$log"
 
   [[ -n "$ip" ]] || return 1
@@ -755,6 +783,18 @@ check_all() {
     [[ -n "$p" && "$p" != "0" ]] || continue
     if port_busy "$p"; then chk_ok "порт ${p}/tcp слушается"; else chk_bad "порт ${p}/tcp НЕ слушается"; fi
   done
+
+  head2 "Ключи входа"
+  local derived
+  derived="$(derive_pubkey "$RU_PRIV")"
+  if [[ -z "$derived" ]]; then
+    warn "Xray не умеет вывести публичный ключ из приватного — сверить не могу"
+  elif [[ "$derived" == "$RU_PUB" ]]; then
+    chk_ok "пара ключей согласована (публичный в ссылке соответствует приватному)"
+  else
+    chk_bad "ключи входа РАСХОДЯТСЯ: публичный в ссылке не соответствует приватному"
+    info "Лечится одной командой: bash $0 --regen-keys"
+  fi
 
   head2 "Первый хоп: клиент → этот вход (как с телефона, но без телефона)"
   info "домен-маска ${SNI}:443 с этого VPS $(target_state)"
@@ -852,6 +892,10 @@ apply() {
 
   # Ключи и UUID входного узла создаются один раз и переживают повторный запуск,
   # чтобы уже добавленная в Happ ссылка не сломалась.
+  if [[ "$REGEN" == "1" ]]; then
+    RU_PRIV=""; RU_PUB=""; RU_SID=""
+    info "Ключи входа будут пересозданы (--regen-keys): старая ссылка перестанет работать"
+  fi
   if [[ -z "$RU_PRIV" || -z "$RU_PUB" ]]; then
     gen_reality_keys
     ok "Сгенерирована новая пара ключей REALITY для входа"
