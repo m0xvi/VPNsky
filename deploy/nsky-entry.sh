@@ -38,7 +38,7 @@
 
 set -Eeuo pipefail
 
-VERSION="2026-11-06.9"
+VERSION="2026-11-06.10"
 
 # Пути можно переопределить переменными окружения (нужно для локальных тестов).
 DIR="${NSKY_ENTRY_DIR:-/opt/nsky-entry}"
@@ -68,6 +68,7 @@ ALT_ARG="${NSKY_ENTRY_ALT_PORT:-}"
 SNI_ARG="${NSKY_ENTRY_SNI:-}"
 PUBIP=""
 PUBIP_ARG=""
+FP="${NSKY_ENTRY_FP:-chrome}"
 LINK=""
 
 # Состояние входа (заполняется при apply, читается в --link/--check).
@@ -109,6 +110,7 @@ NSky Entry — вход-узел каскада на русском VPS (VLESS+R
   --regen-keys      пересоздать ключи входа и выдать новую ссылку
   --ip <IP>         внешний IP этого VPS (иначе определится автоматически)
   --sni <домен>     маска REALITY (по умолчанию www.microsoft.com)
+  --fp <имя>        fingerprint для ссылки: chrome|safari|ios|firefox|random
 
 Требуется root. NL-сервер, панель и подписки не изменяются.
 USAGE
@@ -127,6 +129,7 @@ while [[ $# -gt 0 ]]; do
     --alt-port) ALT_ARG="${2:-}"; shift 2; ALT_PORT="${ALT_ARG}" ;;
     --ip)       PUBIP_ARG="${2:-}"; shift 2 ;;
     --sni)      SNI_ARG="${2:-}"; shift 2; SNI="${SNI_ARG}" ;;
+    --fp)       FP="${2:-chrome}"; shift 2 ;;
     --help|-h)  usage; exit 0 ;;
     vless://*)  LINK="$1"; shift ;;
     *)          die "Неизвестный аргумент: $1 (--help)" ;;
@@ -613,7 +616,7 @@ wait_listen() {
 # ── ссылки для телефона ─────────────────────────────────────────────────────
 build_link() {
   local port="$1"
-  local q="encryption=none&security=reality&sni=${SNI}&fp=chrome&pbk=${RU_PUB}&sid=${RU_SID}&type=tcp&headerType=none"
+  local q="encryption=none&security=reality&sni=${SNI}&fp=${FP}&pbk=${RU_PUB}&sid=${RU_SID}&type=tcp&headerType=none"
   printf 'vless://%s@%s:%s?%s#%s\n' "$CLIENT_UUID" "$PUBIP" "$port" "$q" "NSky-RU-REALITY-${port}"
 }
 
@@ -979,6 +982,9 @@ apply() {
   chmod 600 "$DIR/upstream.link"
 
   head2 "Самопроверка"
+  # сразу после restart Xray ещё «холодный»: первые рукопожатия могут
+  # не успеть — даём пару секунд, чтобы проверка не врала
+  sleep 3
   FAILS=0
   check_all
 
