@@ -18,7 +18,7 @@
 
 set -uo pipefail
 
-DOMAIN="${1:-oijas.rknmrz.xyz}"
+DOMAIN="${1:-vpn.example.com}"
 DIR="/opt/nsky"
 STATE="$DIR/install-state.env"
 API="https://${DOMAIN}/api"

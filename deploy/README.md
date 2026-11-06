@@ -52,7 +52,9 @@ NL (exit). Релей шифрование не видит. Домен русс�
 
 ```
 deploy/
-├── nsky-install.sh          # ЕДИНСТВЕННЫЙ нужный файл
+├── nsky-install.sh          # установка/обновление сервера
+├── nsky-cascade-check.sh    # проверка каскада (только чтение)
+├── nsky-relay.sh            # релей на русском VPS
 ├── panel/docker-compose.yml # справочно: compose панели
 ├── node/                    # справочно: compose и firewall ноды
 ├── xray/                    # справочно: пример профиля с плейсхолдерами
@@ -91,3 +93,11 @@ deploy/
 - **Hysteria2 требует TLS**: в Xray без `tlsSettings` инбаунд не стартует
   (`transport/internet/hysteria/hub.go`: «tls config is nil»), причём падает
   вся нода. Поэтому сертификат Caddy монтируется в панель.
+
+## Проверка каскада
+
+`deploy/nsky-cascade-check.sh` ничего не меняет: на NL-сервере проверяет
+подписку (хосты `(RU)`, адреса, SNI, порты, совпадение инбаундов) и путь
+трафика (TLS через русский IP, возврат UDP/443); на русском VPS — правила
+DNAT/FORWARD, `ip_forward` и systemd. Подробности:
+[../docs/ПРОВЕРКА_КАСКАДА.md](../docs/ПРОВЕРКА_КАСКАДА.md).
