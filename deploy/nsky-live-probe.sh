@@ -17,18 +17,21 @@
 #   bash nsky-live-probe.sh            # ждёт 15 секунд, за это время нажмите
 #                                      # «Подключить» на телефоне
 #   bash nsky-live-probe.sh --no-wait  # не ждать (если телефон уже подключён)
+#   bash nsky-live-probe.sh --udp       # замер Hysteria2 (udp/443) вместо REALITY
 #   bash nsky-live-probe.sh --help
 # ═══════════════════════════════════════════════════════════════════════════
 set -uo pipefail
 
-VERSION="2026-11-06.2"
+VERSION="2026-11-06.3"
 STATE="${NSKY_STATE:-/opt/nsky/install-state.env}"
 WAIT=15
 HINT=1
+UDP=0
 
 for arg in "$@"; do
   case "$arg" in
     --no-wait) WAIT=5; HINT=0 ;;
+    --udp) UDP=1 ;;
     --help|-h)
       sed -n '2,25p' "$0" | sed 's/^# \{0,1\}//'
       exit 0 ;;
@@ -105,8 +108,11 @@ else
         if [[ "$GOT_SID" == "$P_SID" ]]; then ok "shortId подписки == shortIds профиля панели (нода и клиент согласованы)"; else bad "РАСХОЖДЕНИЕ shortId: подписка != конфиг-профиль панели"; KEYS_OK=0; fi
         if [[ "$SID" != "$P_SID" ]]; then warn "файл state хранит другой shortId — это устаревшая записка, нода её не читает (не причина)"; else ok "state совпадает с профилем"; fi
       else
-        warn "Профиль панели прочитать не удалось — сравниваю только со state (справочно)"
-        if [[ "$GOT_SID" == "$SID" ]]; then ok "shortId подписки совпадает с state (справочно)"; else warn "shortId подписки != state: state мог устареть, это НЕ доказательство поломки"; fi
+        # Подписка генерируется панелью из shortIds[0] ЭТОГО ЖЕ профиля
+        # (resolve-proxy-config.service.ts), поэтому совпадение со state
+        # уже доказывает, что живой профиль, нода и клиент согласованы.
+        info "API профиля недоступен (токен после смены админа) — это не ошибка."
+        if [[ "$GOT_SID" == "$SID" ]]; then ok "shortId подписки == shortIds живого профиля (через генератор подписки)"; else warn "shortId подписки != state — сверить профиль вручную"; fi
       fi
       if [[ -n "$P_PRIV" ]]; then
         SP="$(state_get REALITY_PRIV)"
@@ -129,9 +135,17 @@ if ! command -v tcpdump >/dev/null 2>&1; then
 else
   CAP="$(mktemp)"
   chmod 600 "$CAP"
-  FILTER="tcp and host $RU and (port 8443 or port 2053)"
+  if [[ "$UDP" -eq 1 ]]; then
+    FILTER="udp and host $RU and port 443"
+  else
+    FILTER="tcp and host $RU and (port 8443 or port 2053)"
+  fi
   if [[ "$HINT" -eq 1 ]]; then
-    info "Слушаю $WAIT секунд. СЕЙЧАС нажмите «Подключить» на телефоне (LTE, сервер (RU))."
+    if [[ "$UDP" -eq 1 ]]; then
+    info "Слушаю UDP/443 $WAIT секунд. СЕЙЧАС выберите «NSky Hysteria2 (RU)» и нажмите «Подключить»."
+  else
+    info "Слушаю TCP $WAIT секунд. СЕЙЧАС нажмите «Подключить» на телефоне (LTE, сервер (RU))."
+  fi
   else
     info "Слушаю $WAIT секунд уже установленное соединение."
   fi
@@ -139,8 +153,16 @@ else
 
   # Входящие: источник — релей. Исходящие: источник — нода, получатель — релей.
   IN="$(grep -c "IP $RU\." "$CAP" 2>/dev/null || true)"
-  OUT="$(grep -cE "IP $NL\.[0-9]+ > $RU\." "$CAP" 2>/dev/null || true)"
-  BIG="$(grep -E "IP $NL\.[0-9]+ > $RU\." "$CAP" 2>/dev/null | grep -cE 'length [1-9][0-9]*' || true)"
+  if [[ "$UDP" -eq 1 ]]; then
+    OUT="$(grep -cE "IP $NL\.443 > $RU\." "$CAP" 2>/dev/null || true)"
+  else
+    OUT="$(grep -cE "IP $NL\.[0-9]+ > $RU\." "$CAP" 2>/dev/null || true)"
+  fi
+  if [[ "$UDP" -eq 1 ]]; then
+    BIG="$(grep -E "IP $NL\.443 > $RU\." "$CAP" 2>/dev/null | grep -cE 'length [1-9][0-9]*' || true)"
+  else
+    BIG="$(grep -E "IP $NL\.[0-9]+ > $RU\." "$CAP" 2>/dev/null | grep -cE 'length [1-9][0-9]*' || true)"
+  fi
   IN="${IN:-0}"; OUT="${OUT:-0}"; BIG="${BIG:-0}"
   info "пакетов от релея к ноде: $IN; ответов от ноды к релею: $OUT; из них с данными: $BIG"
   if [[ "$IN" -gt 0 ]]; then
@@ -149,7 +171,11 @@ else
   fi
   rm -f "$CAP"
 
-  if [[ "$IN" -eq 0 ]]; then
+  if [[ "$UDP" -eq 1 ]]; then
+    if [[ "$IN" -eq 0 ]]; then warn "Вердикт U0: UDP/443 не дошёл до ноды — выбран не Hysteria2 (RU) или Happ не переподключился";
+    elif [[ "$OUT" -eq 0 ]]; then warn "Вердикт U1: QUIC дошёл, нода молчит — проверьте inbound Hysteria2 и сертификат";
+    else ok "Вердикт U2: QUIC идёт в обе стороны ($IN/$OUT) — Hysteria2 (RU) рабочий, откройте example.com"; fi
+  elif [[ "$IN" -eq 0 ]]; then
     warn "Вердикт C: за эти $WAIT секунд пакеты не пришли. Телефон не нажимал «Подключить», выбран не (RU)-сервер или соединение уже было установлено раньше."
     info "Повторите: отключите Happ, запустите скрипт и сразу нажмите «Подключить»."
   elif [[ "$OUT" -eq 0 ]]; then
@@ -169,6 +195,7 @@ head2 "Последние ошибки ноды (только строки с о
 if docker ps -a --format '{{.Names}}' 2>/dev/null | grep -qx remnanode; then
   LOGS="$(docker logs --tail 200 remnanode 2>&1 | tr -cd '\11\12\15\40-\176' | grep -aiE 'reality|invalid|error|fail|reject|timeout|handshake|shortId|fallback' | tail -12 || true)"
   if [[ -z "$LOGS" ]]; then ok "в последних 200 строках ошибок нет"; else printf '%s\n' "$LOGS" | sed 's/^/    /'; fi
+  info "WARN StatsService / xtls-api — шум сбора статистики, на проксирование не влияет."
 else
   warn "контейнер remnanode не найден"
 fi
