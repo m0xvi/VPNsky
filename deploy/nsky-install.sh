@@ -55,7 +55,7 @@ STATE="$DIR/install-state.env"
 LOG="$DIR/install.log"
 PROJECT="nsky"
 PROJECT_NODE="nsky-node"
-NSKY_VERSION="2026-11-06.4"
+NSKY_VERSION="2026-11-06.5"
 
 # Порты. 443/tcp — публичная подписка для клиентов. Панель управления
 # живёт на отдельном порту, доступном только с IP офиса:
@@ -697,11 +697,11 @@ LOGIN_TOKEN=""
 LAST_CODE=""
 LAST_MSG=""
 login_token() {
-  local pass="$1" body out code resp
+  local pass="$1" user="${2:-$ADMIN_USER}" body out code resp
   LOGIN_TOKEN=""
   LAST_CODE=""
   LAST_MSG=""
-  body=$(jq -n --arg u "$ADMIN_USER" --arg p "$pass" '{username:$u,password:$p}')
+  body=$(jq -n --arg u "$user" --arg p "$pass" '{username:$u,password:$p}')
   out=$(api -X POST "$API/auth/login" -H "$CLIENT_HDR" \
     -H 'Content-Type: application/json' -d "$body" -w '\n%{http_code}' 2>/dev/null || printf '\n000')
   code=$(printf '%s' "$out" | tail -1)
@@ -744,19 +744,23 @@ else
     if [[ "$REG_CODE" == "000" ]]; then
       warn "Панель не отвечает на локальный запрос — смотрите: docker logs --tail 30 remnawave"
     elif [[ "$LOGIN_ALLOWED" == "true" ]]; then
-      info "В панели уже есть администратор с другим паролем."
-      info "Введите его пароль. Пустой ввод — шаги 9-10 будут пропущены."
-      read -rsp '    Пароль существующего админа: ' INPUT_PASS || true
+      info "В панели уже есть администратор с другим логином или паролем."
+      info "Введите логин и пароль действующего админа. Пустой ввод — шаги 9-10 будут пропущены."
+      read -rp '    Логин админа ['$ADMIN_USER']: ' INPUT_USER || true
+      INPUT_USER="${INPUT_USER:-$ADMIN_USER}"
+      read -rsp '    Пароль: ' INPUT_PASS || true
       echo
       if [[ -n "${INPUT_PASS:-}" ]]; then
-        login_token "$INPUT_PASS"
+        login_token "$INPUT_PASS" "$INPUT_USER"
         JWT="$LOGIN_TOKEN"
         if [[ -n "$JWT" ]]; then
+          ADMIN_USER="$INPUT_USER"
           ADMIN_PASS="$INPUT_PASS"
+          state_set ADMIN_USER "$ADMIN_USER"
           state_set ADMIN_PASS "$ADMIN_PASS"
-          ok "Вход выполнен"
+          ok "Вход выполнен под $ADMIN_USER (сохранено в $STATE)"
         else
-          warn "Пароль не подошёл (HTTP ${LAST_CODE:-?}): ${LAST_MSG:-без ответа}"
+          warn "Не подошло (HTTP ${LAST_CODE:-?}): ${LAST_MSG:-без ответа}"
         fi
       fi
     fi
