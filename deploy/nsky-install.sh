@@ -55,7 +55,7 @@ STATE="$DIR/install-state.env"
 LOG="$DIR/install.log"
 PROJECT="nsky"
 PROJECT_NODE="nsky-node"
-NSKY_VERSION="2026-11-06.5"
+NSKY_VERSION="2026-11-06.6"
 
 # Порты. 443/tcp — публичная подписка для клиентов. Панель управления
 # живёт на отдельном порту, доступном только с IP офиса:
@@ -478,13 +478,15 @@ fi
 source "$STATE"
 [[ -n "${ADMIN_PASS:-}" ]] || { ADMIN_PASS="$(gen_password)"; state_set ADMIN_PASS "$ADMIN_PASS"; }
 
-# Секрет в URL подписки: создаётся один раз, живёт в state (переживает
-# обновления, при --wipe создаётся заново вместе со всей установкой).
+# Секрет в URL подписки: создаётся один раз и ВСЕГДА пишется в state.
+# state_set обязателен даже для подхваченного значения: state удаляется
+# при --wipe позже создания нового, и без этой записи секрет бы терялся —
+# следующий запуск сгенерировал бы новый и сломал разосланные ссылки.
 if [[ -z "$SUB_SECRET" ]]; then
   SUB_SECRET="$(rnd 6)"
-  state_set SUB_SECRET "$SUB_SECRET"
 fi
 [[ -n "$SUB_SECRET" ]] || SUB_SECRET="sub"
+state_set SUB_SECRET "$SUB_SECRET"
 SUB_PUBLIC_DOMAIN="${DOMAIN}/${SUB_SECRET}/api/sub"
 
 cat > "$DIR/panel/.env" <<ENV
